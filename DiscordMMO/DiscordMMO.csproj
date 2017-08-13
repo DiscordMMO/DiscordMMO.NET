@@ -137,6 +137,7 @@
     <Compile Include="Datatypes\Actions\ActionChopWood.cs" />
     <Compile Include="Datatypes\Entities\Entity.cs" />
     <Compile Include="Datatypes\Entities\EntityFightable.cs" />
+    <Compile Include="Datatypes\Entities\IDamageable.cs" />
     <Compile Include="Datatypes\Interactions\FightInteraction.cs" />
     <Compile Include="Datatypes\Interactions\Interactibles\Interactible.cs" />
     <Compile Include="Datatypes\Interactions\Interaction.cs" />
@@ -145,6 +146,7 @@
     <Compile Include="Datatypes\Inventories\Inventory.cs" />
     <Compile Include="Datatypes\ItemStack.cs" />
     <Compile Include="Datatypes\Items\Item.cs" />
+    <Compile Include="Datatypes\Items\ItemWeapon.cs" />
     <Compile Include="Datatypes\Items\ItemWood.cs" />
     <Compile Include="Datatypes\Modules.cs" />
     <Compile Include="Datatypes\Player.cs" />

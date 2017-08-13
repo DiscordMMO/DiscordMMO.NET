@@ -12,7 +12,7 @@ using Action = DiscordMMO.Datatypes.Actions.Action;
 
 namespace DiscordMMO.Datatypes
 {
-    public class Player
+    public class Player : IDamageable
     {
 
         public IUser user { get; protected set; }
@@ -47,6 +47,16 @@ namespace DiscordMMO.Datatypes
                 return currentAction is ActionIdle;
             }
         }
+
+        public int maxHealth => 30;
+
+        public int health { get; set; }
+
+        public int defence => 0;
+
+        public int attackDamage => 4;
+
+        public int accuracy => 1;
 
         #region Constructors
         public Player(IUser user) : this(user, user.Username)
