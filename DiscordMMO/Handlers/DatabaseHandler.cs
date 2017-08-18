@@ -10,6 +10,7 @@ using DiscordMMO.Datatypes.Actions;
 using Discord;
 using System.Diagnostics;
 using MySql.Data.MySqlClient;
+using DiscordMMO.Datatypes.Inventories;
 using Action = DiscordMMO.Datatypes.Actions.Action;
 
 namespace DiscordMMO.Handlers
@@ -20,10 +21,10 @@ namespace DiscordMMO.Handlers
         private static readonly string connString;
 
         #region Save or overwrite string
-        private const string saveOrOverwriteString = "INSERT INTO users (id, name, currentActionName, currentActionFinishTime, preference_pm, preference_mention) " +
-    "VALUES(@id, @name, @actionName, @actionTime, @pm, @mention)" +
+        private const string saveOrOverwriteString = "INSERT INTO users (id, name, currentActionName, currentActionFinishTime, preference_pm, preference_mention, inventory) " +
+    "VALUES(@id, @name, @actionName, @actionTime, @pm, @mention, @inventory)" +
     "ON DUPLICATE KEY UPDATE id=@id, name=@name, currentActionName=@actionName, " +
-    "currentActionFinishTime=@actionTime, preference_pm=@pm, preference_mention=@mention";
+    "currentActionFinishTime=@actionTime, preference_pm=@pm, preference_mention=@mention, inventory=@inventory";
         #endregion
 
         static DatabaseHandler()
@@ -111,6 +112,9 @@ namespace DiscordMMO.Handlers
         public static async Task<Player> GetOrFetchPlayer(ulong id, DiscordSocketClient client)
         {
 
+            // TODO: Add inventory deserialization
+            // TODO: Add equipment deserialization
+
             if (PlayerHandler.HasPlayer(client.GetUser(id)))
             {
                 return PlayerHandler.GetPlayer(client.GetUser(id));
@@ -141,6 +145,8 @@ namespace DiscordMMO.Handlers
                     Player p = PlayerHandler.CreatePlayer(user, reader.GetString("name"));
 
                     p.SetAction(Action.GetActionFromName(reader.GetString("currentActionName"), p), false, true);
+
+                    p.inventory = ;
 
                     if (p.currentAction is ActionIdle == false)
                     {
@@ -175,6 +181,7 @@ namespace DiscordMMO.Handlers
 
         public static async Task SaveAsync(Player player)
         {
+            // TODO: Add equiment serialization
             MySqlConnection connection;
 
             MySqlCommand saveOrOverwritePlayer;
@@ -194,6 +201,7 @@ namespace DiscordMMO.Handlers
                     saveOrOverwritePlayer.Parameters.AddWithValue("@name", player.name);
                     saveOrOverwritePlayer.Parameters.AddWithValue("@actionName", player.currentAction.name);
                     saveOrOverwritePlayer.Parameters.AddWithValue("@actionTime", player.currentAction.finishTime);
+                    saveOrOverwritePlayer.Parameters.AddWithValue("@inventory", player.inventory.ToString());
                     saveOrOverwritePlayer.Parameters.AddWithValue("@pm", player.GetPreference<bool>("pm"));
                     saveOrOverwritePlayer.Parameters.AddWithValue("@mention", player.GetPreference<bool>("mention"));
                     saveOrOverwritePlayer.Prepare();

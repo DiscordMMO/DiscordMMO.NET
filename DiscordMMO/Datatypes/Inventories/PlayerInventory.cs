@@ -17,6 +17,16 @@ namespace DiscordMMO.Datatypes.Inventories
             this.owner = owner;
         }
 
+        public static PlayerInventory FromString(Player owner, string inv)
+        {
+            PlayerInventory ret = new PlayerInventory(owner);
+            for (int i = 0; i < inv.Split(';').Length; i++)
+            {
+                ret[i] = ItemStack.FromString(inv.Split(';')[i]);
+            }
+            return ret;
+        }
+
     }
 
 }

@@ -142,6 +142,7 @@
     <Compile Include="Datatypes\Interactions\Interactibles\Interactible.cs" />
     <Compile Include="Datatypes\Interactions\Interaction.cs" />
     <Compile Include="Datatypes\Inventories\LimitedInventory.cs" />
+    <Compile Include="Datatypes\Inventories\PlayerEquimentInventory.cs" />
     <Compile Include="Datatypes\Inventories\PlayerInventory.cs" />
     <Compile Include="Datatypes\Inventories\Inventory.cs" />
     <Compile Include="Datatypes\ItemStack.cs" />

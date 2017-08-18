@@ -41,5 +41,12 @@ namespace DiscordMMO.Datatypes
             return itemType.displayName + $"({count})";
         }
 
+        public static ItemStack FromString(string item)
+        {
+            // TODO: Make this support parameters
+            string[] param = item.Split(',');
+            return new ItemStack(ItemHandler.GetItemInstanceFromName(param[0]), int.Parse(param[1]));
+        }
+
     }
 }

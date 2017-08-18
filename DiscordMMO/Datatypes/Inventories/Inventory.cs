@@ -12,6 +12,17 @@ namespace DiscordMMO.Datatypes.Inventories
 
         public List<ItemStack> items = new List<ItemStack>();
 
+        public ItemStack this[int index]
+        {
+            get
+            {
+                return items[index];
+            }
+            set
+            {
+                items[index] = value; 
+            }
+        }
 
         public virtual bool AddItem(ItemStack item)
         {
@@ -40,6 +51,17 @@ namespace DiscordMMO.Datatypes.Inventories
                 }
             }
             return false;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder b = new StringBuilder();
+            foreach (ItemStack i in items)
+            {
+                string name = i.IsEmpty ? "empty" : i.itemType.itemName;
+                b.Append($"{name},{i.count};");
+            }
+            return b.ToString();
         }
 
         public abstract bool CanAdd(ItemStack item);

@@ -27,15 +27,18 @@ namespace DiscordMMO.Datatypes.Entities
             }
         }
 
-        public abstract int maxHealth { get; };
+        public abstract int maxHealth { get; }
 
         public abstract int health { get; set; }
 
         public abstract int defence { get; }
 
+        public abstract int attackRate { get; }
+
         public int attackDamage { get; }
 
         public int accuracy { get; }
+
 
         public bool StartFightAgainst(Player player, bool force)
         {

@@ -18,6 +18,11 @@ namespace DiscordMMO.Datatypes.Entities
 
         int accuracy { get; }
 
+        /// <summary>
+        /// The amount of ticks between each attack
+        /// </summary>
+        int attackRate { get; }
+
     }
 
     public static class IDamageableHelper

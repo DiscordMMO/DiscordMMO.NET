@@ -242,7 +242,10 @@ namespace DiscordMMO.Datatypes
         [Command("reply")]
         public async Task Reply()
         {
-            await ReplyAsync(Context.User.Username);
+            if (! await PlayerHandler.AttemptLogin(Context.User))
+                return;
+            Player p = PlayerHandler.GetPlayer(Context.User);
+            await ReplyAsync(p.inventory.ToString());
         }
 
     }

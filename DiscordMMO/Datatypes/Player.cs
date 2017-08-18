@@ -19,6 +19,7 @@ namespace DiscordMMO.Datatypes
         public readonly string name;
 
         public PlayerInventory inventory;
+        public PlayerEquimentInventory equipment;
 
         public Action currentAction { get; protected set; }
 
@@ -57,6 +58,8 @@ namespace DiscordMMO.Datatypes
         public int attackDamage => 4;
 
         public int accuracy => 1;
+
+        public int attackRate => 3;
 
         #region Constructors
         public Player(IUser user) : this(user, user.Username)
