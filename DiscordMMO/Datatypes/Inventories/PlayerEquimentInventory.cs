@@ -53,5 +53,40 @@ namespace DiscordMMO.Datatypes.Inventories
             return slots[name].GetValueOrDefault(-1);
         }
 
+        public static new PlayerEquimentInventory FromString(Player owner, string inv)
+        {
+
+            // TODO: TEST THIS CODE!!!!
+
+            PlayerEquimentInventory ret = new PlayerEquimentInventory(owner);
+            for (int i = 0; i < inv.Split(';').Length - 1; i++)
+            {
+                string fullItem = inv.Split(';')[i];
+
+                string item = fullItem.Split(',')[0];
+
+
+                // TODO: Make this regex instead
+                int slot = int.Parse(fullItem.Split(',')[1].Substring(fullItem.IndexOf("s:"), fullItem.IndexOfAny(new char[] { ',', ']' })));
+
+                ret[slot] = ItemStack.FromString(item);
+
+            }
+            return ret;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder b = new StringBuilder();
+            for (int i = 0; i < items.Count; i++)
+            {
+                ItemStack item = items[i];
+                string name = item.IsEmpty ? "empty" : item.itemType.itemName;
+                b.Append($"{name},[s:{i}];");
+            }
+            string o = b.ToString();
+            return o.Remove(o.Length - 1);
+        }
+
     }
 }

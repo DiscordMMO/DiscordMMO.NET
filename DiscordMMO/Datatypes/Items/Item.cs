@@ -18,7 +18,7 @@ namespace DiscordMMO.Datatypes.Items
         /// </summary>
         public static string name { get; }
 
-        public string itemName => name;
+        public virtual string itemName => name;
 
         public abstract string displayName { get; }
 

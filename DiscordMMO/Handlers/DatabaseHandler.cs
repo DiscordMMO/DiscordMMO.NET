@@ -112,7 +112,6 @@ namespace DiscordMMO.Handlers
         public static async Task<Player> GetOrFetchPlayer(ulong id, DiscordSocketClient client)
         {
 
-            // TODO: Add inventory deserialization
             // TODO: Add equipment deserialization
 
             if (PlayerHandler.HasPlayer(client.GetUser(id)))
@@ -146,7 +145,7 @@ namespace DiscordMMO.Handlers
 
                     p.SetAction(Action.GetActionFromName(reader.GetString("currentActionName"), p), false, true);
 
-                    p.inventory = ;
+                    p.inventory = PlayerInventory.FromString(p, reader.GetString("inventory"));
 
                     if (p.currentAction is ActionIdle == false)
                     {
@@ -181,7 +180,6 @@ namespace DiscordMMO.Handlers
 
         public static async Task SaveAsync(Player player)
         {
-            // TODO: Add equiment serialization
             MySqlConnection connection;
 
             MySqlCommand saveOrOverwritePlayer;

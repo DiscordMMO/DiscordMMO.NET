@@ -61,7 +61,8 @@ namespace DiscordMMO.Datatypes.Inventories
                 string name = i.IsEmpty ? "empty" : i.itemType.itemName;
                 b.Append($"{name},{i.count};");
             }
-            return b.ToString();
+            string o = b.ToString();
+            return o.Remove(o.Length-1);
         }
 
         public abstract bool CanAdd(ItemStack item);

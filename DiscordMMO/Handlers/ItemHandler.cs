@@ -27,16 +27,26 @@ namespace DiscordMMO.Handlers
 
         public static Item GetItemInstanceFromName(string name, params object[] param)
         {
+            if (GetItemFromName(name) == null)
+            {
+
+            }
             return GetItemFromType(GetItemFromName(name), param);
         }
 
         public static Type GetItemFromName(string name)
         {
+            if (!items.ContainsKey(name))
+                return null;
             return items[name];
         }
 
         public static Item GetItemFromType(Type item, params object[] param)
         {
+            if (item == null)
+            {
+
+            }
             if (!item.IsSubclassOf(typeof(Item)))
             {
                 throw new ArgumentException("Tried to get item instance from a type that is not an item");
