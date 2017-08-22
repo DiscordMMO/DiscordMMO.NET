@@ -46,9 +46,13 @@ namespace DiscordMMO.Datatypes
             // TODO: Make this support parameters
             string[] param = item.Split(',');
             int count = 1;
-            if (param.Length >= 1)
+            if (param.Length >= 2)
             {
                 count = int.Parse(param[1]);
+            }
+            else
+            {
+                count = 1;
             }
             return new ItemStack(ItemHandler.GetItemInstanceFromName(param[0]), count);
         }
