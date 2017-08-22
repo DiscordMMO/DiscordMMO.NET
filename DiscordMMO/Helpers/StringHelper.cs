@@ -14,5 +14,12 @@ namespace DiscordMMO.Helpers
             return d.ToString(@"dd\:HH\:mm\:ss");
         }
 
+        [Obsolete("This is currently a low priority feature")]
+        public static string CreateInsertOrOverwriteString(string[] param)
+        {
+            // TODO: Implement this
+            return "";
+        }
+
     }
 }
