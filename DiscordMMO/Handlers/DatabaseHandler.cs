@@ -21,10 +21,10 @@ namespace DiscordMMO.Handlers
         private static readonly string connString;
 
         #region Save or overwrite string
-        private const string saveOrOverwriteString = "INSERT INTO users (id, name, currentActionName, currentActionFinishTime, preference_pm, preference_mention, inventory) " +
-    "VALUES(@id, @name, @actionName, @actionTime, @pm, @mention, @inventory)" +
+        private const string saveOrOverwriteString = "INSERT INTO users (id, name, currentActionName, currentActionFinishTime, preference_pm, preference_mention, inventory, equipment) " +
+    "VALUES(@id, @name, @actionName, @actionTime, @pm, @mention, @inventory, @equipment)" +
     "ON DUPLICATE KEY UPDATE id=@id, name=@name, currentActionName=@actionName, " +
-    "currentActionFinishTime=@actionTime, preference_pm=@pm, preference_mention=@mention, inventory=@inventory";
+    "currentActionFinishTime=@actionTime, preference_pm=@pm, preference_mention=@mention, inventory=@inventory, equipment=@equipment";
         #endregion
 
         static DatabaseHandler()
@@ -200,6 +200,7 @@ namespace DiscordMMO.Handlers
                     saveOrOverwritePlayer.Parameters.AddWithValue("@actionName", player.currentAction.name);
                     saveOrOverwritePlayer.Parameters.AddWithValue("@actionTime", player.currentAction.finishTime);
                     saveOrOverwritePlayer.Parameters.AddWithValue("@inventory", player.inventory.ToString());
+                    saveOrOverwritePlayer.Parameters.AddWithValue("@equipment", player.equipment.ToString());
                     saveOrOverwritePlayer.Parameters.AddWithValue("@pm", player.GetPreference<bool>("pm"));
                     saveOrOverwritePlayer.Parameters.AddWithValue("@mention", player.GetPreference<bool>("mention"));
                     saveOrOverwritePlayer.Prepare();

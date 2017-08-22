@@ -50,10 +50,6 @@ namespace DiscordMMO.Datatypes
             {
                 count = int.Parse(param[1]);
             }
-            else
-            {
-                count = 1;
-            }
             return new ItemStack(ItemHandler.GetItemInstanceFromName(param[0]), count);
         }
 

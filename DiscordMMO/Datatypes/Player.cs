@@ -73,6 +73,7 @@ namespace DiscordMMO.Datatypes
             this.user = user;
             this.name = name;
             inventory = new PlayerInventory(this);
+            equipment = new PlayerEquimentInventory(this);
             preferences["pm"] = (Preference<bool>)true;
             preferences["mention"] = (Preference<bool>)true;
         }

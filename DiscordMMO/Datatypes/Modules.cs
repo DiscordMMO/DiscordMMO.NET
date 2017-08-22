@@ -8,6 +8,7 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiscordMMO.Datatypes.Inventories;
 using Action = DiscordMMO.Datatypes.Actions.Action;
 
 namespace DiscordMMO.Datatypes
@@ -245,7 +246,9 @@ namespace DiscordMMO.Datatypes
             if (! await PlayerHandler.AttemptLogin(Context.User))
                 return;
             Player p = PlayerHandler.GetPlayer(Context.User);
-            await ReplyAsync(p.inventory.ToString());
+            string eq = p.equipment.ToString();
+            await ReplyAsync(p.equipment.ToString());
+            PlayerEquimentInventory.FromString(p, eq);
         }
 
     }

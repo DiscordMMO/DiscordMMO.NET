@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace DiscordMMO.Datatypes.Inventories
 {
     public class PlayerEquimentInventory : PlayerInventory
     {
+
+        const string slotRegex = "s:\\d";
 
         public override int size => 10;
 
@@ -56,8 +59,6 @@ namespace DiscordMMO.Datatypes.Inventories
         public static new PlayerEquimentInventory FromString(Player owner, string inv)
         {
 
-            // TODO: TEST THIS CODE!!!!
-
             PlayerEquimentInventory ret = new PlayerEquimentInventory(owner);
             for (int i = 0; i < inv.Split(';').Length - 1; i++)
             {
@@ -66,8 +67,7 @@ namespace DiscordMMO.Datatypes.Inventories
                 string item = fullItem.Split(',')[0];
 
 
-                // TODO: Make this regex instead
-                int slot = int.Parse(fullItem.Split(',')[1].Substring(fullItem.IndexOf("s:"), fullItem.IndexOfAny(new char[] { ',', ']' })));
+                int slot = int.Parse(Regex.Matches(fullItem, slotRegex)[0].Value.Substring(2));
 
                 ret[slot] = ItemStack.FromString(item);
 
