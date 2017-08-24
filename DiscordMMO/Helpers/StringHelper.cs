@@ -17,7 +17,7 @@ namespace DiscordMMO.Helpers
         [Obsolete("This is currently a low priority feature")]
         public static string CreateInsertOrOverwriteString(string[] param)
         {
-            // TODO: Implement this
+            // TODO: Implement CreateInstertOrOverwriteString
             return "";
         }
 

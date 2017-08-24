@@ -18,20 +18,11 @@ namespace DiscordMMO.Datatypes.Inventories
 
         public PlayerEquimentInventory(Player owner) : base(owner)
         {
-
-            slots["head"] = 0;
-            slots["back"] = 1;
-            slots["chest"] = 2;
-            slots["ammo"] = 3;
-            slots["main hand"] = 4;
-            slots["legs"] = 5;
-            slots["off hand"] = 6;
-            slots["right hand"] = 7;
-            slots["feet"] = 8;
-            slots["left hand"] = 9;
-
+            foreach (PlayerEquipmentSlot slot in Enum.GetValues(typeof(PlayerEquipmentSlot)))
+            {
+                slots[slot.ToString().ToLowerInvariant()] = (int)slot;
+            }
         }
-
 
         public ItemStack this[string name]
         {
@@ -45,9 +36,23 @@ namespace DiscordMMO.Datatypes.Inventories
             {
                 if (GetIndexFromSlotName(name) == -1)
                     throw new ArgumentException("Invalid slot name");
-                this[GetIndexFromSlotName(name)] = value;
+                this[name] = value;
             }
         }
+
+        public ItemStack this[PlayerEquipmentSlot slot]
+        {
+            get
+            {
+                return this[(int)slot];
+            }
+
+            set
+            {
+                this[(int)slot] = value;
+            }
+        }
+
 
 
         public int GetIndexFromSlotName(string name)
@@ -89,4 +94,20 @@ namespace DiscordMMO.Datatypes.Inventories
         }
 
     }
+
+    public enum PlayerEquipmentSlot
+    {
+        HEAD, BACK, CHEST, AMMO, MAIN_HAND, LEGS, OFF_HAND, RIGHT_RING, FEET, LEFT_RING
+    }
+
+    public static class PlayerEquipmentSlotExtension
+    {
+        public static string GetDisplayName(this PlayerEquipmentSlot slot)
+        {
+            
+            return (Char.ToUpperInvariant(slot.ToString()[0]) + slot.ToString().Substring(1).ToLowerInvariant()).Replace('_', ' ');
+        }
+
+    }
+
 }

@@ -16,11 +16,11 @@ namespace DiscordMMO.Datatypes.Items
         /// This is used as an id for the item
         /// This should be all lowercase with underscores for spaces
         /// </summary>
-        public static string name { get; }
-
-        public virtual string itemName => name;
+        public abstract string itemName { get; }
 
         public abstract string displayName { get; }
+
+        public virtual bool stackable => true;
 
         public override string ToString()
         {
@@ -45,7 +45,7 @@ namespace DiscordMMO.Datatypes.Items
 
     public class ItemEmpty : Item
     {
-        public static new string name => "empty";
+        public override string itemName => "empty";
         public override string displayName => "Empty";
     }
 

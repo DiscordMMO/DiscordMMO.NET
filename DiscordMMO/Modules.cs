@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using DiscordMMO.Datatypes.Inventories;
 using DiscordMMO.Helpers;
+using DiscordMMO.Datatypes;
+using DiscordMMO.Datatypes.Items;
 using Action = DiscordMMO.Datatypes.Actions.Action;
 
 namespace DiscordMMO
@@ -35,7 +37,8 @@ namespace DiscordMMO
         static Modules()
         {
             ConfigHelper.SetConfigPath("botconfig.cfg");
-            COMMAND_PREFIX = ConfigHelper.GetValue(ConfigHelper.GetValue("command_prefix"));
+            COMMAND_PREFIX = ConfigHelper.GetValue("command_prefix");
+
         }
 
         public static string NOT_REGISTERED_THIRD_PERSON(string name)
@@ -63,13 +66,13 @@ namespace DiscordMMO
             }
             if (await PlayerHandler.AttemptLogin(Context.User))
             {
-                await ReplyAsync($"{Context.User.Mention}: {Modules.ALREADY_REGISTERED_MSG}");
+                await ReplyAsync($"{Context.User.Username}: {Modules.ALREADY_REGISTERED_MSG}");
                 return;
             }
             else
             {
                 PlayerHandler.CreatePlayer(Context.User, name);
-                await ReplyAsync($"{Context.User.Mention}: {String.Format(Modules.REGISTERED_FORMAT, name)}");
+                await ReplyAsync($"{Context.User.Username}: {String.Format(Modules.REGISTERED_FORMAT, name)}");
             }
 
         }
@@ -81,23 +84,23 @@ namespace DiscordMMO
             {
                 if (!await PlayerHandler.AttemptLogin(Context.User))
                 {
-                    await ReplyAsync(Context.User.Mention + ": " + Modules.NOT_REGISTERED_MSG);
+                    await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
                     return;
                 }
                 user = Context.User;
                 Player player = PlayerHandler.GetPlayer(user);
                 string doneIn = String.Format(Action.DONE_IN_FORMAT, ((DateTime)player.currentAction.finishTime - DateTime.Now));
-                await ReplyAsync(Context.User.Mention + ": " + player.currentAction.GetActiveFormattingSecondPerson() +
+                await ReplyAsync(Context.User.Username + ": " + player.currentAction.GetActiveFormattingSecondPerson() +
                     ((player.currentAction is ActionIdle) ? "" : doneIn));
                 return;
             }
             if (!await PlayerHandler.AttemptLogin(user))
             {
-                await ReplyAsync(Context.User.Mention + ": " + Modules.NOT_REGISTERED_THIRD_PERSON(user.Username));
+                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_THIRD_PERSON(user.Username));
                 return;
             }
             Player target = PlayerHandler.GetPlayer(user);
-            await ReplyAsync(Context.User.Mention + ": " + target.currentAction.GetActiveFormattingThridPerson(false));
+            await ReplyAsync(Context.User.Username + ": " + target.currentAction.GetActiveFormattingThridPerson(false));
 
         }
 
@@ -106,7 +109,7 @@ namespace DiscordMMO
         {
             if (!await PlayerHandler.AttemptLogin(Context.User))
             {
-                await ReplyAsync(Context.User.Mention + ": " + Modules.NOT_REGISTERED_MSG);
+                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
                 return;
             }
 
@@ -114,13 +117,13 @@ namespace DiscordMMO
 
             if (!p.IsIdle)
             {
-                await ReplyAsync(Context.User.Mention + ": " + String.Format(Modules.ALREADY_ACTIVE_TIME_LEFT_FORMAT, p.currentAction.finishTime - DateTime.Now));
+                await ReplyAsync(Context.User.Username + ": " + String.Format(Modules.ALREADY_ACTIVE_TIME_LEFT_FORMAT, p.currentAction.finishTime - DateTime.Now));
                 return;
             }
 
             p.SetAction(new ActionChopWood(p), p.GetPreference<bool>("pm"), false);
             Action a = p.currentAction;
-            await ReplyAsync(Context.User.Mention + ": " + a.GetStartedFormattingSecondPerson());
+            await ReplyAsync(Context.User.Username + ": " + a.GetStartedFormattingSecondPerson());
         }
 
         [Command("pref"), Summary("View or edit preferences")]
@@ -128,7 +131,7 @@ namespace DiscordMMO
         {
             if (!await PlayerHandler.AttemptLogin(Context.User))
             {
-                await ReplyAsync(Context.User.Mention + ": " + Modules.NOT_REGISTERED_MSG);
+                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
                 return;
             }
             Player p = PlayerHandler.GetPlayer(Context.User);
@@ -149,11 +152,11 @@ namespace DiscordMMO
 
                 if (pref == null)
                 {
-                    await ReplyAsync(Context.User.Mention + ": That preference does not exist");
+                    await ReplyAsync(Context.User.Username + ": That preference does not exist");
                     return;
                 }
 
-                await ReplyAsync(Context.User.Mention + ": " + prefName + " is " + pref);
+                await ReplyAsync(Context.User.Username + ": " + prefName + " is " + pref);
                 return;
             }
             else if (!String.IsNullOrWhiteSpace(prefName) && !String.IsNullOrWhiteSpace(value))
@@ -171,11 +174,11 @@ namespace DiscordMMO
         {
             if (!await PlayerHandler.AttemptLogin(Context.User))
             {
-                await ReplyAsync(Context.User.Mention + ": " + Modules.NOT_REGISTERED_MSG);
+                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
                 return;
             }
             Player p = PlayerHandler.GetPlayer(Context.User);
-            await ReplyAsync(Context.User.Mention + ": " + Modules.LOGGED_IN_AS + p.name);
+            await ReplyAsync(Context.User.Username + ": " + Modules.LOGGED_IN_AS + p.name);
         }
 
         [Command("inventory")]
@@ -185,12 +188,12 @@ namespace DiscordMMO
 
             if (!await PlayerHandler.AttemptLogin(Context.User))
             {
-                await ReplyAsync(Context.User.Mention + ": " + Modules.NOT_REGISTERED_MSG);
+                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
                 return;
             }
 
             Player player = PlayerHandler.GetPlayer(Context.User);
-            StringBuilder outp = new StringBuilder($"Inventory for {Context.User.Mention}\n");
+            StringBuilder outp = new StringBuilder($"Inventory for {player.name}\n");
             outp.Append($"{player.inventory.FreeSpaces}/{player.inventory.size} Slots available\n");
             int i = 0;
             foreach (ItemStack stack in player.inventory.items)
@@ -208,6 +211,64 @@ namespace DiscordMMO
                     outp.Append(stack.ToString() + " ");
                 }
 
+                i++;
+            }
+            await ReplyAsync(outp.ToString());
+        }
+
+        [Command("equip"), Summary("Equip an item")]
+        public async Task EquipItemCommand(int itemToEqiupIndex)
+        {
+            if (!await PlayerHandler.AttemptLogin(Context.User))
+            {
+                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
+                return;
+            }
+
+            Player p = PlayerHandler.GetPlayer(Context.User);
+
+            ItemStack itemToEquip = p.inventory[itemToEqiupIndex+1];
+
+            if (itemToEquip.IsEmpty)
+            {
+                await ReplyAsync(p.name + ": That slot is empty");
+                return;
+            }
+            if (itemToEquip.itemType is ItemEquipable == false)
+            {
+                await ReplyAsync(p.name + ": You cannot equip that item");
+                return;
+            }
+            p.Equip(itemToEquip);
+
+            await ReplyAsync(p.name + ": Equipped " + itemToEquip.itemType.displayName);
+
+        }
+
+        [Command("equipment")]
+        public async Task EquipmentCommand()
+        {
+            if (!await PlayerHandler.AttemptLogin(Context.User))
+            {
+                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
+                return;
+            }
+
+            Player player = PlayerHandler.GetPlayer(Context.User);
+            StringBuilder outp = new StringBuilder($"Equipment for {player.name}\n");
+            int i = 0;
+            foreach (ItemStack stack in player.equipment.items)
+            {
+                outp.Append(((PlayerEquipmentSlot)i).GetDisplayName() + ": ");
+                if (stack == null)
+                {
+                    outp.Append(ItemStack.empty.ToString());
+                }
+                else
+                {
+                    outp.Append(stack.ToStringNoCount() + " ");
+                }
+                outp.Append("\n");
                 i++;
             }
             await ReplyAsync(outp.ToString());
@@ -256,6 +317,25 @@ namespace DiscordMMO
             string eq = p.equipment.ToString();
             await ReplyAsync(p.equipment.ToString());
             PlayerEquimentInventory.FromString(p, eq);
+        }
+
+        [Command("give")]
+        public async Task GiveCommand(string item)
+        {
+            if (!await PlayerHandler.AttemptLogin(Context.User))
+            {
+                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
+                return;
+            }
+            Player player = PlayerHandler.GetPlayer(Context.User);
+            if (!ItemHandler.IsRegisteredItem(item))
+            {
+                await ReplyAsync(Context.User.Username + ": Invalid item");
+                return;
+            }
+            Item toAdd = ItemHandler.GetItemInstanceFromName(item);
+            player.inventory.AddItem(toAdd);
+            await ReplyAsync(Context.User.Username + ": Gave item " + toAdd.displayName);
         }
 
     }

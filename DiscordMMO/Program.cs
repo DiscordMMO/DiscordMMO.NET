@@ -114,8 +114,8 @@ namespace DiscordMMO
                 if (result.ErrorReason != "Unknown command.")
                 {
                     Console.WriteLine("An error occurred");
+                    await context.Channel.SendMessageAsync(result.ErrorReason);
                 }
-                await context.Channel.SendMessageAsync(result.ErrorReason);
             }
 
 

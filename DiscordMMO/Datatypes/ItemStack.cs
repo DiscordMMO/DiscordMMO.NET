@@ -41,6 +41,13 @@ namespace DiscordMMO.Datatypes
             return itemType.displayName + $"({count})";
         }
 
+        public string ToStringNoCount()
+        {
+            if (IsEmpty)
+                return "Empty";
+            return itemType.displayName;
+        }
+
         public static ItemStack FromString(string item)
         {
             // TODO: Make this support parameters

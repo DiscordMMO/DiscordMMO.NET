@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DiscordMMO.Util;
 
 namespace DiscordMMO.Datatypes.Entities
 {
+    public delegate void OnAttacked(ref OnAttackedEventArgs args);
+
     public interface IDamageable
     {
+
+        event OnAttacked AttackedEvent;
 
         int maxHealth { get; }
         int health { get; set; }
@@ -31,11 +32,25 @@ namespace DiscordMMO.Datatypes.Entities
         // TODO: Add a proper damage/accuracy function
         public static void Damage(this IDamageable damageable, int baseHit, IDamageable attacker)
         {
-            if (baseHit - damageable.defence >= 0)
+            damageable.Damage(new OnAttackedEventArgs { attacked = damageable, attacker = attacker, fullDamage = baseHit });
+        }
+
+        public static void Damage(this IDamageable attacked, OnAttackedEventArgs args)
+        {
+
+            // TODO: Figure out how to handle combat and events for IDamageable
+            attacked.AttackedEvent(ref args);
+
+            int baseHit = args.fullDamage;
+            IDamageable attacker = args.attacker;
+
+
+            if (baseHit - attacked.defence >= 0)
                 return;
-            damageable.health -= baseHit - damageable.defence;
-            if (damageable.health >= 0)
-                damageable.Die(attacker);
+            attacked.health -= baseHit - attacked.defence;
+            if (attacked.health >= 0)
+                attacked.Die(attacker);
+
         }
 
         // TOOD: Add a proper death callback

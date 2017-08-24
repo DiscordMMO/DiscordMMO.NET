@@ -41,22 +41,6 @@ namespace DiscordMMO.Handlers
                 $"Database=discord_mmo_net;" +
                 $"port=3306");
 
-            MySqlConnection connection;
-
-            connection = new MySqlConnection(connString);
-
-
-            using (connection)
-            {
-                Console.WriteLine("[Database Handler] Connecting to server");
-                connection.Open();
-                Console.WriteLine("[Database Handler] Connected to server");
-                #region Init prepared statements
-
-                #endregion
-                Console.WriteLine("[Database Handler] Prep statements initialized");
-            }
-
         }
 
         public static async Task CheckConnection()
@@ -148,6 +132,7 @@ namespace DiscordMMO.Handlers
                     p.SetAction(Action.GetActionFromName(reader.GetString("currentActionName"), p), false, true);
 
                     p.inventory = PlayerInventory.FromString(p, reader.GetString("inventory"));
+                    p.equipment = PlayerEquimentInventory.FromString(p, reader.GetString("equipment"));
 
                     if (p.currentAction is ActionIdle == false)
                     {

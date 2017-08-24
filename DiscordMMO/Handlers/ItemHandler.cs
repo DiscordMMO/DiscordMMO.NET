@@ -3,6 +3,8 @@ using System.Linq;
 using System.Collections.Generic;
 using DiscordMMO.Datatypes.Items;
 using System.Reflection;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace DiscordMMO.Handlers
 {
@@ -13,16 +15,27 @@ namespace DiscordMMO.Handlers
         //TODO: Possibly clean this up?
 
 
-        public static void Init()
+        public async static Task Init()
         {
+            Console.WriteLine("[Item Handler] Detecting items");
+            var watch = Stopwatch.StartNew();
             var allItems = (from domainAssembly in AppDomain.CurrentDomain.GetAssemblies()
                             from assemblyType in domainAssembly.GetTypes()
                             where typeof(Item).IsAssignableFrom(assemblyType) && !assemblyType.IsAbstract
                             select assemblyType).ToArray();
+            watch.Stop();
+            Console.WriteLine("[Item Handler] Detecting items took " + watch.ElapsedMilliseconds + "ms");
+            Console.WriteLine("[Item Handler] Average time per item: " + watch.ElapsedMilliseconds / allItems.Length + "ms");
+            Console.WriteLine("[Item Handler] Registering items");
+            watch = Stopwatch.StartNew();
+            List<Task> toAdd = new List<Task>();
             foreach (Type item in allItems)
             {
-                RegisterItem(item);
+                toAdd.Add(RegisterItem(item));
             }
+            await Task.WhenAll(toAdd);
+            watch.Stop();
+            Console.WriteLine("[Item Handler] Registering items took " + watch.ElapsedMilliseconds + "ms");
         }
 
         public static Item GetItemInstanceFromName(string name, params object[] param)
@@ -54,7 +67,12 @@ namespace DiscordMMO.Handlers
             return (Item)Activator.CreateInstance(item, param);
         }
 
-        public static void RegisterItem(Type type)
+        public static bool IsRegisteredItem(string name)
+        {
+            return items.ContainsKey(name);
+        }
+
+        public static async Task RegisterItem(Type type)
         {
             if (!type.IsSubclassOf(typeof(Item)))
                 throw new ArgumentException("Tried to register something that was not an item, as an item");
@@ -62,8 +80,9 @@ namespace DiscordMMO.Handlers
             {
 
             }
-            string name = (string) type.GetProperty("name").GetValue(null);
-            Console.WriteLine($"[Item Handler] Registering item: {name}");
+            Item item = GetItemFromType(type);
+            string name = item.itemName;
+            //Console.WriteLine($"[Item Handler] Registering item: {name}");
             items.Add(name, type);
         }
 

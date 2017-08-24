@@ -8,10 +8,13 @@ using DiscordMMO.Datatypes.Preferences;
 using DiscordMMO.Datatypes.Actions;
 using DiscordMMO.Datatypes.Inventories;
 using DiscordMMO.Datatypes.Entities;
+using DiscordMMO.Datatypes.Items;
+using DiscordMMO.Util;
 using Action = DiscordMMO.Datatypes.Actions.Action;
 
 namespace DiscordMMO.Datatypes
 {
+
     public class Player : IDamageable
     {
 
@@ -28,6 +31,7 @@ namespace DiscordMMO.Datatypes
         public bool inSingleCombat = false;
 
         public List<EntityFightable> targetedBy = new List<EntityFightable>();
+
 
         public EntityFightable target { get; protected set; }
 
@@ -49,6 +53,8 @@ namespace DiscordMMO.Datatypes
             }
         }
 
+        public event OnAttacked AttackedEvent;
+
         public int maxHealth => 30;
 
         public int health { get; set; }
@@ -60,6 +66,8 @@ namespace DiscordMMO.Datatypes
         public int accuracy => 1;
 
         public int attackRate => 3;
+
+
 
         #region Constructors
         public Player(IUser user) : this(user, user.Username)
@@ -103,7 +111,7 @@ namespace DiscordMMO.Datatypes
 
 #endregion
 
-        public async Task Tick()
+        public virtual async Task Tick()
         {
             await currentAction.OnTick();
         }
@@ -112,7 +120,7 @@ namespace DiscordMMO.Datatypes
         /// </summary>
         /// <param name="announce">Whether it should be announced to the player that they started this action</param>
         /// <param name="force">Whether the action only should be started if the player is idle (It will always be started if true)</param>
-        public bool Idle(bool announce, bool force)
+        public virtual bool Idle(bool announce, bool force)
         {
             return SetAction(new ActionIdle(this), announce, force);
         }
@@ -124,7 +132,7 @@ namespace DiscordMMO.Datatypes
         /// <param name="announce">Whether it should be announced to the player that they started this action</param>
         /// <param name="force">Whether the action only should be started if the player is idle (It will always be started if true)</param>
         /// <returns>True if the action of the player was changed, false otherwise</returns>
-        public bool SetAction(Action action, bool announce, bool force)
+        public virtual bool SetAction(Action action, bool announce, bool force)
         {
             if (force)
             {
@@ -142,7 +150,7 @@ namespace DiscordMMO.Datatypes
             return false;
         }
 
-        public bool StartFight(EntityFightable against, bool force)
+        public virtual bool StartFight(EntityFightable against, bool force)
         {
             if (force)
             {
@@ -157,6 +165,23 @@ namespace DiscordMMO.Datatypes
                 }
                 return false;
             }
+        }
+
+        public virtual void Equip(ItemStack toEquip)
+        {
+            if (toEquip.itemType is ItemEquipable == false)
+            {
+                throw new ArgumentException("Tried to equip an item that is not equipable. Use Player.Equip(ItemStack, PlayerEquipmentSlot) if this was intended");
+            }
+            PlayerEquipmentSlot slot = (toEquip.itemType as ItemEquipable).slot;
+            Equip(toEquip, slot);
+        }
+
+        public virtual void Equip(ItemStack toEquip, PlayerEquipmentSlot slot)
+        {
+            ItemStack currentEquip = equipment[slot];
+            equipment[slot] = toEquip;
+            inventory.AddItem(currentEquip);
         }
 
         public async Task<IDMChannel> GetPrivateChannel()
