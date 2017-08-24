@@ -40,7 +40,7 @@ namespace DiscordMMO
                 await Task.WhenAll(playerTicks);
                 await Task.Delay((int)(1000 / tickRate));
                 ticksSinceLastSave++;
-                if (ticksSinceLastSave >= tickBetweenSaves)
+                if (ticksSinceLastSave >= tickBetweenSaves && Program.sqlAvailable)
                 {
                     DatabaseHandler.SaveAllAsync();
                     ticksSinceLastSave = 0;

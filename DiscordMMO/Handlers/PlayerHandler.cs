@@ -53,6 +53,8 @@ namespace DiscordMMO.Handlers
         {
             if (HasPlayer(user))
                 return true;
+            if (!Program.sqlAvailable)
+                return false;
             if (!await DatabaseHandler.CanFetchPlayer(user))
                 return false;
             await DatabaseHandler.GetOrFetchPlayer(user, Program.client);

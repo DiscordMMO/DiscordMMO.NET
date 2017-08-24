@@ -9,13 +9,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DiscordMMO.Datatypes.Inventories;
+using DiscordMMO.Helpers;
 using Action = DiscordMMO.Datatypes.Actions.Action;
 
 namespace DiscordMMO.Datatypes
 {
     public static class Modules
     {
-        public const char COMMAND_PREFIX = '$';
+        public static readonly string COMMAND_PREFIX;
         public const string ALREADY_REGISTERED_MSG = "You are already registered";
         public const string NOT_REGISTERED_MSG = "You are not registered, register with $register [name]";
         public const string NOT_REGISTERED_THIRD_PERSON_NO_NAME = " is not registered";
@@ -30,6 +31,12 @@ namespace DiscordMMO.Datatypes
                                              "To view the value of a single preference, use $pref <name>\n" +
                                              "Preferences:\n" +
                                              "[Preference name]: [value]\n";
+
+        static Modules()
+        {
+            ConfigHelper.SetConfigPath("botconfig.cfg");
+            COMMAND_PREFIX = ConfigHelper.GetValue(ConfigHelper.GetValue("command_prefix"));
+        }
 
         public static string NOT_REGISTERED_THIRD_PERSON(string name)
         {

@@ -14,6 +14,8 @@ namespace DiscordMMO
     public class Program
     {
 
+        public static bool sqlAvailable { get; private set; }
+
         public static DiscordSocketClient client { get; private set; }
         private CommandService commands;
 
@@ -33,21 +35,28 @@ namespace DiscordMMO
 
             client.Log += Log;
 
-            var databaseConnectionTimeout = TimeSpan.FromSeconds(30);
+            ConfigHelper.SetConfigPath("botconfig.cfg");
 
-            var databaseConnectionTest = DatabaseHandler.CheckConnection();
+            sqlAvailable = bool.Parse(ConfigHelper.GetValue("sql_available"));
 
-            if (await Task.WhenAny(databaseConnectionTest, Task.Delay(databaseConnectionTimeout)) == databaseConnectionTest)
+            if (sqlAvailable)
             {
-                Console.WriteLine("Database connection OK");
-            }
-            else
-            {
-                Console.WriteLine($"Database connection failed after {databaseConnectionTimeout.Seconds} seconds");
-                Console.ReadKey();
-                Environment.Exit(1);
-            }
 
+                var databaseConnectionTimeout = TimeSpan.FromSeconds(30);
+
+                var databaseConnectionTest = DatabaseHandler.CheckConnection();
+
+                if (await Task.WhenAny(databaseConnectionTest, Task.Delay(databaseConnectionTimeout)) == databaseConnectionTest)
+                {
+                    Console.WriteLine("Database connection OK");
+                }
+                else
+                {
+                    Console.WriteLine($"Database connection failed after {databaseConnectionTimeout.Seconds} seconds");
+                    Console.ReadKey();
+                    Environment.Exit(1);
+                }
+            }
             Server.INSTANCE.Run();
 
             services = new ServiceCollection().BuildServiceProvider();
@@ -75,7 +84,14 @@ namespace DiscordMMO
 
         private Task Log(LogMessage msg)
         {
-            Console.WriteLine(msg.Message.ToString());
+            if (msg.Message != null)
+            {
+                Console.WriteLine(msg.Message.ToString());
+            }
+            else
+            {
+                Console.WriteLine(msg.ToString());
+            }
             return Task.CompletedTask;
         }
 
@@ -88,7 +104,7 @@ namespace DiscordMMO
 
             int argPos = 0;
 
-            if (!(msg.HasCharPrefix(Modules.COMMAND_PREFIX, ref argPos) || msg.HasMentionPrefix(client.CurrentUser, ref argPos))) return;
+            if (!(msg.HasStringPrefix(Modules.COMMAND_PREFIX, ref argPos) || msg.HasMentionPrefix(client.CurrentUser, ref argPos))) return;
 
             var context = new CommandContext(client, msg);
 
