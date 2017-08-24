@@ -12,7 +12,7 @@ using DiscordMMO.Datatypes.Inventories;
 using DiscordMMO.Helpers;
 using Action = DiscordMMO.Datatypes.Actions.Action;
 
-namespace DiscordMMO.Datatypes
+namespace DiscordMMO
 {
     public static class Modules
     {
