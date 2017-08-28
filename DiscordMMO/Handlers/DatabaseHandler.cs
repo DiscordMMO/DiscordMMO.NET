@@ -129,7 +129,11 @@ namespace DiscordMMO.Handlers
                         return PlayerHandler.GetPlayer(user);
                     Player p = PlayerHandler.CreatePlayer(user, reader.GetString("name"));
 
-                    p.SetAction(Action.GetActionFromName(reader.GetString("currentActionName"), p), false, true);
+                    string actionNameFull = reader.GetString("currentActionName");
+                    string actionName = actionNameFull.Split('.')[0];
+                    object[] actionParams = actionNameFull.Split('.')[1].Replace("[","").Replace("]","").Split(',');
+
+                    p.SetAction(Action.GetActionInstanceFromName(actionName, p, actionParams), false, true);
 
                     p.inventory = PlayerInventory.FromString(p, reader.GetString("inventory"));
                     p.equipment = PlayerEquimentInventory.FromString(p, reader.GetString("equipment"));

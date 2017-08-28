@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using DiscordMMO.Datatypes.Preferences;
 using System.Data.SqlTypes;
 
@@ -11,6 +12,8 @@ namespace DiscordMMO.Datatypes.Actions
     public abstract class Action
     {
         public const string DONE_IN_FORMAT = "You will be done in {0:dd\\.hh\\:mm\\:ss}";
+
+        public static Dictionary<string, Type> actions = new Dictionary<string, Type>(); 
 
         public Player performer { get; protected set; }
         public DateTime finishTime { get; protected set; }
@@ -24,17 +27,80 @@ namespace DiscordMMO.Datatypes.Actions
             this.performer = performer;
         }
 
-        public static Action GetActionFromName(string name, Player player)
+#region Static methods
+
+        public async static Task Init()
         {
-            switch (name.ToLower())
+            Console.WriteLine("[Actions] Detecting actions");
+            var watch = Stopwatch.StartNew();
+            var allItems = (from domainAssembly in AppDomain.CurrentDomain.GetAssemblies()
+                            from assemblyType in domainAssembly.GetTypes()
+                            where typeof(Action).IsAssignableFrom(assemblyType) && !assemblyType.IsAbstract
+                            select assemblyType).ToArray();
+            watch.Stop();
+            Console.WriteLine("[Actions] Detecting actions took " + watch.ElapsedMilliseconds + "ms");
+            Console.WriteLine("[Actions] Average time per action: " + watch.ElapsedMilliseconds / allItems.Length + "ms");
+            Console.WriteLine("[Actions] Registering actions");
+            watch = Stopwatch.StartNew();
+            List<Task> toAdd = new List<Task>();
+            foreach (Type action in allItems)
             {
-                case "idle":
-                    return new ActionIdle(player);
-                case "chop_wood":
-                    return new ActionChopWood(player);
-                default: return null;
+                toAdd.Add(RegisterAction(action));
             }
+            await Task.WhenAll(toAdd);
+            watch.Stop();
+            Console.WriteLine("[Actions] Registering actions took " + watch.ElapsedMilliseconds + "ms");
         }
+
+        public static async Task RegisterAction(Type type)
+        {
+            if (!type.IsSubclassOf(typeof(Action)))
+                throw new ArgumentException("Tried to register something that was not an action, as an action");
+            if (type.GetProperty("name") == null)
+            {
+
+            }
+            Action action = GetActionFromType(type, (Player)null);
+            string name = action.name;
+            actions.Add(name, type);
+        }
+
+        public static Action GetActionFromType(Type type, params object[] param)
+        {
+            if (type == null)
+            {
+
+            }
+            if (!type.IsSubclassOf(typeof(Action)))
+            {
+                throw new ArgumentException("Tried to get action instance from a type that is not an action");
+            }
+
+            foreach (object o in param)
+            {
+                
+            }
+
+            return (Action)Activator.CreateInstance(type, param);
+        }
+
+        public static Action GetActionInstanceFromName(string name, params object[] param)
+        {
+            if (GetActionFromName(name) == null)
+            {
+
+            }
+            return GetActionFromType(GetActionFromName(name), param);
+        }
+
+        public static Type GetActionFromName(string name)
+        {
+            if (!actions.ContainsKey(name))
+                return null;
+            return actions[name];
+        }
+
+#endregion
 
         public virtual async Task OnTick()
         {

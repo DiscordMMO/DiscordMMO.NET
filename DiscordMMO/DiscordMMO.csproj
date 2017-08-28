@@ -179,6 +179,7 @@
     <Compile Include="Datatypes\Items\ItemTestWeapon.cs" />
     <Compile Include="Datatypes\Items\ItemWeapon.cs" />
     <Compile Include="Datatypes\Items\ItemWood.cs" />
+    <Compile Include="Handlers\EntityHandler.cs" />
     <Compile Include="Modules.cs" />
     <Compile Include="Datatypes\Player.cs" />
     <Compile Include="Datatypes\Preferences\IPreference.cs" />

@@ -82,7 +82,6 @@ namespace DiscordMMO.Handlers
             }
             Item item = GetItemFromType(type);
             string name = item.itemName;
-            //Console.WriteLine($"[Item Handler] Registering item: {name}");
             items.Add(name, type);
         }
 

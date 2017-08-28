@@ -57,13 +57,12 @@ namespace DiscordMMO
                     Environment.Exit(1);
                 }
             }
-            Server.INSTANCE.Run();
+
+            InitAll();
 
             services = new ServiceCollection().BuildServiceProvider();
 
             await InstallCommands();
-
-            ItemHandler.Init();
 
             ConfigHelper.SetConfigPath(@"dangerous.cfg");
 
@@ -74,6 +73,15 @@ namespace DiscordMMO
 
             await Task.Delay(-1);
 
+        }
+
+        public async Task InitAll()
+        {
+            await ItemHandler.Init();
+            await Datatypes.Actions.Action.Init();
+            await EntityHandler.Init();
+
+            Server.INSTANCE.Run();
         }
 
         public async Task InstallCommands()
