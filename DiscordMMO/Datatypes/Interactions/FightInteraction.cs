@@ -16,7 +16,7 @@ namespace DiscordMMO.Datatypes.Interactions
         {
             if (owner.CanStartFight && interactor.CanStartFight)
             {
-
+                interactor.StartFight(owner, false);
             }
         }
 

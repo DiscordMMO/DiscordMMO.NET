@@ -173,7 +173,7 @@ namespace DiscordMMO.Handlers
 
             connection = new MySqlConnection(connString);
 
-            Console.WriteLine("[Database Handler] Saving player: " + player.name);
+            Console.WriteLine("[Database Handler] Saving player: " + player.playerName);
 
             using (connection)
             {
@@ -183,7 +183,7 @@ namespace DiscordMMO.Handlers
                     await connection.OpenAsync();
                     saveOrOverwritePlayer = new MySqlCommand(saveOrOverwriteString, connection);
                     saveOrOverwritePlayer.Parameters.AddWithValue("@id", player.user.Id);
-                    saveOrOverwritePlayer.Parameters.AddWithValue("@name", player.name);
+                    saveOrOverwritePlayer.Parameters.AddWithValue("@name", player.playerName);
                     saveOrOverwritePlayer.Parameters.AddWithValue("@actionName", player.currentAction.name);
                     saveOrOverwritePlayer.Parameters.AddWithValue("@actionTime", player.currentAction.finishTime);
                     saveOrOverwritePlayer.Parameters.AddWithValue("@inventory", player.inventory.ToString());

@@ -160,8 +160,10 @@
     <Compile Include="Consts\UserConsts.cs" />
     <Compile Include="Datatypes\Actions\Action.cs" />
     <Compile Include="Datatypes\Actions\ActionChopWood.cs" />
+    <Compile Include="Datatypes\Actions\ActionFighting.cs" />
     <Compile Include="Datatypes\Entities\Entity.cs" />
     <Compile Include="Datatypes\Entities\EntityFightable.cs" />
+    <Compile Include="Datatypes\Entities\EntityGoblin.cs" />
     <Compile Include="Datatypes\Entities\IDamageable.cs" />
     <Compile Include="Datatypes\Interactions\FightInteraction.cs" />
     <Compile Include="Datatypes\Interactions\Interactibles\Interactible.cs" />
@@ -174,6 +176,7 @@
     <Compile Include="Datatypes\Items\Item.cs" />
     <Compile Include="Datatypes\Items\ItemEquipable.cs" />
     <Compile Include="Datatypes\Items\ItemTestHelmet.cs" />
+    <Compile Include="Datatypes\Items\ItemTestWeapon.cs" />
     <Compile Include="Datatypes\Items\ItemWeapon.cs" />
     <Compile Include="Datatypes\Items\ItemWood.cs" />
     <Compile Include="Modules.cs" />

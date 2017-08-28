@@ -8,12 +8,22 @@ using DiscordMMO.Datatypes.Entities;
 namespace DiscordMMO.Util
 {
 
-    public class OnAttackedEventArgs : EventArgs
+    public class OnAttackEventArgs : EventArgs
     {
         public IDamageable attacker;
         public IDamageable attacked;
 
-        public int fullDamage;
+
+        public int hitChance;
+        public int damage;
+
+        public OnAttackEventArgs(IDamageable attacker, IDamageable attacked)
+        {
+            this.attacked = attacked;
+            this.attacker = attacker;
+            hitChance = attacker.accuracy;
+            damage = attacker.attackDamage;
+        }
 
     }
 

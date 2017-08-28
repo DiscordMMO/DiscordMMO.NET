@@ -11,6 +11,9 @@ namespace DiscordMMO.Datatypes.Actions
 {
     public class ActionChopWood : Action
     {
+
+        public override bool setFinishTime => true;
+
         public ActionChopWood(Player performer) : base(performer)
         {
             finishTime = DateTime.Now.AddSeconds(10);
@@ -37,7 +40,7 @@ namespace DiscordMMO.Datatypes.Actions
         public override string GetStartedFormattingSecondPerson() => "You have started chopping wood";
 
         public override string GetActiveFormattingSecondPerson() => "You are currently chopping wood.";
-        public override string GetActiveFormattingThridPerson(bool mention) => (mention ? performer.user.Mention : performer.name) + " is currently chopping wood.";
+        public override string GetActiveFormattingThridPerson(bool mention) => (mention ? performer.user.Mention : performer.playerName) + " is currently chopping wood.";
 
         public override string GetFinishedFormattingSecondPerson() => "You are done chopping wood.";
     }

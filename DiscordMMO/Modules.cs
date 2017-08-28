@@ -12,6 +12,7 @@ using DiscordMMO.Datatypes.Inventories;
 using DiscordMMO.Helpers;
 using DiscordMMO.Datatypes;
 using DiscordMMO.Datatypes.Items;
+using DiscordMMO.Datatypes.Entities;
 using Action = DiscordMMO.Datatypes.Actions.Action;
 
 namespace DiscordMMO
@@ -91,7 +92,7 @@ namespace DiscordMMO
                 Player player = PlayerHandler.GetPlayer(user);
                 string doneIn = String.Format(Action.DONE_IN_FORMAT, ((DateTime)player.currentAction.finishTime - DateTime.Now));
                 await ReplyAsync(Context.User.Username + ": " + player.currentAction.GetActiveFormattingSecondPerson() +
-                    ((player.currentAction is ActionIdle) ? "" : doneIn));
+                    ((!player.currentAction.setFinishTime) ? "" : doneIn));
                 return;
             }
             if (!await PlayerHandler.AttemptLogin(user))
@@ -178,7 +179,7 @@ namespace DiscordMMO
                 return;
             }
             Player p = PlayerHandler.GetPlayer(Context.User);
-            await ReplyAsync(Context.User.Username + ": " + Modules.LOGGED_IN_AS + p.name);
+            await ReplyAsync(Context.User.Username + ": " + Modules.LOGGED_IN_AS + p.playerName);
         }
 
         [Command("inventory")]
@@ -193,7 +194,7 @@ namespace DiscordMMO
             }
 
             Player player = PlayerHandler.GetPlayer(Context.User);
-            StringBuilder outp = new StringBuilder($"Inventory for {player.name}\n");
+            StringBuilder outp = new StringBuilder($"Inventory for {player.playerName}\n");
             outp.Append($"{player.inventory.FreeSpaces}/{player.inventory.size} Slots available\n");
             int i = 0;
             foreach (ItemStack stack in player.inventory.items)
@@ -231,17 +232,17 @@ namespace DiscordMMO
 
             if (itemToEquip.IsEmpty)
             {
-                await ReplyAsync(p.name + ": That slot is empty");
+                await ReplyAsync(p.playerName + ": That slot is empty");
                 return;
             }
             if (itemToEquip.itemType is ItemEquipable == false)
             {
-                await ReplyAsync(p.name + ": You cannot equip that item");
+                await ReplyAsync(p.playerName + ": You cannot equip that item");
                 return;
             }
             p.Equip(itemToEquip);
 
-            await ReplyAsync(p.name + ": Equipped " + itemToEquip.itemType.displayName);
+            await ReplyAsync(p.playerName + ": Equipped " + itemToEquip.itemType.displayName);
 
         }
 
@@ -255,7 +256,7 @@ namespace DiscordMMO
             }
 
             Player player = PlayerHandler.GetPlayer(Context.User);
-            StringBuilder outp = new StringBuilder($"Equipment for {player.name}\n");
+            StringBuilder outp = new StringBuilder($"Equipment for {player.playerName}\n");
             int i = 0;
             foreach (ItemStack stack in player.equipment.items)
             {
@@ -272,6 +273,23 @@ namespace DiscordMMO
                 i++;
             }
             await ReplyAsync(outp.ToString());
+        }
+
+        [Command("fight")]
+        public async Task FightCommand()
+        {
+            if (!await PlayerHandler.AttemptLogin(Context.User))
+            {
+                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
+                return;
+            }
+
+            Player player = PlayerHandler.GetPlayer(Context.User);
+
+            player.StartFight(new EntityGoblin(), true);
+
+            await ReplyAsync("Started fighting");
+
         }
 
     }
@@ -302,7 +320,7 @@ namespace DiscordMMO
 
             foreach (Player p in PlayerHandler.GetPlayers())
             {
-                outp.Append(p.name + ": " + p.currentAction + "\n");
+                outp.Append(p.playerName + ": " + p.currentAction + "\n");
             }
 
             await ReplyAsync(outp.ToString());

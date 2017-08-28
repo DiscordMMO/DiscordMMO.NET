@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiscordMMO.Util;
 
 namespace DiscordMMO.Datatypes.Entities
 {
@@ -35,10 +36,22 @@ namespace DiscordMMO.Datatypes.Entities
 
         public abstract int attackRate { get; }
 
-        public int attackDamage { get; }
+        public abstract int attackDamage { get; }
 
-        public int accuracy { get; }
+        public abstract int accuracy { get; }
 
+        public abstract int ticksUntilNextAttack { get; set; }
+
+        public abstract List<ItemStack> drops { get; }
+
+        public abstract event OnAttacked AttackedEvent;
+        public abstract event OnAttacking AttackingEvent;
+
+        public abstract void CallAttackedEvent(ref OnAttackEventArgs args);
+
+        public abstract void CallAttackingEvent(ref OnAttackEventArgs args);
+
+        public abstract void OnOpponentDied(List<ItemStack> drops);
 
         public bool StartFightAgainst(Player player, bool force)
         {

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiscordMMO.Datatypes.Inventories;
 
 namespace DiscordMMO.Datatypes.Items
 {
-    public abstract class ItemWeapon : Item
+    public abstract class ItemWeapon : ItemEquipable
     {
 
         /// <summary>
@@ -21,9 +22,11 @@ namespace DiscordMMO.Datatypes.Items
 
         /// <summary>
         /// The chance that this weapon hits
-        /// THIS IS NOT A PERCENTAGE CHANCE
         /// </summary>
         public abstract int accuracy { get; }
 
+        public override bool stackable => false;
+
+        public override PlayerEquipmentSlot slot => PlayerEquipmentSlot.MAIN_HAND;
     }
 }

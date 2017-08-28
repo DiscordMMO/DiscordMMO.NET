@@ -19,7 +19,7 @@ namespace DiscordMMO.Datatypes
     {
 
         public IUser user { get; protected set; }
-        public readonly string name;
+        public readonly string playerName;
 
         public PlayerInventory inventory;
         public PlayerEquimentInventory equipment;
@@ -53,7 +53,10 @@ namespace DiscordMMO.Datatypes
             }
         }
 
+        #region IDamageable
+
         public event OnAttacked AttackedEvent;
+        public event OnAttacking AttackingEvent;
 
         public int maxHealth => 30;
 
@@ -61,13 +64,51 @@ namespace DiscordMMO.Datatypes
 
         public int defence => 0;
 
-        public int attackDamage => 4;
+        public int attackDamage
+        {
+            get
+            {
+                if (equipment[PlayerEquipmentSlot.MAIN_HAND].IsEmpty)
+                {
+                    return 1;
+                }
+                return ((ItemWeapon)equipment[PlayerEquipmentSlot.MAIN_HAND].itemType).attackDamage;
+            }
+        }
 
-        public int accuracy => 1;
 
-        public int attackRate => 3;
+        public int accuracy
+        {
+            get
+            {
+                if (equipment[PlayerEquipmentSlot.MAIN_HAND].IsEmpty)
+                {
+                    return 50;
+                }
+                return ((ItemWeapon)equipment[PlayerEquipmentSlot.MAIN_HAND].itemType).accuracy;
+            }
+        }
 
 
+        public int attackRate 
+        {
+            get
+            {
+                if (equipment[PlayerEquipmentSlot.MAIN_HAND].IsEmpty)
+                {
+                    return 3;
+                }
+                return ((ItemWeapon)equipment[PlayerEquipmentSlot.MAIN_HAND].itemType).attackRate;
+            }
+        }
+        
+        public int ticksUntilNextAttack { get; set; }
+
+        string IDamageable.name => playerName;
+
+        public List<ItemStack> drops => inventory.items;
+
+#endregion
 
         #region Constructors
         public Player(IUser user) : this(user, user.Username)
@@ -79,7 +120,7 @@ namespace DiscordMMO.Datatypes
         {
             currentAction = new ActionIdle(this);
             this.user = user;
-            this.name = name;
+            playerName = name;
             inventory = new PlayerInventory(this);
             equipment = new PlayerEquimentInventory(this);
             preferences["pm"] = (Preference<bool>)true;
@@ -89,9 +130,23 @@ namespace DiscordMMO.Datatypes
         public Player(IUser user, string name, Action action)
         {
             this.user = user;
-            this.name = name;
+            playerName = name;
             currentAction = action;
             inventory = new PlayerInventory(this);
+            AttackedEvent += Player_AttackedEvent;
+            AttackingEvent += Player_AttackingEvent;
+        }
+
+        private void Player_AttackingEvent(ref OnAttackEventArgs args)
+        {
+            var pm = GetPrivateChannel().GetAwaiter().GetResult();
+            pm.SendMessageAsync("Attacking " + args.attacked).GetAwaiter().GetResult();
+        }
+
+        private void Player_AttackedEvent(ref OnAttackEventArgs args)
+        {
+            var pm = GetPrivateChannel().GetAwaiter().GetResult();
+            pm.SendMessageAsync("Attacked by " + args.attacked).GetAwaiter().GetResult();
         }
 
         public Player(ulong id, DiscordSocketClient client) : this(id, client, client.GetUser(id).Username)
@@ -109,7 +164,10 @@ namespace DiscordMMO.Datatypes
 
         }
 
-#endregion
+
+        #endregion
+
+        #region Actions
 
         public virtual async Task Tick()
         {
@@ -120,9 +178,9 @@ namespace DiscordMMO.Datatypes
         /// </summary>
         /// <param name="announce">Whether it should be announced to the player that they started this action</param>
         /// <param name="force">Whether the action only should be started if the player is idle (It will always be started if true)</param>
-        public virtual bool Idle(bool announce, bool force)
+        public virtual void Idle(bool announce)
         {
-            return SetAction(new ActionIdle(this), announce, force);
+            SetAction(new ActionIdle(this), announce, true);
         }
 
         /// <summary>
@@ -132,7 +190,7 @@ namespace DiscordMMO.Datatypes
         /// <param name="announce">Whether it should be announced to the player that they started this action</param>
         /// <param name="force">Whether the action only should be started if the player is idle (It will always be started if true)</param>
         /// <returns>True if the action of the player was changed, false otherwise</returns>
-        public virtual bool SetAction(Action action, bool announce, bool force)
+        public virtual bool SetAction(Action action, bool announce, bool force = false)
         {
             if (force)
             {
@@ -150,16 +208,21 @@ namespace DiscordMMO.Datatypes
             return false;
         }
 
+#endregion
+
+        #region Combat
+
         public virtual bool StartFight(EntityFightable against, bool force)
         {
             if (force)
             {
                 against.StartFightAgainst(this, true);
+                SetAction(new ActionFighting(this, against), false);
                 return true;
             }
             else
             {
-                if (CanStartFight)
+                if (CanStartFight && SetAction(new ActionFighting(this, against), false))
                 {
                     return against.StartFightAgainst(this, false);
                 }
@@ -167,6 +230,29 @@ namespace DiscordMMO.Datatypes
             }
         }
 
+        public void CallAttackedEvent(ref OnAttackEventArgs args) => AttackedEvent(ref args);
+
+        public void Die(IDamageable killer)
+        {
+            var pm = GetPrivateChannel().GetAwaiter().GetResult();
+
+            pm.SendMessageAsync(killer.name + " killed you").Wait();
+            
+            
+        }
+
+        public void CallAttackingEvent(ref OnAttackEventArgs args) => AttackingEvent(ref args);
+
+
+        public void OnOpponentDied(List<ItemStack> drops)
+        {
+            // TODO: Implement loot from this
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region Inventory
         public virtual void Equip(ItemStack toEquip)
         {
             if (toEquip.itemType is ItemEquipable == false)
@@ -184,6 +270,9 @@ namespace DiscordMMO.Datatypes
             inventory.AddItem(currentEquip);
         }
 
+        #endregion
+
+        #region Misc.
         public async Task<IDMChannel> GetPrivateChannel()
         {
             var channel = await user.GetOrCreateDMChannelAsync();
@@ -216,5 +305,10 @@ namespace DiscordMMO.Datatypes
             return preferences;
         }
 
+        void IDamageable.CallAttackedEvent(ref OnAttackEventArgs args)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
     }
 }

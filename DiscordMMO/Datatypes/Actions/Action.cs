@@ -15,6 +15,8 @@ namespace DiscordMMO.Datatypes.Actions
         public Player performer { get; protected set; }
         public DateTime finishTime { get; protected set; }
 
+        public abstract bool setFinishTime { get; }
+
         public abstract string name { get; }
 
         public Action(Player performer)
@@ -49,7 +51,7 @@ namespace DiscordMMO.Datatypes.Actions
                 var privateChannel = await performer.GetPrivateChannel();
                 await privateChannel.SendMessageAsync(GetFinishedFormattingSecondPerson());
             }
-            performer.Idle(false, true);
+            performer.Idle(false);
         }
 
         public virtual void SetFinishTime(DateTime time)
@@ -68,6 +70,8 @@ namespace DiscordMMO.Datatypes.Actions
     public class ActionIdle : Action
     {
         public override string name { get => "idle"; }
+
+        public override bool setFinishTime => false;
 
         public ActionIdle(Player performer) : base(performer)
         {
@@ -95,7 +99,7 @@ namespace DiscordMMO.Datatypes.Actions
 
         public override string GetStartedFormattingSecondPerson() => "You have started idling";
 
-        public override string GetActiveFormattingThridPerson(bool mention) => (mention ? performer.user.Mention : performer.name) + " is currently idle";
+        public override string GetActiveFormattingThridPerson(bool mention) => (mention ? performer.user.Mention : performer.playerName) + " is currently idle";
 
 
         public override string GetFinishedFormattingSecondPerson()
