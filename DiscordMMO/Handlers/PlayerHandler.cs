@@ -67,6 +67,16 @@ namespace DiscordMMO.Handlers
             return CreatePlayer(user, user.Username);
         }
 
+        public static void RemovePlayerInstance(IUser user)
+        {
+            RemovePlayerInstance(GetPlayer(user));
+        }
+
+        public static void RemovePlayerInstance(Player player)
+        {
+            players.Remove(player);
+        }
+
         public static List<Player> GetPlayers()
         {
             return players;

@@ -15,6 +15,12 @@ namespace DiscordMMO.Datatypes.Actions
 
         public IDamageable fighting;
 
+        /// <summary>
+        /// THIS CONSTRUCTOR IS ONLY USED TO REGISTER THIS ACTION DO NOT USE THIS UNDER ANY OTHER CIRCUMSTANCE
+        /// </summary>
+        /// <param name="performer"></param>
+        public ActionFighting(Player performer) : base(performer) { }
+
         public ActionFighting(Player performer, IDamageable against) : base(performer)
         {
             fighting = against;
@@ -59,6 +65,12 @@ namespace DiscordMMO.Datatypes.Actions
             }
 
         }
+
+        public override string ToString()
+        {
+            return $"{name}.({fighting})";
+        }
+
 
     }
 }

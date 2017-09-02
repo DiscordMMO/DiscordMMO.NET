@@ -77,9 +77,15 @@ namespace DiscordMMO
 
         public async Task InitAll()
         {
-            await ItemHandler.Init();
-            await Datatypes.Actions.Action.Init();
-            await EntityHandler.Init();
+
+            Task[] init = new Task[] 
+            {
+            ItemHandler.Init(),
+            Datatypes.Actions.Action.Init(),
+            EntityHandler.Init()
+            };
+
+            await Task.WhenAll(init);
 
             Server.INSTANCE.Run();
         }

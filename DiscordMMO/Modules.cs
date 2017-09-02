@@ -356,6 +356,17 @@ namespace DiscordMMO
             await ReplyAsync(Context.User.Username + ": Gave item " + toAdd.displayName);
         }
 
+        [Command("lo")]
+        public async Task LogoutCommand()
+        {
+            if (!await PlayerHandler.AttemptLogin(Context.User))
+            {
+                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
+                return;
+            }
+            PlayerHandler.RemovePlayerInstance(Context.User);
+        }
+
     }
 
 

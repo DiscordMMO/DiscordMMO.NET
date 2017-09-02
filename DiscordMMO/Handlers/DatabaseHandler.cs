@@ -130,8 +130,20 @@ namespace DiscordMMO.Handlers
                     Player p = PlayerHandler.CreatePlayer(user, reader.GetString("name"));
 
                     string actionNameFull = reader.GetString("currentActionName");
-                    string actionName = actionNameFull.Split('.')[0];
-                    object[] actionParams = actionNameFull.Split('.')[1].Replace("[","").Replace("]","").Split(',');
+
+                    string actionName;
+                    object[] actionParams;
+
+                    if (actionNameFull.Contains("."))
+                    {
+                        actionName = actionNameFull.Split('.')[0];
+                        actionParams = actionNameFull.Split('.')[1].Replace("(", "").Replace(")", "").Split('.');
+                    }
+                    else
+                    {
+                        actionName = actionNameFull;
+                        actionParams = new object[] { };
+                    }
 
                     p.SetAction(Action.GetActionInstanceFromName(actionName, p, actionParams), false, true);
 
@@ -188,7 +200,7 @@ namespace DiscordMMO.Handlers
                     saveOrOverwritePlayer = new MySqlCommand(saveOrOverwriteString, connection);
                     saveOrOverwritePlayer.Parameters.AddWithValue("@id", player.user.Id);
                     saveOrOverwritePlayer.Parameters.AddWithValue("@name", player.playerName);
-                    saveOrOverwritePlayer.Parameters.AddWithValue("@actionName", player.currentAction.name);
+                    saveOrOverwritePlayer.Parameters.AddWithValue("@actionName", player.currentAction.ToString());
                     saveOrOverwritePlayer.Parameters.AddWithValue("@actionTime", player.currentAction.finishTime);
                     saveOrOverwritePlayer.Parameters.AddWithValue("@inventory", player.inventory.ToString());
                     saveOrOverwritePlayer.Parameters.AddWithValue("@equipment", player.equipment.ToString());

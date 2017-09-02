@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using DiscordMMO.Datatypes.Preferences;
-using System.Data.SqlTypes;
+using DiscordMMO.Datatypes.Entities;
 
 namespace DiscordMMO.Datatypes.Actions
 {
@@ -27,7 +27,7 @@ namespace DiscordMMO.Datatypes.Actions
             this.performer = performer;
         }
 
-#region Static methods
+        #region Static methods
 
         public async static Task Init()
         {
@@ -42,12 +42,12 @@ namespace DiscordMMO.Datatypes.Actions
             Console.WriteLine("[Actions] Average time per action: " + watch.ElapsedMilliseconds / allItems.Length + "ms");
             Console.WriteLine("[Actions] Registering actions");
             watch = Stopwatch.StartNew();
-            List<Task> toAdd = new List<Task>();
+            //List<Task> toAdd = new List<Task>();
             foreach (Type action in allItems)
             {
-                toAdd.Add(RegisterAction(action));
+                await RegisterAction(action);
             }
-            await Task.WhenAll(toAdd);
+            //await Task.WhenAll(toAdd);
             watch.Stop();
             Console.WriteLine("[Actions] Registering actions took " + watch.ElapsedMilliseconds + "ms");
         }
@@ -76,9 +76,14 @@ namespace DiscordMMO.Datatypes.Actions
                 throw new ArgumentException("Tried to get action instance from a type that is not an action");
             }
 
-            foreach (object o in param)
+            for (int i = 0; i < param.Length; i++)
             {
-                
+                if (param[i] == null)
+                    continue;
+                if (param[i].ToString().StartsWith("dmg:"))
+                {
+                    param[i] = EntityFightable.FromString(param[i].ToString());
+                }
             }
 
             return (Action)Activator.CreateInstance(type, param);
@@ -123,6 +128,11 @@ namespace DiscordMMO.Datatypes.Actions
         public virtual void SetFinishTime(DateTime time)
         {
             finishTime = time;
+        }
+
+        public override string ToString()
+        {
+            return name;
         }
 
         public abstract string GetStartedFormattingSecondPerson();
