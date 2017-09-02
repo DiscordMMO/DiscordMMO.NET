@@ -1,9 +1,10 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using DiscordMMO.Datatypes;
 using DiscordMMO.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord.Commands;
 using System.Reflection;
@@ -13,6 +14,8 @@ namespace DiscordMMO
 {
     public class Program
     {
+
+        public static readonly CultureInfo culture = CultureInfo.InvariantCulture;
 
         public static bool sqlAvailable { get; private set; }
 
@@ -30,6 +33,12 @@ namespace DiscordMMO
 
         public async Task Start()
         {
+
+            CultureInfo.DefaultThreadCurrentCulture = culture;
+            CultureInfo.DefaultThreadCurrentUICulture = culture;
+            Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
+
             client = new DiscordSocketClient();
             commands = new CommandService();
 
