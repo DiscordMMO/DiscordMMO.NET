@@ -367,6 +367,38 @@ namespace DiscordMMO
             PlayerHandler.RemovePlayerInstance(Context.User);
         }
 
+        [Command("en")]
+        public async Task EnemyCommand(string enemy = null)
+        {
+            if (!await PlayerHandler.AttemptLogin(Context.User))
+            {
+                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
+                return;
+            }
+            Player p = PlayerHandler.GetPlayer(Context.User);
+            if (enemy == null)
+            {
+                string name = "null";
+                if (p.en != null)
+                {
+                    name = ((EntityFightable)SerializationHandler.Deserialize(p.en)).name;
+                }
+
+                await ReplyAsync("Enemy: " + name);
+            }
+            else
+            {
+                if (EntityHandler.IsRegisteredEntity(enemy) && EntityHandler.GetEntityInstanceFromName(enemy) is EntityFightable)
+                {
+                    p.en = ((EntityFightable)EntityHandler.GetEntityInstanceFromName(enemy)).ToString();
+                }
+                else
+                {
+                    await ReplyAsync($"\"{enemy}\" is not a valid enemy");
+                }
+            }
+        }
+
     }
 
 

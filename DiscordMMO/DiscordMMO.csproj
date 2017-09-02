@@ -172,6 +172,7 @@
     <Compile Include="Datatypes\Inventories\PlayerEquimentInventory.cs" />
     <Compile Include="Datatypes\Inventories\PlayerInventory.cs" />
     <Compile Include="Datatypes\Inventories\Inventory.cs" />
+    <Compile Include="Datatypes\ISerialized.cs" />
     <Compile Include="Datatypes\ItemStack.cs" />
     <Compile Include="Datatypes\Items\Item.cs" />
     <Compile Include="Datatypes\Items\ItemEquipable.cs" />
@@ -180,6 +181,7 @@
     <Compile Include="Datatypes\Items\ItemWeapon.cs" />
     <Compile Include="Datatypes\Items\ItemWood.cs" />
     <Compile Include="Handlers\EntityHandler.cs" />
+    <Compile Include="Handlers\SerializationHandler.cs" />
     <Compile Include="Modules.cs" />
     <Compile Include="Datatypes\Player.cs" />
     <Compile Include="Datatypes\Preferences\IPreference.cs" />

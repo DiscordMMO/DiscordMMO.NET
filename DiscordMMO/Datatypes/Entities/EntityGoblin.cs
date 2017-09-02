@@ -11,12 +11,14 @@ namespace DiscordMMO.Datatypes.Entities
 {
     public class EntityGoblin : EntityFightable
     {
+        [Serialized(0)]
         public override string name => "goblin";
 
         public override bool singleOnly => true;
 
         public override int maxHealth => 10;
 
+        [Serialized(2)]
         public override int health { get; set; }
 
         public override int defence => 1;
@@ -27,6 +29,7 @@ namespace DiscordMMO.Datatypes.Entities
 
         public override int accuracy => 50;
 
+        [Serialized(1)]
         public override int ticksUntilNextAttack { get; set; } = 0;
 
 

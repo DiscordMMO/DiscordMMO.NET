@@ -8,15 +8,18 @@ namespace DiscordMMO.Datatypes.Entities
     public delegate void OnAttacked(ref OnAttackEventArgs args);
     public delegate void OnAttacking(ref OnAttackEventArgs args);
 
-    public interface IDamageable
+    public interface IDamageable : ISerialized
     {
 
         event OnAttacked AttackedEvent;
         event OnAttacking AttackingEvent;
 
+        [Serialized(0)]
         string name { get; }
 
         int maxHealth { get; }
+
+        [Serialized(2)]
         int health { get; set; }
 
         int defence { get; }
@@ -25,6 +28,7 @@ namespace DiscordMMO.Datatypes.Entities
 
         int accuracy { get; }
 
+        [Serialized(1)]
         int ticksUntilNextAttack { get; set; }
 
         List<ItemStack> drops { get; }

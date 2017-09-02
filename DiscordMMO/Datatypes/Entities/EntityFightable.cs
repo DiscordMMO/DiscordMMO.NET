@@ -44,6 +44,8 @@ namespace DiscordMMO.Datatypes.Entities
 
         public abstract List<ItemStack> drops { get; }
 
+        public string convertPrefix => "dmg";
+
         public abstract event OnAttacked AttackedEvent;
         public abstract event OnAttacking AttackingEvent;
 
@@ -76,23 +78,9 @@ namespace DiscordMMO.Datatypes.Entities
 
         public static EntityFightable FromString(string s)
         {
-            string[] param = Regex.Match(s, "\\[(.*?)\\]").Value.Split(',');
 
-            Entity e = EntityHandler.GetEntityInstanceFromName(param[0]);
-
-            if (e is EntityFightable == false)
-            {
-                throw new ArgumentException($"Tried to get non-fightable entity \"{e.name}\" as a fightable entity");
-            }
-
-            EntityFightable entity = e as EntityFightable;
-
-            entity.ticksUntilNextAttack = int.Parse(param[1]);
-            entity.health = int.Parse(param[2]);
-
-            return entity;
+            return SerializationHandler.Deserialize(s) as EntityFightable;
 
         }
-
     }
 }

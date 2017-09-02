@@ -21,6 +21,8 @@ namespace DiscordMMO.Datatypes
         public IUser user { get; protected set; }
         public readonly string playerName;
 
+        public string en;
+
         public PlayerInventory inventory;
         public PlayerEquimentInventory equipment;
 
@@ -108,7 +110,9 @@ namespace DiscordMMO.Datatypes
 
         public List<ItemStack> drops => inventory.items;
 
-#endregion
+        public string convertPrefix => "player";
+
+        #endregion
 
         #region Constructors
         public Player(IUser user) : this(user, user.Username)
@@ -309,6 +313,7 @@ namespace DiscordMMO.Datatypes
         {
             throw new NotImplementedException();
         }
+
         #endregion
     }
 }

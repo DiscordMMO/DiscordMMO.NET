@@ -132,20 +132,22 @@ namespace DiscordMMO.Handlers
                     string actionNameFull = reader.GetString("currentActionName");
 
                     string actionName;
-                    object[] actionParams;
+                    List<object> actionParams = new List<object>();
+
+                    actionParams.Add(p);
 
                     if (actionNameFull.Contains("."))
                     {
                         actionName = actionNameFull.Split('.')[0];
-                        actionParams = actionNameFull.Split('.')[1].Replace("(", "").Replace(")", "").Split('.');
+                        string[] param = actionNameFull.Split('.')[1].Replace("(", "").Replace(")", "").Split('.');
+                        actionParams.AddRange(param);
                     }
                     else
                     {
                         actionName = actionNameFull;
-                        actionParams = new object[] { };
                     }
 
-                    p.SetAction(Action.GetActionInstanceFromName(actionName, p, actionParams), false, true);
+                    p.SetAction(Action.GetActionInstanceFromName(actionName, actionParams.ToArray()), false, true);
 
                     p.inventory = PlayerInventory.FromString(p, reader.GetString("inventory"));
                     p.equipment = PlayerEquimentInventory.FromString(p, reader.GetString("equipment"));
