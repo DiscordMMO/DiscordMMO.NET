@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using DiscordMMO.Util;
 using DiscordMMO.Handlers;
 using DiscordMMO.Datatypes.Items;
 
 namespace DiscordMMO.Datatypes
 {
-    public class ItemStack
+    [SerializedClass("itemstack")]
+    public class ItemStack : ISerialized
     {
+        [Serialized(0)]
+        [DontInit]
         public Item itemType;
+
+        [Serialized(1)]
         public int count;
 
         public bool IsEmpty => (itemType is ItemEmpty || count <= 0);
@@ -36,9 +42,16 @@ namespace DiscordMMO.Datatypes
 
         public override string ToString()
         {
-            if (IsEmpty)
-                return "Empty";
-            return itemType.displayName + $"({count})";
+            return Serialize();
+        }
+
+        public string Serialize()
+        {
+            if (itemType == null)
+            {
+                itemType = ItemHandler.GetItemInstanceFromName("empty");
+            }
+            return SerializationExtension.Serialize(this);
         }
 
         public string ToStringNoCount()
@@ -48,17 +61,12 @@ namespace DiscordMMO.Datatypes
             return itemType.displayName;
         }
 
-        public static ItemStack FromString(string item)
+        [InstanceMethod(0)]
+        public static ItemStack CreateInstance(Item item)
         {
-            // TODO: Make this support parameters
-            string[] param = item.Split(',');
-            int count = 1;
-            if (param.Length >= 2)
-            {
-                count = int.Parse(param[1]);
-            }
-            return new ItemStack(ItemHandler.GetItemInstanceFromName(param[0]), count);
+            return new ItemStack(item);
         }
+
 
     }
 }

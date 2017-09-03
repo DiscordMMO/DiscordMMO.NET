@@ -59,6 +59,11 @@ namespace DiscordMMO.Handlers
             return items[name];
         }
 
+        public static RegisteredSerialized GetRegisteredSerialized(ISerialized serialized)
+        {
+            return items.Values.FirstOrDefault(x => x.type.IsAssignableFrom(serialized.GetType()));
+        }
+
         public static Type GetISerializedFromName(string name)
         {
             if (!items.ContainsKey(name))
@@ -91,17 +96,13 @@ namespace DiscordMMO.Handlers
                 if (!typeof(ISerialized).IsAssignableFrom(type))
                     throw new ArgumentException("Tried to register something that was not an ISerialized, as an ISerialized");
                 if (type.GetCustomAttributes(typeof(SerializedClassAttribute), true).Length <= 0)
-                    throw new ArgumentException($"Type {type.FullName} has not SerializedClass attribute");
-                if (type.GetProperty("name") == null)
-                {
-
-                }
+                    throw new ArgumentException($"Type {type.FullName} has no SerializedClass attribute");
 
                 SerializedClassAttribute classAttribute = type.GetCustomAttribute(typeof(SerializedClassAttribute)) as SerializedClassAttribute;
 
                 if (classAttribute == null)
                 {
-                    throw new ArgumentException($"Type {type.FullName} has not SerializedClass attribute");
+                    throw new ArgumentException($"Type {type.FullName} has no SerializedClass attribute");
                 }
 
                 string name = classAttribute.prefix;
@@ -137,7 +138,7 @@ namespace DiscordMMO.Handlers
                     }
                 }
 
-                RegisteredSerialized registered = new RegisteredSerialized() { type = type, serializedVars = serializedProperties };
+                RegisteredSerialized registered = new RegisteredSerialized() { type = type, serializedVars = serializedProperties, prefix = name };
 
 
                 items.Add(name, registered);
@@ -150,7 +151,7 @@ namespace DiscordMMO.Handlers
 
         #endregion
 
-        public static ISerialized Deserialize(string s)
+        public static ISerialized Deserialize(string s, params object[] extraParams)
         {
 
             string prefix = s.Split(':')[0];
@@ -158,7 +159,9 @@ namespace DiscordMMO.Handlers
             {
                 RegisteredSerialized ser = GetRegisteredSerialized(prefix);
 
-                string[] param = Regex.Match(s, "\\[(.*?)\\]").Value.Split(',');
+                // TODO: Figure out nested serialization
+
+                string[] param = Regex.Match(s, "\\[(.*)\\]").Value.Split(',');
 
                 for (int i = 0; i < param.Length; i++)
                 {
@@ -183,11 +186,11 @@ namespace DiscordMMO.Handlers
                         continue;
                     if (attribute.instanceIdentifierIndex.Length <= 0)
                     {
-                        ret = (ISerialized)mi.Invoke(null, null);
+                        ret = (ISerialized)mi.Invoke(null, extraParams);
                     }
                     else
                     {
-                        List<object> initParam = new List<object>();
+                        List<object> initParam = extraParams.ToList();
                         for (int i = 0; i < attribute.instanceIdentifierIndex.Length; i++)
                         {
                             if (ser.serializedVars.ContainsKey(attribute.instanceIdentifierIndex[i]))
@@ -267,9 +270,33 @@ namespace DiscordMMO.Handlers
 
     }
 
+    public static class SerializationExtension
+    {
+        public static string Serialize(this ISerialized s)
+        {
+            RegisteredSerialized registered = SerializationHandler.GetRegisteredSerialized(s);
+            string outp = $"{registered.prefix}:[";
+            List<string> values = new List<string>();
+
+            foreach (object o in registered.serializedVars.Values)
+            {
+                if (o is FieldInfo)
+                {
+                    FieldInfo fi = o as FieldInfo;
+                    values.Add(fi.GetValue(s).ToString());
+                }
+            }
+            outp += String.Join(",", values) + "]";
+            return outp;
+        }
+    }
+
     public struct RegisteredSerialized
     {
         public Type type;
+
+        public string prefix;
+
         public Dictionary<int, object> serializedVars;
 
         public Dictionary<int, object> initializedVars

@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using DiscordMMO.Handlers;
+using DiscordMMO.Util;
+
 
 namespace DiscordMMO.Datatypes.Inventories
 {
@@ -74,7 +77,7 @@ namespace DiscordMMO.Datatypes.Inventories
 
                 int slot = int.Parse(Regex.Matches(fullItem, slotRegex)[0].Value.Substring(2));
 
-                ret[slot] = ItemStack.FromString(item);
+                ret[slot] = SerializationHandler.Deserialize(item) as ItemStack;
 
             }
             return ret;

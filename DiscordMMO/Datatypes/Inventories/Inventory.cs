@@ -58,8 +58,7 @@ namespace DiscordMMO.Datatypes.Inventories
             StringBuilder b = new StringBuilder();
             foreach (ItemStack i in items)
             {
-                string name = i.IsEmpty ? "empty" : i.itemType.itemName;
-                b.Append($"{name},{i.count};");
+                b.Append($"{i.ToString()};");
             }
             string o = b.ToString();
             return o.Remove(o.Length-1);

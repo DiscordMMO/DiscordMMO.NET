@@ -79,7 +79,7 @@ namespace DiscordMMO.Datatypes.Entities
 
         public override string ToString()
         {
-            return $"dmg:[{name},{ticksUntilNextAttack},{health}]";
+            return this.Serialize();
         }
 
         [InstanceMethod(0)]

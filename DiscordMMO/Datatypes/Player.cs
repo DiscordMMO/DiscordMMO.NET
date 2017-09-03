@@ -21,8 +21,6 @@ namespace DiscordMMO.Datatypes
         public IUser user { get; protected set; }
         public readonly string playerName;
 
-        public string en;
-
         public PlayerInventory inventory;
         public PlayerEquimentInventory equipment;
 

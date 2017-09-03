@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DiscordMMO.Util;
+using DiscordMMO.Handlers;
 
 namespace DiscordMMO.Datatypes.Inventories
 {
@@ -17,13 +14,14 @@ namespace DiscordMMO.Datatypes.Inventories
             this.owner = owner;
         }
 
+        protected PlayerInventory(){}
+
         public static PlayerInventory FromString(Player owner, string inv)
         {
             PlayerInventory ret = new PlayerInventory(owner);
             for (int i = 0; i < inv.Split(';').Length-1; i++)
             {
-                ret[i] = ItemStack.FromString(inv.Split(';')[i]);
-
+                ret[i] = (ItemStack)SerializationHandler.Deserialize(inv.Split(';')[i]);
             }
             return ret;
         }

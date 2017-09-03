@@ -205,11 +205,11 @@ namespace DiscordMMO
                 }
                 if (stack == null)
                 {
-                    outp.Append(ItemStack.empty.ToString());
+                    outp.Append(ItemStack.empty.itemType.displayName);
                 }
                 else
                 {
-                    outp.Append(stack.ToString() + " ");
+                    outp.Append(stack.itemType.displayName + " ");
                 }
 
                 i++;
@@ -263,7 +263,7 @@ namespace DiscordMMO
                 outp.Append(((PlayerEquipmentSlot)i).GetDisplayName() + ": ");
                 if (stack == null)
                 {
-                    outp.Append(ItemStack.empty.ToString());
+                    outp.Append(ItemStack.empty.itemType.displayName);
                 }
                 else
                 {
@@ -368,35 +368,20 @@ namespace DiscordMMO
         }
 
         [Command("en")]
-        public async Task EnemyCommand(string enemy = null)
+        public async Task EnemyInfoCommand()
         {
             if (!await PlayerHandler.AttemptLogin(Context.User))
             {
                 await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
                 return;
             }
-            Player p = PlayerHandler.GetPlayer(Context.User);
-            if (enemy == null)
+            Player player = PlayerHandler.GetPlayer(Context.User);
+            if (player.currentAction is ActionFighting)
             {
-                string name = "null";
-                if (p.en != null)
-                {
-                    name = ((EntityFightable)SerializationHandler.Deserialize(p.en)).name;
-                }
-
-                await ReplyAsync("Enemy: " + name);
+                ActionFighting f = player.currentAction as ActionFighting;
+                await ReplyAsync(f.ToString());
             }
-            else
-            {
-                if (EntityHandler.IsRegisteredEntity(enemy) && EntityHandler.GetEntityInstanceFromName(enemy) is EntityFightable)
-                {
-                    p.en = ((EntityFightable)EntityHandler.GetEntityInstanceFromName(enemy)).ToString();
-                }
-                else
-                {
-                    await ReplyAsync($"\"{enemy}\" is not a valid enemy");
-                }
-            }
+            await ReplyAsync("You are not fighting anything");
         }
 
     }

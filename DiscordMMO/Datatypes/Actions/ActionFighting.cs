@@ -39,7 +39,7 @@ namespace DiscordMMO.Datatypes.Actions
             performer.ticksUntilNextAttack--;
             fighting.ticksUntilNextAttack--;
 
-            if (performer.ticksUntilNextAttack >= 0)
+            if (performer.ticksUntilNextAttack <= 0)
             {
                 OnAttackEventArgs args = new OnAttackEventArgs(performer, fighting);
                 performer.Attacking(ref args);
@@ -51,7 +51,7 @@ namespace DiscordMMO.Datatypes.Actions
                 }
                 performer.ticksUntilNextAttack = performer.attackRate;
             }
-            if (fighting.ticksUntilNextAttack >= 0)
+            if (fighting.ticksUntilNextAttack <= 0)
             {
                 OnAttackEventArgs args = new OnAttackEventArgs(fighting, performer);
                 fighting.Attacking(ref args);
