@@ -5,7 +5,8 @@ using System.Reflection;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using DiscordMMO.Datatypes;
+using DiscordMMO.Util;
+using System.Runtime.Serialization;
 
 namespace DiscordMMO.Handlers
 {
@@ -35,7 +36,7 @@ namespace DiscordMMO.Handlers
             List<Task> toAdd = new List<Task>();
             foreach (Type item in allItems)
             {
-
+                toAdd.Add(RegisterISerialized(item));
             }
             await Task.WhenAll(toAdd);
             watch.Stop();
@@ -89,42 +90,56 @@ namespace DiscordMMO.Handlers
             {
                 if (!typeof(ISerialized).IsAssignableFrom(type))
                     throw new ArgumentException("Tried to register something that was not an ISerialized, as an ISerialized");
+                if (type.GetCustomAttributes(typeof(SerializedClassAttribute), true).Length <= 0)
+                    throw new ArgumentException($"Type {type.FullName} has not SerializedClass attribute");
                 if (type.GetProperty("name") == null)
                 {
 
                 }
-                ISerialized item = GetISerializedFromType(type);
 
-                List<object> serializedProperties = new List<object>();
+                SerializedClassAttribute classAttribute = type.GetCustomAttribute(typeof(SerializedClassAttribute)) as SerializedClassAttribute;
+
+                if (classAttribute == null)
+                {
+                    throw new ArgumentException($"Type {type.FullName} has not SerializedClass attribute");
+                }
+
+                string name = classAttribute.prefix;
+
+                if (IsRegisteredISerialized(name))
+                    return;
+
+                Dictionary<int, object> serializedProperties = new Dictionary<int, object>();
 
                 foreach (FieldInfo f in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static))
                 {
-                    Attribute attribute = Attribute.GetCustomAttributes(f, typeof(SerializedAttribute), true)[0];
-
-                    if (attribute == null)
-                        continue;
-
-                    if (attribute is SerializedAttribute)
+                    foreach (object attribute in f.GetCustomAttributes(true))
                     {
                         SerializedAttribute sa = attribute as SerializedAttribute;
-                        serializedProperties[sa.position] = f;
+                        if (sa == null)
+                            continue;
+                        int position = sa.position;
+                        serializedProperties[position] = f;
                         break;
                     }
                 }
 
                 foreach (PropertyInfo p in type.GetProperties())
                 {
-                    foreach (CustomAttributeData attribute in p.GetCustomAttributes(typeof(SerializedAttribute), true))
+                    foreach (object attribute in p.GetCustomAttributes(true))
                     {
-                        int position = (int)attribute.ConstructorArguments[0].Value;
+                        SerializedAttribute sa = attribute as SerializedAttribute;
+                        if (sa == null)
+                            continue;
+                        int position = sa.position;
                         serializedProperties[position] = p;
                         break;
                     }
                 }
 
-                RegisteredSerialized registered = new RegisteredSerialized() { type = type, serializedVars = serializedProperties.ToArray() };
+                RegisteredSerialized registered = new RegisteredSerialized() { type = type, serializedVars = serializedProperties };
 
-                string name = item.convertPrefix;
+
                 items.Add(name, registered);
             }
             catch (Exception e)
@@ -137,11 +152,11 @@ namespace DiscordMMO.Handlers
 
         public static ISerialized Deserialize(string s)
         {
+
             string prefix = s.Split(':')[0];
             if (IsRegisteredISerialized(prefix))
             {
                 RegisteredSerialized ser = GetRegisteredSerialized(prefix);
-                ISerialized ret = (ISerialized)Activator.CreateInstance(ser.type);
 
                 string[] param = Regex.Match(s, "\\[(.*?)\\]").Value.Split(',');
 
@@ -151,10 +166,48 @@ namespace DiscordMMO.Handlers
                     param[i] = el.Replace("]", "").Replace("[", "");
                 }
 
-                if (param.Length != ser.serializedVars.Length)
+                if (param.Length != ser.serializedVars.Keys.Count)
                 {
                     throw new ArgumentException($"Argument length not matching for string \"{s}\"\n" +
-                        $"Expected: {ser.serializedVars.Length}. Got: {param.Length}");
+                        $"Expected: {ser.serializedVars.Keys.Count}. Got: {param.Length}");
+                }
+
+                ISerialized ret = null;
+
+                foreach (MethodInfo mi in ser.type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static))
+                {
+                    if (mi.GetCustomAttributes(typeof(InstanceMethodAttribute), true).Count() <= 0)
+                        continue;
+                    InstanceMethodAttribute attribute = mi.GetCustomAttribute(typeof(InstanceMethodAttribute), true) as InstanceMethodAttribute;
+                    if (attribute == null)
+                        continue;
+                    if (attribute.instanceIdentifierIndex.Length <= 0)
+                    {
+                        ret = (ISerialized)mi.Invoke(null, null);
+                    }
+                    else
+                    {
+                        List<object> initParam = new List<object>();
+                        for (int i = 0; i < attribute.instanceIdentifierIndex.Length; i++)
+                        {
+                            if (ser.serializedVars.ContainsKey(attribute.instanceIdentifierIndex[i]))
+                            {
+                                initParam.Add(param[i]);
+                            }
+                            else
+                            {
+                                throw new ArgumentException($"Serializeable {ser.type.FullName} does not have a paramater with index {attribute.instanceIdentifierIndex} (InstanceMethodAttribute)");
+                            }
+                        }
+                        ret = (ISerialized)mi.Invoke(null, initParam.ToArray());
+                    
+                    }
+                    break;
+                }
+
+                if (ret == null)
+                {
+                    throw new ArgumentException($"Serializeable {ser.type.FullName} has no instance method");
                 }
 
                 for (int i = 0; i < param.Length; i++)
@@ -162,26 +215,74 @@ namespace DiscordMMO.Handlers
                     if (ser.serializedVars[i] is FieldInfo)
                     {
                         FieldInfo fi = ser.serializedVars[i] as FieldInfo;
-                        fi.SetValue(ret, param[i]);
+                        if (!ser.initializedVars.ContainsKey(i))
+                        {
+                            fi.SetValue(ret, BreakDown(param[i].ToString()));
+                        }
                     }
                     else if (ser.serializedVars[i] is PropertyInfo)
                     {
                         PropertyInfo pi = ser.serializedVars[i] as PropertyInfo;
-                        pi.SetValue(ret, param[i]);
+                        if (ser.initializedVars.ContainsKey(i))
+                        {
+                            if (pi.CanWrite)
+                            {
+                                pi.SetValue(ret, BreakDown(param[i].ToString()));
+                            }
+                            else
+                            {
+                                Console.WriteLine($"[Serialization Handler] WARNING: Property {pi.Module.FullyQualifiedName}.{pi.Name} has no setter, is marked as serializeable but not DontInit");
+                            }
+                        }
                     }
                 }
-
+                return ret;
             }
             throw new ArgumentException($"Could not deserialize string \"{s}\": Prefix \"{prefix}\" is not registered");
         }
 
+        public static object BreakDown(string s)
+        {
+            if (int.TryParse(s, out int res))
+            {
+                return res;
+            }
+            try
+            {
+                ISerialized ret = Deserialize(s);
+                return ret;
+            }
+            catch (ArgumentException e)
+            {
+
+            }
+            return s;
+        }
 
     }
 
     public struct RegisteredSerialized
     {
         public Type type;
-        public object[] serializedVars;
+        public Dictionary<int, object> serializedVars;
+
+        public Dictionary<int, object> initializedVars
+        {
+            get
+            {
+                Dictionary<int, object> ret = new Dictionary<int, object>();
+                foreach (int i in serializedVars.Keys)
+                {
+                    if (((MemberInfo)serializedVars[i]).GetCustomAttributes(typeof(DontInitAttribute), true).Length <= 0)
+                    {
+                        ret[i] = serializedVars[i];
+                    }
+                }
+                return ret;
+            }
+        }
+
+
     }
 
 }

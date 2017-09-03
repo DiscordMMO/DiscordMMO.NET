@@ -7,8 +7,10 @@ using DiscordMMO.Util;
 
 namespace DiscordMMO.Datatypes.Entities
 {
-    public abstract class EntityFightable : Entity, IDamageable
+    [SerializedClass("dmg")]
+    public abstract class EntityFightable : Entity, IDamageable, ISerialized
     {
+
 
         public abstract bool singleOnly { get; }
 
@@ -28,8 +30,13 @@ namespace DiscordMMO.Datatypes.Entities
             }
         }
 
+        [Serialized(0)]
+        [DontInit]
+        public override abstract string name { get; }
+
         public abstract int maxHealth { get; }
 
+        [Serialized(2)]
         public abstract int health { get; set; }
 
         public abstract int defence { get; }
@@ -40,11 +47,10 @@ namespace DiscordMMO.Datatypes.Entities
 
         public abstract int accuracy { get; }
 
+        [Serialized(1)]
         public abstract int ticksUntilNextAttack { get; set; }
 
         public abstract List<ItemStack> drops { get; }
-
-        public string convertPrefix => "dmg";
 
         public abstract event OnAttacked AttackedEvent;
         public abstract event OnAttacking AttackingEvent;
@@ -76,11 +82,15 @@ namespace DiscordMMO.Datatypes.Entities
             return $"dmg:[{name},{ticksUntilNextAttack},{health}]";
         }
 
+        [InstanceMethod(0)]
+        public static EntityFightable GetInstance(string name)
+        {
+            return EntityHandler.GetEntityInstanceFromName(name) as EntityFightable;
+        }
+
         public static EntityFightable FromString(string s)
         {
-
             return SerializationHandler.Deserialize(s) as EntityFightable;
-
         }
     }
 }

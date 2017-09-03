@@ -172,7 +172,6 @@
     <Compile Include="Datatypes\Inventories\PlayerEquimentInventory.cs" />
     <Compile Include="Datatypes\Inventories\PlayerInventory.cs" />
     <Compile Include="Datatypes\Inventories\Inventory.cs" />
-    <Compile Include="Datatypes\ISerialized.cs" />
     <Compile Include="Datatypes\ItemStack.cs" />
     <Compile Include="Datatypes\Items\Item.cs" />
     <Compile Include="Datatypes\Items\ItemEquipable.cs" />
@@ -195,6 +194,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Util\CombatUtil.cs" />
+    <Compile Include="Util\SerialiazationUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

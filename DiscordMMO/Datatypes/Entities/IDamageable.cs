@@ -8,7 +8,7 @@ namespace DiscordMMO.Datatypes.Entities
     public delegate void OnAttacked(ref OnAttackEventArgs args);
     public delegate void OnAttacking(ref OnAttackEventArgs args);
 
-    public interface IDamageable : ISerialized
+    public interface IDamageable 
     {
 
         event OnAttacked AttackedEvent;
