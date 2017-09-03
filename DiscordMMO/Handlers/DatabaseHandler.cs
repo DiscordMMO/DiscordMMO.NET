@@ -139,7 +139,10 @@ namespace DiscordMMO.Handlers
                     if (actionNameFull.Contains("."))
                     {
                         actionName = actionNameFull.Split('.')[0];
-                        string[] param = actionNameFull.Split('.')[1].Replace("(", "").Replace(")", "").Split('.');
+                        List<object> param = actionNameFull.Split('.')[1].Replace("(", "").Replace(")", "").Split('.').ToList<object>();
+
+                        param.ForEach(s => s = SerializationHandler.BreakDown(s));
+
                         actionParams.AddRange(param);
                     }
                     else

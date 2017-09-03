@@ -241,20 +241,26 @@ namespace DiscordMMO.Handlers
             throw new ArgumentException($"Could not deserialize string \"{s}\": Prefix \"{prefix}\" is not registered");
         }
 
-        public static object BreakDown(string s)
+        public static object BreakDown(object s)
         {
-            if (int.TryParse(s, out int res))
-            {
-                return res;
-            }
-            try
-            {
-                ISerialized ret = Deserialize(s);
-                return ret;
-            }
-            catch (ArgumentException e)
+
+            if (s is string)
             {
 
+                if (int.TryParse(s.ToString(), out int res))
+                {
+                    return res;
+                }
+                try
+                {
+                    ISerialized ret = Deserialize(s.ToString());
+                    return ret;
+                }
+                catch (ArgumentException e)
+                {
+
+                }
+                return s;
             }
             return s;
         }
