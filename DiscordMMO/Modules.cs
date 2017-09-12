@@ -7,6 +7,7 @@ using DiscordMMO.Handlers;
 using System;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using DiscordMMO.Datatypes.Inventories;
 using DiscordMMO.Helpers;
@@ -382,6 +383,22 @@ namespace DiscordMMO
                 await ReplyAsync(f.ToString());
             }
             await ReplyAsync("You are not fighting anything");
+        }
+
+        [Command("ser")]
+        public async Task XmlCommand()
+        {
+            int count = 100;
+            await ReplyAsync("Serializing " + count + " ItemStacks");
+            Stopwatch w = Stopwatch.StartNew();
+            for (int i = 0; i < count; i++)
+            {
+                byte[] s = SerializationHandler.Serialize((ItemStack)ItemHandler.GetItemInstanceFromName("wood"));
+            }
+            w.Stop();
+            await ReplyAsync("Serializing " + count + " objects took " + w.ElapsedMilliseconds + "ms \n" +
+                             "Average time per object: " + w.ElapsedMilliseconds/count  + "ms");
+
         }
 
     }

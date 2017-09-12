@@ -1,30 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Runtime.Serialization;
 using DiscordMMO.Util;
 using DiscordMMO.Handlers;
 using DiscordMMO.Datatypes.Items;
 
 namespace DiscordMMO.Datatypes
 {
-    [SerializedClass("itemstack")]
-    public class ItemStack : ISerialized
+    [Serializable]
+    public class ItemStack : ISerializable
     {
-        [Serialized(0)]
-        [DontInit]
         public Item itemType;
 
-        [Serialized(1)]
         public int count;
 
         public bool IsEmpty => (itemType is ItemEmpty || count <= 0);
 
         public static ItemStack empty { get; private set; }
 
+        public ItemStack()
+        {
+            itemType = ItemHandler.GetItemInstanceFromName("empty");
+        }
 
         public ItemStack(Item type, int count)
         {
             itemType = type;
             this.count = count;
+        }
+
+        public ItemStack(SerializationInfo info, StreamingContext context)
+        {
+            itemType = ItemHandler.GetItemInstanceFromName(info.GetString("itemType"));
+            count = info.GetInt32("count");
         }
 
         public ItemStack(Item type) : this(type, 1)
@@ -40,20 +47,6 @@ namespace DiscordMMO.Datatypes
             }
         }
 
-        public override string ToString()
-        {
-            return Serialize();
-        }
-
-        public string Serialize()
-        {
-            if (itemType == null)
-            {
-                itemType = ItemHandler.GetItemInstanceFromName("empty");
-            }
-            return SerializationExtension.Serialize(this);
-        }
-
         public string ToStringNoCount()
         {
             if (IsEmpty)
@@ -61,12 +54,10 @@ namespace DiscordMMO.Datatypes
             return itemType.displayName;
         }
 
-        [InstanceMethod(0)]
-        public static ItemStack CreateInstance(Item item)
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            return new ItemStack(item);
+            info.AddValue("type", itemType.itemName);
+            info.AddValue("count", count);
         }
-
-
     }
 }

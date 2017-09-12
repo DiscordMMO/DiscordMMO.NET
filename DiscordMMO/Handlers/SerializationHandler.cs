@@ -6,16 +6,26 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DiscordMMO.Util;
+using System.IO;
+using System.Globalization;
 using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace DiscordMMO.Handlers
 {
     public static class SerializationHandler
     {
 
+        public static readonly Regex deserializationRegex = new Regex("^[^\\[\\[]*" +
+                       "(" +
+                       "((?'Open'\\[)[^\\[\\]]*)+" +
+                       "((?'Close-Open'\\])[^\\[\\]]*)+" +
+                       ")*" +
+                       "(?(Open)(?!))$", RegexOptions.IgnorePatternWhitespace);
+
         #region Registration
 
-        private readonly static Dictionary<string, RegisteredSerialized> items = new Dictionary<string, RegisteredSerialized>();
+        private readonly static List<Type> items = new List<Type>();
 
         //TODO: Possibly clean this up?
 
@@ -43,117 +53,97 @@ namespace DiscordMMO.Handlers
             Console.WriteLine("[Serialization Handler] Registering serializeable objects took " + watch.ElapsedMilliseconds + "ms");
         }
 
-        public static ISerialized GetISerializedInstanceFromName(string name, params object[] param)
+        public static byte[] Serialize(ISerializable ser)
         {
-            if (GetISerializedFromName(name) == null)
+            IFormatter formatter = new BinaryFormatter();
+            MemoryStream stream = new MemoryStream();
+            using (stream)
             {
-
+                formatter.Serialize(stream, ser);
             }
-            return GetISerializedFromType(GetISerializedFromName(name), param);
-        }
-
-        public static RegisteredSerialized GetRegisteredSerialized(string name)
-        {
-            if (!items.ContainsKey(name))
-                throw new ArgumentException($"Prefix \"{name}\" is not registered ");
-            return items[name];
-        }
-
-        public static RegisteredSerialized GetRegisteredSerialized(ISerialized serialized)
-        {
-            return items.Values.FirstOrDefault(x => x.type.IsAssignableFrom(serialized.GetType()));
-        }
-
-        public static Type GetISerializedFromName(string name)
-        {
-            if (!items.ContainsKey(name))
-                return null;
-            return items[name].type;
-        }
-
-        public static ISerialized GetISerializedFromType(Type item, params object[] param)
-        {
-            if (item == null)
-            {
-
-            }
-            if (!typeof(ISerialized).IsAssignableFrom(item))
-            {
-                throw new ArgumentException("Tried to get item instance from a type that is not an item");
-            }
-            return (ISerialized)Activator.CreateInstance(item, param);
-        }
-
-        public static bool IsRegisteredISerialized(string name)
-        {
-            return items.ContainsKey(name);
+            byte[] ret = stream.ToArray();
+            return ret;
         }
 
         public static async Task RegisterISerialized(Type type)
         {
-            try
-            {
-                if (!typeof(ISerialized).IsAssignableFrom(type))
-                    throw new ArgumentException("Tried to register something that was not an ISerialized, as an ISerialized");
-                if (type.GetCustomAttributes(typeof(SerializedClassAttribute), true).Length <= 0)
-                    throw new ArgumentException($"Type {type.FullName} has no SerializedClass attribute");
 
-                SerializedClassAttribute classAttribute = type.GetCustomAttribute(typeof(SerializedClassAttribute)) as SerializedClassAttribute;
+            if (!typeof(ISerialized).IsAssignableFrom(type))
+                throw new ArgumentException("Tried to register something that was not an ISerialized, as an ISerialized");
 
-                if (classAttribute == null)
+            items.Add(type);
+
+            #region Deprecated
+                /*
+                try
                 {
-                    throw new ArgumentException($"Type {type.FullName} has no SerializedClass attribute");
-                }
+                    if (!typeof(ISerialized).IsAssignableFrom(type))
+                        throw new ArgumentException("Tried to register something that was not an ISerialized, as an ISerialized");
+                    if (type.GetCustomAttributes(typeof(SerializedClassAttribute), true).Length <= 0)
+                        throw new ArgumentException($"Type {type.FullName} has no SerializedClass attribute");
 
-                string name = classAttribute.prefix;
+                    SerializedClassAttribute classAttribute = type.GetCustomAttribute(typeof(SerializedClassAttribute)) as SerializedClassAttribute;
 
-                if (IsRegisteredISerialized(name))
-                    return;
-
-                Dictionary<int, object> serializedProperties = new Dictionary<int, object>();
-
-                foreach (FieldInfo f in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static))
-                {
-                    foreach (object attribute in f.GetCustomAttributes(true))
+                    if (classAttribute == null)
                     {
-                        SerializedAttribute sa = attribute as SerializedAttribute;
-                        if (sa == null)
-                            continue;
-                        int position = sa.position;
-                        serializedProperties[position] = f;
-                        break;
+                        throw new ArgumentException($"Type {type.FullName} has no SerializedClass attribute");
                     }
-                }
 
-                foreach (PropertyInfo p in type.GetProperties())
-                {
-                    foreach (object attribute in p.GetCustomAttributes(true))
+                    string name = classAttribute.prefix;
+
+                    if (IsRegisteredISerialized(name))
+                        return;
+
+                    Dictionary<int, object> serializedProperties = new Dictionary<int, object>();
+
+                    foreach (FieldInfo f in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static))
                     {
-                        SerializedAttribute sa = attribute as SerializedAttribute;
-                        if (sa == null)
-                            continue;
-                        int position = sa.position;
-                        serializedProperties[position] = p;
-                        break;
+                        foreach (object attribute in f.GetCustomAttributes(true))
+                        {
+                            SerializedAttribute sa = attribute as SerializedAttribute;
+                            if (sa == null)
+                                continue;
+                            int position = sa.position;
+                            serializedProperties[position] = f;
+                            break;
+                        }
                     }
+
+                    foreach (PropertyInfo p in type.GetProperties())
+                    {
+                        foreach (object attribute in p.GetCustomAttributes(true))
+                        {
+                            SerializedAttribute sa = attribute as SerializedAttribute;
+                            if (sa == null)
+                                continue;
+                            int position = sa.position;
+                            serializedProperties[position] = p;
+                            break;
+                        }
+                    }
+
+                    RegisteredSerialized registered = new RegisteredSerialized() { type = type, serializedVars = serializedProperties, prefix = name };
+
+
+                    items.Add(name, registered);
                 }
-
-                RegisteredSerialized registered = new RegisteredSerialized() { type = type, serializedVars = serializedProperties, prefix = name };
-
-
-                items.Add(name, registered);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                }
+                */
+                #endregion
         }
 
         #endregion
 
+
+
         public static ISerialized Deserialize(string s, params object[] extraParams)
         {
-
+            return null;
+            #region Deprecated
+            /*
             string prefix = s.Split(':')[0];
             if (IsRegisteredISerialized(prefix))
             {
@@ -161,18 +151,18 @@ namespace DiscordMMO.Handlers
 
                 // TODO: Figure out nested serialization
 
-                string[] param = Regex.Match(s, "\\[(.*)\\]").Value.Split(',');
-
-                for (int i = 0; i < param.Length; i++)
+                List<string> param = Nested(s).ToList();
+                
+                for (int i = 0; i < param.Count; i++)
                 {
                     string el = param[i];
                     param[i] = el.Replace("]", "").Replace("[", "");
                 }
 
-                if (param.Length != ser.serializedVars.Keys.Count)
+                if (param.Count != ser.serializedVars.Keys.Count)
                 {
                     throw new ArgumentException($"Argument length not matching for string \"{s}\"\n" +
-                        $"Expected: {ser.serializedVars.Keys.Count}. Got: {param.Length}");
+                        $"Expected: {ser.serializedVars.Keys.Count}. Got: {param.Count}");
                 }
 
                 ISerialized ret = null;
@@ -213,7 +203,7 @@ namespace DiscordMMO.Handlers
                     throw new ArgumentException($"Serializeable {ser.type.FullName} has no instance method");
                 }
 
-                for (int i = 0; i < param.Length; i++)
+                for (int i = 0; i < param.Count; i++)
                 {
                     if (ser.serializedVars[i] is FieldInfo)
                     {
@@ -242,6 +232,37 @@ namespace DiscordMMO.Handlers
                 return ret;
             }
             throw new ArgumentException($"Could not deserialize string \"{s}\": Prefix \"{prefix}\" is not registered");
+            */
+#endregion
+        }
+
+        private static IEnumerable<String> Nested(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                yield break; // or throw exception
+
+            Stack<int> brackets = new Stack<int>();
+
+            for (int i = 0; i < value.Length; ++i)
+            {
+                char ch = value[i];
+
+                if (ch == '[')
+                    brackets.Push(i);
+                else if (ch == ']')
+                {
+                    //TODO: you may want to check if close ']' has corresponding open '['
+                    // i.e. stack has values: if (!brackets.Any()) throw ...
+                    int openBracket = brackets.Pop();
+
+                    yield return value.Substring(openBracket - 1, i - openBracket);
+                }
+            }
+
+            //TODO: you may want to check here if there are too many '['
+            // i.e. stack still has values: if (brackets.Any()) throw ... 
+
+            yield return value;
         }
 
         public static object BreakDown(object s)
@@ -269,53 +290,4 @@ namespace DiscordMMO.Handlers
         }
 
     }
-
-    public static class SerializationExtension
-    {
-        public static string Serialize(this ISerialized s)
-        {
-            RegisteredSerialized registered = SerializationHandler.GetRegisteredSerialized(s);
-            string outp = $"{registered.prefix}:[";
-            List<string> values = new List<string>();
-
-            foreach (object o in registered.serializedVars.Values)
-            {
-                if (o is FieldInfo)
-                {
-                    FieldInfo fi = o as FieldInfo;
-                    values.Add(fi.GetValue(s).ToString());
-                }
-            }
-            outp += String.Join(",", values) + "]";
-            return outp;
-        }
-    }
-
-    public struct RegisteredSerialized
-    {
-        public Type type;
-
-        public string prefix;
-
-        public Dictionary<int, object> serializedVars;
-
-        public Dictionary<int, object> initializedVars
-        {
-            get
-            {
-                Dictionary<int, object> ret = new Dictionary<int, object>();
-                foreach (int i in serializedVars.Keys)
-                {
-                    if (((MemberInfo)serializedVars[i]).GetCustomAttributes(typeof(DontInitAttribute), true).Length <= 0)
-                    {
-                        ret[i] = serializedVars[i];
-                    }
-                }
-                return ret;
-            }
-        }
-
-
-    }
-
 }

@@ -1,15 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using DiscordMMO.Util;
 using DiscordMMO.Handlers;
 
 namespace DiscordMMO.Datatypes.Items
 {
-    [SerializedClass("item")]
-    public abstract class Item : ISerialized
+    [Serializable]
+    public abstract class Item : ISerializable
     {
 
         //TODO: Possibly make this code cleaner?
@@ -18,19 +19,23 @@ namespace DiscordMMO.Datatypes.Items
         /// This is used as an id for the item
         /// This should be all lowercase with underscores for spaces
         /// </summary>
-        [Serialized(0)]
-        [DontInit]
         public virtual string itemName => "empty";
 
         public virtual string displayName => "Empty";
 
         public virtual bool stackable => true;
 
-        public override string ToString()
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            return this.Serialize();
+            info.AddValue("itemName", itemName);
         }
 
+
+        public override string ToString()
+        {
+            return itemName;
+        }
 
         public static implicit operator ItemStack(Item item)
         {
@@ -44,12 +49,6 @@ namespace DiscordMMO.Datatypes.Items
                 throw new ArgumentException($"Attempted to cast a non-item type ({type.FullName}) to an item");
             }
             return ItemHandler.GetItemFromType(type);
-        }
-
-        [InstanceMethod(0)]
-        public static Item CreateInstance(string name)
-        {
-            return ItemHandler.GetItemInstanceFromName(name);
         }
 
     }

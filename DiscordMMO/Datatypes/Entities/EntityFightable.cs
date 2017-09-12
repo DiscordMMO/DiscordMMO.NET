@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
-using DiscordMMO.Handlers;
+using System.Xml.Serialization;
+using System.Runtime.Serialization;
 using DiscordMMO.Util;
 
 namespace DiscordMMO.Datatypes.Entities
 {
-    [SerializedClass("dmg")]
-    public abstract class EntityFightable : Entity, IDamageable, ISerialized
+    public abstract class EntityFightable : Entity, IDamageable, ISerializable
     {
-
 
         public abstract bool singleOnly { get; }
 
@@ -30,13 +28,10 @@ namespace DiscordMMO.Datatypes.Entities
             }
         }
 
-        [Serialized(0)]
-        [DontInit]
         public override abstract string name { get; }
 
         public abstract int maxHealth { get; }
 
-        [Serialized(2)]
         public abstract int health { get; set; }
 
         public abstract int defence { get; }
@@ -47,7 +42,6 @@ namespace DiscordMMO.Datatypes.Entities
 
         public abstract int accuracy { get; }
 
-        [Serialized(1)]
         public abstract int ticksUntilNextAttack { get; set; }
 
         public abstract List<ItemStack> drops { get; }
@@ -55,9 +49,22 @@ namespace DiscordMMO.Datatypes.Entities
         public abstract event OnAttacked AttackedEvent;
         public abstract event OnAttacking AttackingEvent;
 
+        public EntityFightable(SerializationInfo info, StreamingContext context)
+        {
+            health = info.GetInt32("health");
+            ticksUntilNextAttack = info.GetInt32("attackDelay");
+        }
+
         public abstract void CallAttackedEvent(ref OnAttackEventArgs args);
 
         public abstract void CallAttackingEvent(ref OnAttackEventArgs args);
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("name", name);
+            info.AddValue("health", health);
+            info.AddValue("attackDelay", ticksUntilNextAttack);
+        }
 
         public abstract void OnOpponentDied(List<ItemStack> drops);
 
@@ -75,22 +82,6 @@ namespace DiscordMMO.Datatypes.Entities
                 fightingAgainst = player;
                 return true;
             }
-        }
-
-        public override string ToString()
-        {
-            return this.Serialize();
-        }
-
-        [InstanceMethod(0)]
-        public static EntityFightable GetInstance(string name)
-        {
-            return EntityHandler.GetEntityInstanceFromName(name) as EntityFightable;
-        }
-
-        public static EntityFightable FromString(string s)
-        {
-            return SerializationHandler.Deserialize(s) as EntityFightable;
         }
     }
 }

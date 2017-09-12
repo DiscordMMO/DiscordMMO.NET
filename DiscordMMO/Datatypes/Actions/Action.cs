@@ -82,7 +82,7 @@ namespace DiscordMMO.Datatypes.Actions
                     continue;
                 if (param[i].ToString().StartsWith("dmg:"))
                 {
-                    param[i] = EntityFightable.FromString(param[i].ToString());
+                    //param[i] = EntityFightable.FromString(param[i].ToString());
                 }
             }
 
