@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Runtime.Serialization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
-using DiscordMMO.Util;
 using DiscordMMO.Handlers;
+using ProtoBuf;
 
 namespace DiscordMMO.Datatypes.Items
 {
-    [Serializable]
-    public abstract class Item : ISerializable
+    [ProtoContract]
+    public abstract class Item 
     {
 
         //TODO: Possibly make this code cleaner?
@@ -24,12 +19,6 @@ namespace DiscordMMO.Datatypes.Items
         public virtual string displayName => "Empty";
 
         public virtual bool stackable => true;
-
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("itemName", itemName);
-        }
 
 
         public override string ToString()

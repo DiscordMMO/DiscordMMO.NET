@@ -10,7 +10,7 @@ namespace DiscordMMO.Datatypes.Inventories
     public abstract class Inventory
     {
 
-        public List<ItemStack> items = new List<ItemStack>();
+        public virtual List<ItemStack> items { get; protected set; } = new List<ItemStack>();
 
         public ItemStack this[int index]
         {

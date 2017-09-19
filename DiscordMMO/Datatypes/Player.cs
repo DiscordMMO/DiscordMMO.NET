@@ -10,29 +10,42 @@ using DiscordMMO.Datatypes.Inventories;
 using DiscordMMO.Datatypes.Entities;
 using DiscordMMO.Datatypes.Items;
 using DiscordMMO.Util;
+using ProtoBuf;
 using Action = DiscordMMO.Datatypes.Actions.Action;
 
 namespace DiscordMMO.Datatypes
 {
-
+    [ProtoContract]
     public class Player : IDamageable
     {
 
         public IUser user { get; protected set; }
+
+        [ProtoMember(0)]
+        public ulong ID => user.Id;
+
+
+        [ProtoMember(1)]
         public readonly string playerName;
 
+        [ProtoMember(2)]
         public PlayerInventory inventory;
+        [ProtoMember(3)]
         public PlayerEquimentInventory equipment;
 
+        [ProtoMember(4)]
         public Action currentAction { get; protected set; }
 
+        [ProtoMember(5)]
         protected readonly Dictionary<string, IPreference> preferences = new Dictionary<string, IPreference>();
 
+        [ProtoMember(7)]
         public bool inSingleCombat = false;
 
+        [ProtoMember(6)]
         public List<EntityFightable> targetedBy = new List<EntityFightable>();
 
-
+        [ProtoMember(8)]
         public EntityFightable target { get; protected set; }
 
         public bool CanStartFight

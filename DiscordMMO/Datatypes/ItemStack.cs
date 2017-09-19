@@ -1,16 +1,16 @@
-﻿using System;
-using System.Runtime.Serialization;
-using DiscordMMO.Util;
-using DiscordMMO.Handlers;
+﻿using DiscordMMO.Handlers;
 using DiscordMMO.Datatypes.Items;
+using ProtoBuf;
 
 namespace DiscordMMO.Datatypes
 {
-    [Serializable]
-    public class ItemStack : ISerializable
+    [ProtoContract]
+    public class ItemStack
     {
+        [ProtoMember(1)]
         public Item itemType;
 
+        [ProtoMember(2)]
         public int count;
 
         public bool IsEmpty => (itemType is ItemEmpty || count <= 0);
@@ -26,12 +26,6 @@ namespace DiscordMMO.Datatypes
         {
             itemType = type;
             this.count = count;
-        }
-
-        public ItemStack(SerializationInfo info, StreamingContext context)
-        {
-            itemType = ItemHandler.GetItemInstanceFromName(info.GetString("itemType"));
-            count = info.GetInt32("count");
         }
 
         public ItemStack(Item type) : this(type, 1)
@@ -52,12 +46,6 @@ namespace DiscordMMO.Datatypes
             if (IsEmpty)
                 return "Empty";
             return itemType.displayName;
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("type", itemType.itemName);
-            info.AddValue("count", count);
         }
     }
 }

@@ -17,15 +17,22 @@ namespace DiscordMMO.Datatypes.Inventories
 
         public override int size => 10;
 
-        Dictionary<string, int?> slots = new Dictionary<string, int?>();
+        public static readonly Dictionary<string, int?> slots = new Dictionary<string, int?>();
 
         public PlayerEquimentInventory(Player owner) : base(owner)
+        {
+
+        }
+
+        static PlayerEquimentInventory()
         {
             foreach (PlayerEquipmentSlot slot in Enum.GetValues(typeof(PlayerEquipmentSlot)))
             {
                 slots[slot.ToString().ToLowerInvariant()] = (int)slot;
             }
         }
+            
+
 
         public ItemStack this[string name]
         {

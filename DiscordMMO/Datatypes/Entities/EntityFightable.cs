@@ -55,6 +55,11 @@ namespace DiscordMMO.Datatypes.Entities
             ticksUntilNextAttack = info.GetInt32("attackDelay");
         }
 
+        public EntityFightable()
+        {
+
+        }
+
         public abstract void CallAttackedEvent(ref OnAttackEventArgs args);
 
         public abstract void CallAttackingEvent(ref OnAttackEventArgs args);

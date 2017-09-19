@@ -1,7 +1,9 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using DiscordMMO.Datatypes;
@@ -198,25 +200,30 @@ namespace DiscordMMO.Handlers
 
             using (connection)
             {
-                try
+
+                using (MemoryStream stream = new MemoryStream())
                 {
-                    Console.WriteLine("[Database Handler] Attempting to connect to server");
-                    await connection.OpenAsync();
-                    saveOrOverwritePlayer = new MySqlCommand(saveOrOverwriteString, connection);
-                    saveOrOverwritePlayer.Parameters.AddWithValue("@id", player.user.Id);
-                    saveOrOverwritePlayer.Parameters.AddWithValue("@name", player.playerName);
-                    saveOrOverwritePlayer.Parameters.AddWithValue("@actionName", player.currentAction.ToString());
-                    saveOrOverwritePlayer.Parameters.AddWithValue("@actionTime", player.currentAction.finishTime);
-                    saveOrOverwritePlayer.Parameters.AddWithValue("@inventory", player.inventory.ToString());
-                    saveOrOverwritePlayer.Parameters.AddWithValue("@equipment", player.equipment.ToString());
-                    saveOrOverwritePlayer.Parameters.AddWithValue("@pm", player.GetPreference<bool>("pm"));
-                    saveOrOverwritePlayer.Parameters.AddWithValue("@mention", player.GetPreference<bool>("mention"));
-                    saveOrOverwritePlayer.Prepare();
-                    await saveOrOverwritePlayer.ExecuteNonQueryAsync();
-                }
-                catch (Exception e)
-                {
-                  Console.WriteLine(e.ToString());
+                    try
+                    {
+                        IFormatter f = new BinaryFormatter();
+                        Console.WriteLine("[Database Handler] Attempting to connect to server");
+                        await connection.OpenAsync();
+                        saveOrOverwritePlayer = new MySqlCommand(saveOrOverwriteString, connection);
+                        saveOrOverwritePlayer.Parameters.AddWithValue("@id", player.user.Id);
+                        saveOrOverwritePlayer.Parameters.AddWithValue("@name", player.playerName);
+                        saveOrOverwritePlayer.Parameters.AddWithValue("@actionName", player.currentAction.ToString());
+                        saveOrOverwritePlayer.Parameters.AddWithValue("@actionTime", player.currentAction.finishTime);
+                        saveOrOverwritePlayer.Parameters.AddWithValue("@inventory", player.inventory);
+                        //saveOrOverwritePlayer.Parameters.AddWithValue("@equipment", f.Serialize());
+                        saveOrOverwritePlayer.Parameters.AddWithValue("@pm", player.GetPreference<bool>("pm"));
+                        saveOrOverwritePlayer.Parameters.AddWithValue("@mention", player.GetPreference<bool>("mention"));
+                        saveOrOverwritePlayer.Prepare();
+                        await saveOrOverwritePlayer.ExecuteNonQueryAsync();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.ToString());
+                    }
                 }
             }
         }

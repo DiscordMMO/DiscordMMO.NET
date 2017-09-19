@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 using DiscordMMO.Datatypes.Interactions;
 using DiscordMMO.Util;
 using DiscordMMO.Handlers;
+using System.Runtime.Serialization;
 
 namespace DiscordMMO.Datatypes.Entities
 {
     public class EntityGoblin : EntityFightable
     {
+
         public override string name => "goblin";
 
         public override bool singleOnly => true;
@@ -41,6 +43,15 @@ namespace DiscordMMO.Datatypes.Entities
             {
                 return (new ItemStack[] { ItemHandler.GetItemInstanceFromName("wood")}).ToList();
             }
+        }
+
+        public EntityGoblin() : base()
+        {
+
+        }
+
+        public EntityGoblin(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
         }
 
         public override void CallAttackedEvent(ref OnAttackEventArgs args)

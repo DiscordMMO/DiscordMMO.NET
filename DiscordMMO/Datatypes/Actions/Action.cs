@@ -11,14 +11,14 @@ namespace DiscordMMO.Datatypes.Actions
 {
     public abstract class Action
     {
-        public const string DONE_IN_FORMAT = "You will be done in {0:dd\\.hh\\:mm\\:ss}";
+        public const string DONE_IN_FORMAT = " will be done in {0:dd\\.hh\\:mm\\:ss}";
 
         public static Dictionary<string, Type> actions = new Dictionary<string, Type>(); 
 
         public Player performer { get; protected set; }
         public DateTime finishTime { get; protected set; }
 
-        public abstract bool setFinishTime { get; }
+        public abstract bool hasSetFinishTime { get; }
 
         public abstract string name { get; }
 
@@ -147,7 +147,7 @@ namespace DiscordMMO.Datatypes.Actions
     {
         public override string name { get => "idle"; }
 
-        public override bool setFinishTime => false;
+        public override bool hasSetFinishTime => false;
 
         public ActionIdle(Player performer) : base(performer)
         {

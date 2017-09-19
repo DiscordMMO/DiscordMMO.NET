@@ -12,7 +12,7 @@ namespace DiscordMMO.Datatypes.Actions
     public class ActionChopWood : Action
     {
 
-        public override bool setFinishTime => true;
+        public override bool hasSetFinishTime => true;
 
         public ActionChopWood(Player performer) : base(performer)
         {

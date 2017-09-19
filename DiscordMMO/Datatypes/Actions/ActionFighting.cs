@@ -11,7 +11,7 @@ namespace DiscordMMO.Datatypes.Actions
     {
         public override string name => "fight";
 
-        public override bool setFinishTime => false;
+        public override bool hasSetFinishTime => false;
 
         public IDamageable fighting;
 
