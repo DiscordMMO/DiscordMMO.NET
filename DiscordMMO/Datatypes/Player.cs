@@ -19,33 +19,64 @@ namespace DiscordMMO.Datatypes
     public class Player : IDamageable
     {
 
+        /// <summary>
+        /// The IUser that owns this player
+        /// </summary>
         public IUser user { get; protected set; }
 
         [ProtoMember(0)]
+        /// <summary>
+        /// The <see cref="Player.user"/>s id 
+        /// </summary>
         public ulong ID => user.Id;
 
 
         [ProtoMember(1)]
+        /// <summary>
+        /// The username of the player
+        /// </summary>
         public readonly string playerName;
 
         [ProtoMember(2)]
+        /// <summary>
+        /// The players inventory
+        /// </summary>
         public PlayerInventory inventory;
+        
         [ProtoMember(3)]
+        /// <summary>
+        /// The players equipment
+        /// </summary>
         public PlayerEquimentInventory equipment;
 
         [ProtoMember(4)]
+        /// <summary>
+        /// The action the player is currently performing
+        /// </summary>
         public Action currentAction { get; protected set; }
 
         [ProtoMember(5)]
+        /// <summary>
+        /// The players preferences
+        /// </summary>
         protected readonly Dictionary<string, IPreference> preferences = new Dictionary<string, IPreference>();
 
         [ProtoMember(7)]
+        /// <summary>
+        /// <code>False</code> if the player can be attacked by multiple enemies at once
+        /// </summary>
         public bool inSingleCombat = false;
 
         [ProtoMember(6)]
+        /// <summary>
+        /// The enemies that are targeting the player
+        /// </summary>
         public List<EntityFightable> targetedBy = new List<EntityFightable>();
 
         [ProtoMember(8)]
+        /// <summary>
+        /// The enemy that the player is fighting
+        /// </summary>
         public EntityFightable target { get; protected set; }
 
         public bool CanStartFight
@@ -188,6 +219,7 @@ namespace DiscordMMO.Datatypes
         {
             await currentAction.OnTick();
         }
+        
         /// <summary>
         /// Makes the player idle
         /// </summary>
@@ -207,6 +239,7 @@ namespace DiscordMMO.Datatypes
         /// <returns>True if the action of the player was changed, false otherwise</returns>
         public virtual bool SetAction(Action action, bool announce, bool force = false)
         {
+            // If the action should be forced, always set the action
             if (force)
             {
                 currentAction = action;
@@ -214,6 +247,7 @@ namespace DiscordMMO.Datatypes
             }
             else
             {
+                // If it is not forced, set the action if the player is idle
                 if (currentAction is ActionIdle)
                 {
                     currentAction = action;
@@ -223,12 +257,22 @@ namespace DiscordMMO.Datatypes
             return false;
         }
 
+        
+
 #endregion
 
         #region Combat
 
-        public virtual bool StartFight(EntityFightable against, bool force)
+        /// <summary>
+        /// Start fighting the given <see cref="EntityFightable">
+        /// </summary>
+        /// <param name="against">The <see cref="EntityFightable"> to fight against</param>
+        /// <param name="force">If <code>true</code> the fight will only be started if both the player and <paramref name="against"/> can start fighting</param>
+        /// <returns>If the fight was started, <code>true</code>, <code>false</code> otherwise</returns>
+        /// <seealso cref="IDamageable"/>
+        public virtual bool StartFight(EntityFightable against, bool force = false)
         {
+            // If the fight is forced, start the fight
             if (force)
             {
                 against.StartFightAgainst(this, true);
@@ -237,9 +281,12 @@ namespace DiscordMMO.Datatypes
             }
             else
             {
-                if (CanStartFight && SetAction(new ActionFighting(this, against), false))
+                // Only start the fight, if both parts can start the fight
+                if (CanStartFight && !IsIdle && against.CanStartFight)
                 {
-                    return against.StartFightAgainst(this, false);
+                    SetAction(new ActionFighting(this, against), false);
+                    against.StartFightAgainst(this, false);
+                    return true;
                 }
                 return false;
             }
@@ -249,6 +296,9 @@ namespace DiscordMMO.Datatypes
 
         public void Die(IDamageable killer)
         {
+        
+            // TODO: Handle death
+            
             var pm = GetPrivateChannel().GetAwaiter().GetResult();
 
             pm.SendMessageAsync(killer.name + " killed you").Wait();
@@ -268,6 +318,10 @@ namespace DiscordMMO.Datatypes
         #endregion
 
         #region Inventory
+        /// <summary>
+        /// Equip an item
+        /// </summary>
+        /// <param name="toEquip">The item to equip</param>
         public virtual void Equip(ItemStack toEquip)
         {
             if (toEquip.itemType is ItemEquipable == false)
@@ -278,6 +332,11 @@ namespace DiscordMMO.Datatypes
             Equip(toEquip, slot);
         }
 
+        /// <summary>
+        /// Equip an item
+        /// </summary>
+        /// <param name="toEquip">The item to equip</param>
+        /// <param name="slot">The slot to equip the item to</param>
         public virtual void Equip(ItemStack toEquip, PlayerEquipmentSlot slot)
         {
             ItemStack currentEquip = equipment[slot];
