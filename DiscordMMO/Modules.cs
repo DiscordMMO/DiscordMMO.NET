@@ -351,7 +351,7 @@ namespace DiscordMMO
 
                 i++;
             }
-            // Message the playe
+            // Message the player
             await ReplyAsync(outp.ToString());
         }
 
@@ -435,48 +435,70 @@ namespace DiscordMMO
         [Command("give")]
         public async Task GiveCommand(string item)
         {
+            // Check if the player can log in
             if (!await PlayerHandler.AttemptLogin(Context.User))
             {
+                // If they cannot login, notify them
                 await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
                 return;
             }
+            
             Player player = PlayerHandler.GetPlayer(Context.User);
+            
+            // Check if the given item exists
             if (!ItemHandler.IsRegisteredItem(item))
             {
+                // If the given item does not exist, notify the player
                 await ReplyAsync(Context.User.Username + ": Invalid item");
                 return;
             }
+            
             Item toAdd = ItemHandler.GetItemInstanceFromName(item);
+            
+            // Give the player the item
             player.inventory.AddItem(toAdd);
+            
+            // Notify the player
             await ReplyAsync(Context.User.Username + ": Gave item " + toAdd.displayName);
         }
 
         [Command("lo")]
         public async Task LogoutCommand()
         {
+            // Check if the player can log in
             if (!await PlayerHandler.AttemptLogin(Context.User))
             {
+                // If they cannot login, notify them
                 await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
                 return;
             }
+            
+            // Remove the player instance
             PlayerHandler.RemovePlayerInstance(Context.User);
         }
 
         [Command("en")]
         public async Task EnemyInfoCommand()
         {
+            // Check if the player can log in
             if (!await PlayerHandler.AttemptLogin(Context.User))
             {
+                // If they cannot login, notify them
                 await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
                 return;
             }
+            
             Player player = PlayerHandler.GetPlayer(Context.User);
+            
+            // Check if the player is fighting something
             if (player.currentAction is ActionFighting)
             {
                 ActionFighting f = player.currentAction as ActionFighting;
                 await ReplyAsync(f.ToString());
+                return;
             }
-            await ReplyAsync("You are not fighting anything");
+            // If the player is not fighting anything, notify them
+            await ReplyAsync(Context.User.Username + ": You are not fighting anything");
         }
 
         [Command("ser")]
@@ -485,23 +507,37 @@ namespace DiscordMMO
 
             //FATAL: Fix the stackoverflow 
 
+            // The amount of objects
             int count = 100;
+            
+            // Notify the player
             await ReplyAsync("Serializing " + count + " ItemStacks");
+            
+            // Start a stopwatch
             Stopwatch w = Stopwatch.StartNew();
+            
+            
             for (int i = 0; i < count; i++)
             {
                 byte[] s;
+                
+                // Serialize the object to byte[] s
                 using (MemoryStream mem = new MemoryStream())
                 {
                     Serializer.NonGeneric.Serialize(mem, (ItemStack)ItemHandler.GetItemInstanceFromName("wood"));
                     s = mem.ToArray();
                 }
+                
+                // Recreate the item from byte[] s
                 using (MemoryStream mem = new MemoryStream(s))
                 {
                     ItemStack item = Serializer.Deserialize<ItemStack>(mem);
                 }
             }
+            // Stop the stopwatch
             w.Stop();
+            
+            // Notify the player with the stats
             await ReplyAsync("Serializing " + count + " objects took " + w.ElapsedMilliseconds + "ms \n" +
                              "Average time per object: " + w.ElapsedMilliseconds / count + "ms");
 
