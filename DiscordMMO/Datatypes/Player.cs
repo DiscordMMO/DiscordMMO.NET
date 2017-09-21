@@ -335,7 +335,7 @@ namespace DiscordMMO.Datatypes
         /// <summary>
         /// Equip an item
         /// </summary>
-        /// <param name="toEquip">The <see cref="ItemStack"> to equip</param>
+        /// <param name="toEquip">The <see cref="ItemStack"/> to equip</param>
         /// <param name="slot">The <see cref="PlayerEquipmentSlot"/> to equip the <see cref="ItemStack"/> to</param>
         public virtual void Equip(ItemStack toEquip, PlayerEquipmentSlot slot)
         {
