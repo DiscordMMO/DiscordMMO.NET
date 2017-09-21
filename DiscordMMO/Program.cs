@@ -33,21 +33,27 @@ namespace DiscordMMO
 
         public async Task Start()
         {
-
+            // Set the culture to the given culture
             CultureInfo.DefaultThreadCurrentCulture = culture;
             CultureInfo.DefaultThreadCurrentUICulture = culture;
             Thread.CurrentThread.CurrentCulture = culture;
             Thread.CurrentThread.CurrentUICulture = culture;
 
+            // Init the client
             client = new DiscordSocketClient();
+            
+            // Init the command service
             commands = new CommandService();
 
+            // Add the logging handler
             client.Log += Log;
 
+            // Read the config
             ConfigHelper.SetConfigPath("botconfig.cfg");
 
             sqlAvailable = bool.Parse(ConfigHelper.GetValue("sql_available"));
 
+            // Test the database connection
             if (sqlAvailable)
             {
 
@@ -66,17 +72,25 @@ namespace DiscordMMO
                     Environment.Exit(1);
                 }
             }
+    
+            // Initialize handlers
+            Task initAll = InitAll();
 
-            InitAll();
-
+            // Initialize services
             services = new ServiceCollection().BuildServiceProvider();
 
+            // Install commands
             await InstallCommands();
 
+            // Read the bot token
             ConfigHelper.SetConfigPath(@"dangerous.cfg");
 
             string token = ConfigHelper.GetValue("token");
 
+            // Make sure that all handlers are initialized
+            await initAll;
+            
+            // Start the bot itself
             await client.LoginAsync(TokenType.Bot, token);
             await client.StartAsync();
 
