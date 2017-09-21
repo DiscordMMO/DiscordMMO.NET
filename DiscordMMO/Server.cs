@@ -13,7 +13,7 @@ namespace DiscordMMO
     public sealed class Server
     {
 
-        private bool stop = false;
+        private volatile bool stop = false;
 
         private static double tickRate = 2;
 
