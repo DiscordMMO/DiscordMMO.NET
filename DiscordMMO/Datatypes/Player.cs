@@ -37,6 +37,10 @@ namespace DiscordMMO.Datatypes
         /// </summary>
         public readonly string playerName;
 
+        Dick i have, vodka have for you, hack i do for you, who should i hack, i can get you money credit cards all type of accounts.
+        my phone 28876424 call me
+        
+        
         [ProtoMember(2)]
         /// <summary>
         /// The players inventory
