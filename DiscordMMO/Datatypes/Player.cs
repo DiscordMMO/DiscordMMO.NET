@@ -63,7 +63,7 @@ namespace DiscordMMO.Datatypes
 
         [ProtoMember(7)]
         /// <summary>
-        /// <code>False</code> if the player can be attacked by multiple enemies at once
+        /// <c>False</c> if the player can be attacked by multiple enemies at once
         /// </summary>
         public bool inSingleCombat = false;
 
@@ -224,7 +224,7 @@ namespace DiscordMMO.Datatypes
         /// Makes the player idle
         /// </summary>
         /// <param name="announce">Whether it should be announced to the player that they started this action</param>
-        /// <param name="force">Whether the action only should be started if the player is idle (It will always be started if true)</param>
+        /// <param name="force">Whether the action only should be started if the player is idle (It will always be started if <c>true</c>)</param>
         public virtual void Idle(bool announce)
         {
             SetAction(new ActionIdle(this), announce, true);
@@ -235,8 +235,8 @@ namespace DiscordMMO.Datatypes
         /// </summary>
         /// <param name="action">The action to start</param>
         /// <param name="announce">Whether it should be announced to the player that they started this action</param>
-        /// <param name="force">Whether the action only should be started if the player is idle (It will always be started if true)</param>
-        /// <returns>True if the action of the player was changed, false otherwise</returns>
+        /// <param name="force">Whether the action only should be started if the player is idle (It will always be started if <c>true</c>)</param>
+        /// <returns><c>True</c> if the action of the player was changed, <c>false</c> otherwise</returns>
         public virtual bool SetAction(Action action, bool announce, bool force = false)
         {
             // If the action should be forced, always set the action
@@ -264,11 +264,11 @@ namespace DiscordMMO.Datatypes
         #region Combat
 
         /// <summary>
-        /// Start fighting the given <see cref="EntityFightable">
+        /// Start fighting the given <see cref="EntityFightable"/>
         /// </summary>
-        /// <param name="against">The <see cref="EntityFightable"> to fight against</param>
-        /// <param name="force">If <code>true</code> the fight will only be started if both the player and <paramref name="against"/> can start fighting</param>
-        /// <returns>If the fight was started, <code>true</code>, <code>false</code> otherwise</returns>
+        /// <param name="against">The <see cref="EntityFightable"/> to fight against</param>
+        /// <param name="force">If <c>true</c> the fight will only be started if both the player and <paramref name="against"/> can start fighting</param>
+        /// <returns>If the fight was started, <c>true</c>, <c>false</c> otherwise</returns>
         /// <seealso cref="IDamageable"/>
         public virtual bool StartFight(EntityFightable against, bool force = false)
         {
@@ -321,7 +321,7 @@ namespace DiscordMMO.Datatypes
         /// <summary>
         /// Equip an item
         /// </summary>
-        /// <param name="toEquip">The item to equip</param>
+        /// <param name="toEquip">The <see cref="ItemStack"/> to equip</param>
         public virtual void Equip(ItemStack toEquip)
         {
             if (toEquip.itemType is ItemEquipable == false)
@@ -335,8 +335,8 @@ namespace DiscordMMO.Datatypes
         /// <summary>
         /// Equip an item
         /// </summary>
-        /// <param name="toEquip">The item to equip</param>
-        /// <param name="slot">The slot to equip the item to</param>
+        /// <param name="toEquip">The <see cref="ItemStack"> to equip</param>
+        /// <param name="slot">The <see cref="PlayerEquipmentSlot"/> to equip the <see cref="ItemStack"/> to</param>
         public virtual void Equip(ItemStack toEquip, PlayerEquipmentSlot slot)
         {
             ItemStack currentEquip = equipment[slot];
