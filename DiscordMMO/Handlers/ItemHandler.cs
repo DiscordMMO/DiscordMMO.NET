@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using DiscordMMO.Datatypes.Items;
-using ProtoBuf.Meta;
+using System.Xml.Serialization;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -14,7 +14,7 @@ namespace DiscordMMO.Handlers
 
         //TODO: Possibly clean this up?
 
-
+        
         public async static Task Init()
         {
             Console.WriteLine("[Item Handler] Detecting items");
@@ -83,8 +83,9 @@ namespace DiscordMMO.Handlers
             Item item = GetItemFromType(type);
             string name = item.itemName;
             items.Add(name, type);
-            RuntimeTypeModel.Default.Add(typeof(Item), false).AddSubType(items.Count, type);
         }
+
+        public static List<Type> GetItemTypes() => items.Values.ToList();
 
     }
 }

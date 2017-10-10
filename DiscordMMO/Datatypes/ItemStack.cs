@@ -1,18 +1,20 @@
-﻿using DiscordMMO.Handlers;
+﻿using System.Xml.Serialization;
+using DiscordMMO.Handlers;
 using DiscordMMO.Datatypes.Items;
-using ProtoBuf;
 
 namespace DiscordMMO.Datatypes
 {
-    [ProtoContract]
+    [XmlRoot]
+    [HasOwnSerializer]
     public class ItemStack
     {
-        [ProtoMember(1)]
+        [XmlElement]
         public Item itemType;
 
-        [ProtoMember(2)]
+        [XmlElement]
         public int count;
 
+        [XmlIgnore]
         public bool IsEmpty => (itemType is ItemEmpty || count <= 0);
 
         public static ItemStack empty { get; private set; }

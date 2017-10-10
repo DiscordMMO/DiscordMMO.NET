@@ -1,10 +1,11 @@
 ﻿using System;
 using DiscordMMO.Handlers;
-using ProtoBuf;
+using System.Xml.Serialization;
 
 namespace DiscordMMO.Datatypes.Items
 {
-    [ProtoContract]
+    [XmlRoot]
+    [HasOwnSerializer]
     public abstract class Item 
     {
 
@@ -14,12 +15,14 @@ namespace DiscordMMO.Datatypes.Items
         /// This is used as an id for the item
         /// This should be all lowercase with underscores for spaces
         /// </summary>
+        [XmlElement]
         public virtual string itemName => "empty";
 
+        [XmlIgnore]
         public virtual string displayName => "Empty";
 
+        [XmlElement]
         public virtual bool stackable => true;
-
 
         public override string ToString()
         {

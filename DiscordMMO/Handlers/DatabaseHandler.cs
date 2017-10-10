@@ -1,19 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using DiscordMMO.Datatypes;
-using DiscordMMO.Helpers;
-using DiscordMMO.Datatypes.Actions;
 using Discord;
 using System.Diagnostics;
-using MySql.Data.MySqlClient;
-using DiscordMMO.Datatypes.Inventories;
-using Action = DiscordMMO.Datatypes.Actions.Action;
 
 namespace DiscordMMO.Handlers
 {
@@ -22,15 +14,24 @@ namespace DiscordMMO.Handlers
 
         private static readonly string connString;
 
+        public static readonly string BASE_PLAYER_PATH;
+
         #region Save or overwrite string
+        /*
         private const string saveOrOverwriteString = "INSERT INTO users (id, name, currentActionName, currentActionFinishTime, preference_pm, preference_mention, inventory, equipment) " +
     "VALUES(@id, @name, @actionName, @actionTime, @pm, @mention, @inventory, @equipment)" +
     "ON DUPLICATE KEY UPDATE id=@id, name=@name, currentActionName=@actionName, " +
     "currentActionFinishTime=@actionTime, preference_pm=@pm, preference_mention=@mention, inventory=@inventory, equipment=@equipment";
+        */
         #endregion
 
         static DatabaseHandler()
         {
+
+            BASE_PLAYER_PATH = Environment.GetEnvironmentVariable("DISCORDMMO_USERDATA") + @"\Users\";
+
+            #region Deprecated
+            /*
             string username, password;
             ConfigHelper.SetConfigPath(@"dangerous.cfg");
             username = ConfigHelper.GetValue("sql_username");
@@ -42,24 +43,8 @@ namespace DiscordMMO.Handlers
                 $"password={password};server=localhost;" +
                 $"Database=discord_mmo_net;" +
                 $"port=3306");
-
-        }
-
-        public static async Task CheckConnection()
-        {
-
-            MySqlConnection connection;
-
-            connection = new MySqlConnection(connString);
-
-            Console.WriteLine("[Database Handler] Testing connection to server");
-            Stopwatch watch = Stopwatch.StartNew();
-            using (connection)
-            {
-                await connection.OpenAsync();
-            }
-            watch.Stop();
-            Console.WriteLine($"[Database Handler] First connection took {watch.ElapsedMilliseconds}ms");
+                */
+#endregion
         }
 
         public static async Task<bool> CanFetchPlayer(IUser user)
@@ -70,25 +55,8 @@ namespace DiscordMMO.Handlers
         public static async Task<bool> CanFetchPlayer(ulong id)
         {
 
-            MySqlConnection connection;
-
-            connection = new MySqlConnection(connString);
-
-            MySqlCommand getUserFromId;
-            MySqlDataReader reader;
-            using (connection)
-            {
-                await connection.OpenAsync();
-                getUserFromId = new MySqlCommand("SELECT * FROM users WHERE id = @id", connection);
-                getUserFromId.Parameters.AddWithValue("@id", id);
-                getUserFromId.Prepare();
-                reader = getUserFromId.ExecuteReader();
-                using (reader)
-                {
-
-                    return reader.HasRows;
-                }
-            }
+            return File.Exists(BASE_PLAYER_PATH + id);
+      
         }
 
 
@@ -100,14 +68,26 @@ namespace DiscordMMO.Handlers
         public static async Task<Player> GetOrFetchPlayer(ulong id, DiscordSocketClient client)
         {
 
-            // TODO: Add equipment deserialization
-
             if (PlayerHandler.HasPlayer(client.GetUser(id)))
             {
                 return PlayerHandler.GetPlayer(client.GetUser(id));
             }
 
-            MySqlConnection connection;
+            string playerPath = BASE_PLAYER_PATH + id + ".xml";
+
+            if (!File.Exists(playerPath))
+            {
+                return null;
+            }
+
+            using (StreamReader file = new StreamReader(playerPath))
+            {
+                return SerializationHandler.GetSerializer<Player>().Deserialize(file) as Player;
+            }
+
+            #region Deprecated
+            /*
+                MySqlConnection connection;
             
             MySqlCommand getUserFromId;
 
@@ -171,6 +151,8 @@ namespace DiscordMMO.Handlers
 
                 }
             }
+            */
+#endregion
         }
 
 
@@ -190,41 +172,12 @@ namespace DiscordMMO.Handlers
 
         public static async Task SaveAsync(Player player)
         {
-            MySqlConnection connection;
-
-            MySqlCommand saveOrOverwritePlayer;
-
-            connection = new MySqlConnection(connString);
-
-            Console.WriteLine("[Database Handler] Saving player: " + player.playerName);
-
-            using (connection)
+            using (MemoryStream mem = new MemoryStream())
+            using (FileStream file = new FileStream(BASE_PLAYER_PATH + player.ID + ".xml", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Delete | FileShare.ReadWrite, bufferSize: 1000000000, useAsync: true))
             {
-
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    try
-                    {
-                        IFormatter f = new BinaryFormatter();
-                        Console.WriteLine("[Database Handler] Attempting to connect to server");
-                        await connection.OpenAsync();
-                        saveOrOverwritePlayer = new MySqlCommand(saveOrOverwriteString, connection);
-                        saveOrOverwritePlayer.Parameters.AddWithValue("@id", player.user.Id);
-                        saveOrOverwritePlayer.Parameters.AddWithValue("@name", player.playerName);
-                        saveOrOverwritePlayer.Parameters.AddWithValue("@actionName", player.currentAction.ToString());
-                        saveOrOverwritePlayer.Parameters.AddWithValue("@actionTime", player.currentAction.finishTime);
-                        saveOrOverwritePlayer.Parameters.AddWithValue("@inventory", player.inventory);
-                        //saveOrOverwritePlayer.Parameters.AddWithValue("@equipment", f.Serialize());
-                        saveOrOverwritePlayer.Parameters.AddWithValue("@pm", player.GetPreference<bool>("pm"));
-                        saveOrOverwritePlayer.Parameters.AddWithValue("@mention", player.GetPreference<bool>("mention"));
-                        saveOrOverwritePlayer.Prepare();
-                        await saveOrOverwritePlayer.ExecuteNonQueryAsync();
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e.ToString());
-                    }
-                }
+                SerializationHandler.GetSerializer<Player>().Serialize(mem, player);
+                byte[] b = mem.ToArray();
+                await file.WriteAsync(b, 0, b.Length);
             }
         }
 

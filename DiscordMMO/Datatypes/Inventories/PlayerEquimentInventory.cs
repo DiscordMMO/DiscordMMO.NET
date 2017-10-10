@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using DiscordMMO.Handlers;
-using DiscordMMO.Util;
+using System.IO;
 
 
 namespace DiscordMMO.Datatypes.Inventories
@@ -18,6 +18,8 @@ namespace DiscordMMO.Datatypes.Inventories
         public override int size => 10;
 
         public static readonly Dictionary<string, int?> slots = new Dictionary<string, int?>();
+
+        protected PlayerEquimentInventory() { }
 
         public PlayerEquimentInventory(Player owner) : base(owner)
         {
@@ -71,23 +73,11 @@ namespace DiscordMMO.Datatypes.Inventories
             return slots[name].GetValueOrDefault(-1);
         }
 
-        public static new PlayerEquimentInventory FromString(Player owner, string inv)
+        public static new PlayerEquimentInventory Deserialize(Stream s)
         {
 
-            PlayerEquimentInventory ret = new PlayerEquimentInventory(owner);
-            for (int i = 0; i < inv.Split(';').Length - 1; i++)
-            {
-                string fullItem = inv.Split(';')[i];
-
-                string item = fullItem.Split(',')[0];
-
-
-                int slot = int.Parse(Regex.Matches(fullItem, slotRegex)[0].Value.Substring(2));
-
-                ret[slot] = SerializationHandler.Deserialize(item) as ItemStack;
-
-            }
-            return ret;
+            return SerializationHandler.GetSerializer<PlayerEquimentInventory>().Deserialize(s) as PlayerEquimentInventory;
+          
         }
 
         public override string ToString()

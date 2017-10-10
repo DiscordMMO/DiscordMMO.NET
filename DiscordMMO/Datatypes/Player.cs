@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml.Serialization;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -10,82 +11,80 @@ using DiscordMMO.Datatypes.Inventories;
 using DiscordMMO.Datatypes.Entities;
 using DiscordMMO.Datatypes.Items;
 using DiscordMMO.Util;
-using ProtoBuf;
+using DiscordMMO.Handlers;
 using Action = DiscordMMO.Datatypes.Actions.Action;
 
 namespace DiscordMMO.Datatypes
 {
-    [ProtoContract]
+    [XmlRoot]
+    [HasOwnSerializer]
     public class Player : IDamageable
     {
+        #region Fields / Properties
 
+        public static XmlSerializer serializer;
+
+        [XmlIgnore]
         /// <summary>
         /// The IUser that owns this player
         /// </summary>
         public IUser user { get; protected set; }
 
-        [ProtoMember(0)]
+        [XmlElement]
         /// <summary>
-        /// The <see cref="Player.user"/>s id 
+        /// The <see cref="user"/>s id 
         /// </summary>
         public ulong ID => user.Id;
 
 
-        [ProtoMember(1)]
+        [XmlElement]
         /// <summary>
         /// The username of the player
         /// </summary>
         public readonly string playerName;
         
-        [ProtoMember(2)]
+        [XmlElement]
         /// <summary>
         /// The players inventory
         /// </summary>
         public PlayerInventory inventory;
         
-        [ProtoMember(3)]
+        [XmlElement]
         /// <summary>
         /// The players equipment
         /// </summary>
         public PlayerEquimentInventory equipment;
 
-        [ProtoMember(4)]
+        [XmlElement]
         /// <summary>
         /// The action the player is currently performing
         /// </summary>
-        public Action currentAction { get; protected set; }
+        public Action currentAction { get; set; }
 
-        [ProtoMember(5)]
+        [XmlElement]
         /// <summary>
         /// The players preferences
         /// </summary>
         protected readonly Dictionary<string, IPreference> preferences = new Dictionary<string, IPreference>();
 
-        [ProtoMember(7)]
+        [XmlElement]
         /// <summary>
         /// <c>False</c> if the player can be attacked by multiple enemies at once
         /// </summary>
         public bool inSingleCombat = false;
 
-        [ProtoMember(6)]
+        [XmlElement]
         /// <summary>
         /// The enemies that are targeting the player
         /// </summary>
         public List<EntityFightable> targetedBy = new List<EntityFightable>();
 
-        [ProtoMember(8)]
-        /// <summary>
-        /// The enemy that the player is fighting
-        /// </summary>
-        public EntityFightable target { get; protected set; }
 
         public bool CanStartFight
         {
             get
             {
-                if (!inSingleCombat)
-                    return true;
-                return (targetedBy.Count <= 0 && target == null);
+                return currentAction is ActionFighting;
             }
         }
 
@@ -96,6 +95,8 @@ namespace DiscordMMO.Datatypes
                 return currentAction is ActionIdle;
             }
         }
+
+#endregion
 
         #region IDamageable
 
@@ -157,6 +158,14 @@ namespace DiscordMMO.Datatypes
         #endregion
 
         #region Constructors
+
+        static Player()
+        {
+
+        }
+
+        protected Player() { }
+
         public Player(IUser user) : this(user, user.Username)
         {
 

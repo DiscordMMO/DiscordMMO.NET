@@ -4,7 +4,7 @@ using DiscordMMO.Consts;
 using DiscordMMO.Datatypes.Actions;
 using DiscordMMO.Datatypes.Preferences;
 using DiscordMMO.Handlers;
-using ProtoBuf;
+using System.Security.AccessControl;
 using System;
 using System.IO;
 using System.Linq;
@@ -17,6 +17,7 @@ using DiscordMMO.Datatypes;
 using DiscordMMO.Datatypes.Items;
 using DiscordMMO.Datatypes.Entities;
 using Action = DiscordMMO.Datatypes.Actions.Action;
+using System.Security.Principal;
 
 namespace DiscordMMO
 {
@@ -429,7 +430,6 @@ namespace DiscordMMO
             Player p = PlayerHandler.GetPlayer(Context.User);
             string eq = p.equipment.ToString();
             await ReplyAsync(p.equipment.ToString());
-            PlayerEquimentInventory.FromString(p, eq);
         }
 
         [Command("give")]
@@ -505,33 +505,44 @@ namespace DiscordMMO
         public async Task XmlCommand()
         {
 
-            //FATAL: Fix the stackoverflow 
-
             // The amount of objects
             int count = 100;
             
+            string path = Environment.GetEnvironmentVariable("DISCORDMMO_USERDATA") + @"\Debug";
+
             // Notify the player
             await ReplyAsync("Serializing " + count + " ItemStacks");
             
             // Start a stopwatch
             Stopwatch w = Stopwatch.StartNew();
-            
+
             
             for (int i = 0; i < count; i++)
             {
-                byte[] s;
-                
-                // Serialize the object to byte[] s
-                using (MemoryStream mem = new MemoryStream())
+                try
                 {
-                    Serializer.NonGeneric.Serialize(mem, (ItemStack)ItemHandler.GetItemInstanceFromName("wood"));
-                    s = mem.ToArray();
+                    string itemPath = path + $"\\item{i}.xml";
+
+
+                    // Serialize the object to a file
+                    using (MemoryStream mem = new MemoryStream())
+                    using (FileStream file = new FileStream(itemPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Delete | FileShare.ReadWrite, bufferSize: 1000000000, useAsync: true))
+                    {
+
+                        SerializationHandler.GetSerializer<ItemStack>().Serialize(mem, (ItemStack)ItemHandler.GetItemInstanceFromName("wood"));
+                        byte[] b = mem.ToArray();
+                        await file.WriteAsync(b, 0, b.Length);
+                    }
+
+                    // Recreate the item from the file
+                    using (StreamReader file = new StreamReader(itemPath))
+                    {
+                        ItemStack item = (ItemStack)SerializationHandler.GetSerializer<ItemStack>().Deserialize(file);
+                    }
                 }
-                
-                // Recreate the item from byte[] s
-                using (MemoryStream mem = new MemoryStream(s))
+                catch (IOException e)
                 {
-                    ItemStack item = Serializer.Deserialize<ItemStack>(mem);
+                    Console.WriteLine(e.ToString());
                 }
             }
             // Stop the stopwatch

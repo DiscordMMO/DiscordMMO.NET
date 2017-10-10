@@ -1,20 +1,25 @@
-﻿using DiscordMMO.Handlers;
-using ProtoBuf;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
+using DiscordMMO.Handlers;
+using System.IO;
 
 namespace DiscordMMO.Datatypes.Inventories
 {
-    [ProtoContract, ProtoInclude(0, typeof(PlayerEquimentInventory))]
+    [XmlRoot]
+    [HasOwnSerializer]
     public class PlayerInventory : LimitedInventory
     {
 
+        [XmlIgnore]
         public Player owner { get; protected set; }
 
         public override int size => 28;
 
-        [ProtoMember(0)]
+        [XmlElement]
         public override List<ItemStack> items { get => base.items; protected set => base.items = value; }
+
+        protected PlayerInventory() { }
 
         public PlayerInventory(Player owner)
         {
@@ -26,14 +31,9 @@ namespace DiscordMMO.Datatypes.Inventories
             items = (List<ItemStack>)info.GetValue("items", typeof(List<ItemStack>));
         }
 
-        public static PlayerInventory FromString(Player owner, string inv)
+        public static PlayerInventory Deserialize(Stream s)
         {
-            PlayerInventory ret = new PlayerInventory(owner);
-            for (int i = 0; i < inv.Split(';').Length-1; i++)
-            {
-                ret[i] = (ItemStack)SerializationHandler.Deserialize(inv.Split(';')[i]);
-            }
-            return ret;
+            return (PlayerInventory)SerializationHandler.GetSerializer<PlayerInventory>().Deserialize(s);
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)

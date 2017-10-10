@@ -9,4 +9,5 @@ namespace DiscordMMO.Util
     public interface ISerialized
     {
     }
+
 }

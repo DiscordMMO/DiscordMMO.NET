@@ -51,28 +51,7 @@ namespace DiscordMMO
             // Read the config
             ConfigHelper.SetConfigPath("botconfig.cfg");
 
-            sqlAvailable = bool.Parse(ConfigHelper.GetValue("sql_available"));
 
-            // Test the database connection
-            if (sqlAvailable)
-            {
-
-                var databaseConnectionTimeout = TimeSpan.FromSeconds(30);
-
-                var databaseConnectionTest = DatabaseHandler.CheckConnection();
-
-                if (await Task.WhenAny(databaseConnectionTest, Task.Delay(databaseConnectionTimeout)) == databaseConnectionTest)
-                {
-                    Console.WriteLine("Database connection OK");
-                }
-                else
-                {
-                    Console.WriteLine($"Database connection failed after {databaseConnectionTimeout.Seconds} seconds");
-                    Console.ReadKey();
-                    Environment.Exit(1);
-                }
-            }
-    
             // Initialize handlers
             Task initAll = InitAll();
 
@@ -87,9 +66,8 @@ namespace DiscordMMO
 
             string token = ConfigHelper.GetValue("token");
 
-            // Make sure that all handlers are initialized
             await initAll;
-            
+
             // Start the bot itself
             await client.LoginAsync(TokenType.Bot, token);
             await client.StartAsync();
