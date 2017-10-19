@@ -14,6 +14,11 @@ namespace DiscordMMO.Datatypes.Actions
 
         public override bool hasSetFinishTime => true;
 
+        public ActionChopWood() : base()
+        {
+
+        }
+
         public ActionChopWood(Player performer) : base(performer)
         {
             finishTime = DateTime.Now.AddSeconds(10);

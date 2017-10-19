@@ -127,9 +127,13 @@ namespace DiscordMMO
             var result = await commands.ExecuteAsync(context, argPos, services);
             if (!result.IsSuccess)
             {
-                if (result.ErrorReason != "Unknown command.")
+                if (typeof(ExecuteResult).IsAssignableFrom(result.GetType()))
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("An error occurred");
+                    ExecuteResult res = (ExecuteResult) result;
+                    Console.WriteLine(res.Exception.ToString());
+                    Console.ForegroundColor = ConsoleColor.White;
                     await context.Channel.SendMessageAsync(result.ErrorReason);
                 }
             }

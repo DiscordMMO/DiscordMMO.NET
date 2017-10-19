@@ -7,12 +7,15 @@ using DiscordMMO.Util;
 
 namespace DiscordMMO.Datatypes.Entities
 {
-    public abstract class EntityFightable : Entity, IDamageable, ISerializable
+    [XmlRoot]
+    public abstract class EntityFightable : Entity, IDamageable
     {
 
-        public abstract bool singleOnly { get; }
+        [XmlElement]
+        public abstract bool singleOnly { get; set; }
 
-        public Player fightingAgainst { get; protected set; }
+        [XmlIgnore]
+        public Player fightingAgainst { get; set; }
 
         //TODO: Add fighting
 
@@ -28,22 +31,31 @@ namespace DiscordMMO.Datatypes.Entities
             }
         }
 
-        public override abstract string name { get; }
+        [XmlElement]
+        public override abstract string name { get; set; }
 
+        [XmlIgnore]
         public abstract int maxHealth { get; }
 
+        [XmlElement]
         public abstract int health { get; set; }
 
-        public abstract int defence { get; }
+        [XmlElement]
+        public abstract int defence { get; set; }
 
+        [XmlIgnore]
         public abstract int attackRate { get; }
 
-        public abstract int attackDamage { get; }
+        [XmlElement]
+        public abstract int attackDamage { get; set; }
 
-        public abstract int accuracy { get; }
+        [XmlElement]
+        public abstract int accuracy { get; set; }
 
+        [XmlElement]
         public abstract int ticksUntilNextAttack { get; set; }
 
+        [XmlIgnore]
         public abstract List<ItemStack> drops { get; }
 
         public abstract event OnAttacked AttackedEvent;

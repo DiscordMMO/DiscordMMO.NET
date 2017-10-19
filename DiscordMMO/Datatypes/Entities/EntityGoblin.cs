@@ -13,21 +13,21 @@ namespace DiscordMMO.Datatypes.Entities
     public class EntityGoblin : EntityFightable
     {
 
-        public override string name => "goblin";
+        public override string name { get; set; } = "goblin";
 
-        public override bool singleOnly => true;
+        public override bool singleOnly { get; set; } = true;
 
         public override int maxHealth => 10;
 
-        public override int health { get; set; }
+        public override int health { get; set; } 
 
-        public override int defence => 1;
+        public override int defence { get; set; } = 1;
 
         public override int attackRate => 3;
 
-        public override int attackDamage => 2;
+        public override int attackDamage { get; set; } = 2;
 
-        public override int accuracy => 50;
+        public override int accuracy { get; set; } = 50;
 
         public override int ticksUntilNextAttack { get; set; } = 0;
 

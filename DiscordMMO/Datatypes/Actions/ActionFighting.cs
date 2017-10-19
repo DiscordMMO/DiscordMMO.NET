@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Xml.Serialization;
 using System.Threading.Tasks;
 using DiscordMMO.Util;
 using DiscordMMO.Datatypes.Entities;
@@ -13,15 +13,14 @@ namespace DiscordMMO.Datatypes.Actions
 
         public override bool hasSetFinishTime => false;
 
-        public IDamageable fighting;
+        [XmlElement]
+        public EntityFightable fighting;
 
-        /// <summary>
-        /// THIS CONSTRUCTOR IS ONLY USED TO REGISTER THIS ACTION DO NOT USE THIS UNDER ANY OTHER CIRCUMSTANCE
-        /// </summary>
-        /// <param name="performer"></param>
         public ActionFighting(Player performer) : base(performer) { }
 
-        public ActionFighting(Player performer, IDamageable against) : base(performer)
+        public ActionFighting() : base() { }
+
+        public ActionFighting(Player performer, EntityFightable against) : base(performer)
         {
             fighting = against;
         }

@@ -17,7 +17,7 @@ using DiscordMMO.Datatypes;
 using DiscordMMO.Datatypes.Items;
 using DiscordMMO.Datatypes.Entities;
 using Action = DiscordMMO.Datatypes.Actions.Action;
-using System.Security.Principal;
+using Discord.WebSocket;
 
 namespace DiscordMMO
 {
@@ -65,7 +65,7 @@ namespace DiscordMMO
                 name = Context.User.Username;
             }
             // Check if the player already has a user
-            if (await PlayerHandler.AttemptLogin(Context.User))
+            if (await PlayerHandler.AttemptLogin(Context.User as SocketUser))
             {
                 // Notify the player that they already have player
                 await ReplyAsync($"{Context.User.Username}: {Modules.ALREADY_REGISTERED_MSG}");
@@ -74,7 +74,11 @@ namespace DiscordMMO
             else
             {
                 // Create the player instance
-                PlayerHandler.CreatePlayer(Context.User, name);
+                Player player = PlayerHandler.CreatePlayer(Context.User as SocketUser, name);
+
+                // Save the player
+                DatabaseHandler.SaveAsync(player);
+
                 // Notify the player that they have been registered
                 await ReplyAsync($"{Context.User.Username}: {String.Format(Modules.REGISTERED_FORMAT, name)}");
             }

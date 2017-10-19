@@ -17,6 +17,7 @@ namespace DiscordMMO.Datatypes
         [XmlIgnore]
         public bool IsEmpty => (itemType is ItemEmpty || count <= 0);
 
+        [XmlIgnore]
         public static ItemStack empty { get; private set; }
 
         public ItemStack()

@@ -55,7 +55,7 @@ namespace DiscordMMO.Handlers
         public static async Task<bool> CanFetchPlayer(ulong id)
         {
 
-            return File.Exists(BASE_PLAYER_PATH + id);
+            return File.Exists(BASE_PLAYER_PATH + id + ".xml");
       
         }
 
@@ -82,7 +82,9 @@ namespace DiscordMMO.Handlers
 
             using (StreamReader file = new StreamReader(playerPath))
             {
-                return SerializationHandler.GetSerializer<Player>().Deserialize(file) as Player;
+                Player player = SerializationHandler.GetSerializer<Player>().Deserialize(file) as Player;
+                player.PostConstructor(Program.client);
+                return player;
             }
 
             #region Deprecated

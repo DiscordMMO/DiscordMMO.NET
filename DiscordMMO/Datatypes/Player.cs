@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 using System.Reflection;
@@ -34,14 +35,14 @@ namespace DiscordMMO.Datatypes
         /// <summary>
         /// The <see cref="user"/>s id 
         /// </summary>
-        public ulong ID => user.Id;
+        public ulong ID;
 
 
         [XmlElement]
         /// <summary>
         /// The username of the player
         /// </summary>
-        public readonly string playerName;
+        public string playerName;
         
         [XmlElement]
         /// <summary>
@@ -151,7 +152,8 @@ namespace DiscordMMO.Datatypes
 
         string IDamageable.name => playerName;
 
-        public List<ItemStack> drops => inventory.items;
+        [XmlIgnore]
+        public List<ItemStack> drops => inventory.items.Concat(equipment.items).ToList();
 
         public string convertPrefix => "player";
 
@@ -175,6 +177,7 @@ namespace DiscordMMO.Datatypes
         {
             currentAction = new ActionIdle(this);
             this.user = user;
+            ID = user.Id;
             playerName = name;
             inventory = new PlayerInventory(this);
             equipment = new PlayerEquimentInventory(this);
@@ -185,6 +188,7 @@ namespace DiscordMMO.Datatypes
         public Player(IUser user, string name, Action action)
         {
             this.user = user;
+            ID = user.Id;
             playerName = name;
             currentAction = action;
             inventory = new PlayerInventory(this);
@@ -219,6 +223,10 @@ namespace DiscordMMO.Datatypes
 
         }
 
+        public void PostConstructor(DiscordSocketClient client)
+        {
+            user = client.GetUser(ID);
+        }
 
         #endregion
 

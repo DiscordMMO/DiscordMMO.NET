@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Xml.Serialization;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using DiscordMMO.Datatypes.Preferences;
@@ -9,18 +9,28 @@ using DiscordMMO.Datatypes.Entities;
 
 namespace DiscordMMO.Datatypes.Actions
 {
+    [XmlRoot]
     public abstract class Action
     {
+        [XmlIgnore]
         public const string DONE_IN_FORMAT = " will be done in {0:dd\\.hh\\:mm\\:ss}";
 
+        [XmlIgnore]
         public static Dictionary<string, Type> actions = new Dictionary<string, Type>(); 
 
+        [XmlIgnore]
         public Player performer { get; protected set; }
-        public DateTime finishTime { get; protected set; }
 
+        [XmlElement]
+        public DateTime finishTime { get; set; }
+
+        [XmlIgnore]
         public abstract bool hasSetFinishTime { get; }
 
+        [XmlIgnore]
         public abstract string name { get; }
+
+        public Action() { }
 
         public Action(Player performer)
         {
@@ -135,6 +145,7 @@ namespace DiscordMMO.Datatypes.Actions
             return name;
         }
 
+
         public abstract string GetStartedFormattingSecondPerson();
 
         public abstract string GetActiveFormattingSecondPerson();
@@ -148,6 +159,10 @@ namespace DiscordMMO.Datatypes.Actions
         public override string name { get => "idle"; }
 
         public override bool hasSetFinishTime => false;
+
+        public ActionIdle() : base()
+        {
+        }
 
         public ActionIdle(Player performer) : base(performer)
         {

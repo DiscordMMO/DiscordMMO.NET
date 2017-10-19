@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DiscordMMO.Datatypes;
 using Discord;
+using Discord.WebSocket;
 
 namespace DiscordMMO.Handlers
 {
@@ -36,7 +37,7 @@ namespace DiscordMMO.Handlers
 
         /// <summary>
         /// Get a player that is logged in.
-        /// NOTE: This only works if the player is logged in. Check <see cref="AttemptLogin(IUser)"/> before using.
+        /// NOTE: This only works if the player is logged in. Check <see cref="AttemptLogin(SocketUser)"/> before using.
         /// </summary>
         /// <param name="user">The user that owns the player</param>
         /// <returns>The player of the user, <c>null</c> if not available</returns>
@@ -66,7 +67,7 @@ namespace DiscordMMO.Handlers
                 return GetPlayer(user);
             }
 
-            Player player = new Player(user, name);
+            Player player = new Player(user as SocketUser, name);
             players.Add(player);
             return player;
         }
@@ -80,11 +81,9 @@ namespace DiscordMMO.Handlers
         {
             if (HasPlayer(user))
                 return true;
-            if (!Program.sqlAvailable)
-                return false;
             if (!await DatabaseHandler.CanFetchPlayer(user))
                 return false;
-            await DatabaseHandler.GetOrFetchPlayer(user, Program.client);
+            AddPlayerInstance(await DatabaseHandler.GetOrFetchPlayer(user, Program.client));
             return true;
         }
 
@@ -102,6 +101,14 @@ namespace DiscordMMO.Handlers
         public static void RemovePlayerInstance(Player player)
         {
             players.Remove(player);
+        }
+
+        public static void AddPlayerInstance(Player player)
+        {
+            if (!players.Contains(player))
+            {
+                players.Add(player);
+            }
         }
 
         public static List<Player> GetPlayers()

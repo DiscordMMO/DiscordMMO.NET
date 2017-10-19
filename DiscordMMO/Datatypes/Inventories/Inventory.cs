@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiscordMMO.Handlers;
 using DiscordMMO.Datatypes.Items;
 
 namespace DiscordMMO.Datatypes.Inventories
 {
+
+    [AlsoRequires(typeof(ItemStack))]
     public abstract class Inventory
     {
 
