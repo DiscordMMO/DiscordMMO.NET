@@ -169,7 +169,7 @@ namespace DiscordMMO
                 StringBuilder outp = new StringBuilder(Modules.PREF_MSG_START);
                 foreach (string key in p.GetPreferences().Keys)
                 {
-                    PreferenceAbstract pref = p.GetPreferences()[key];
+                    Preference pref = p.GetPreferences()[key];
                     outp.Append(key + ": " + pref + "\n");
                 }
                 await ReplyAsync(outp.ToString());
@@ -178,7 +178,7 @@ namespace DiscordMMO
             // Check if only a preference name was given
             else if (!String.IsNullOrWhiteSpace(prefName) && String.IsNullOrWhiteSpace(value))
             {
-                PreferenceAbstract pref = p.GetPreferences()[prefName];
+                Preference pref = p.GetPreferences()[prefName];
 
                 // Check if the preference does not exist
                 if (pref == null)
@@ -194,7 +194,7 @@ namespace DiscordMMO
             // Check if both a preference name and value was given
             else if (!String.IsNullOrWhiteSpace(prefName) && !String.IsNullOrWhiteSpace(value))
             {
-                PreferenceAbstract pref = p.GetPreferences()[prefName];
+                Preference pref = p.GetPreferences()[prefName];
 
                 // Check if the preference does not exist
                 if (pref == null)
@@ -205,7 +205,7 @@ namespace DiscordMMO
 
 
                 // Get the type of the preference
-                Type t = pref.type;
+                Type t = pref.value.GetType();
 
                 // Create the value object
                 var toSet = Convert.ChangeType(value, t);
@@ -557,6 +557,30 @@ namespace DiscordMMO
                              "Average time per object: " + w.ElapsedMilliseconds / count + "ms");
 
         }
+
+        [Command("deluser")]
+        public async Task DeleteUserCommand(string confirm = "no")
+        {
+            if (confirm == "yes")
+            {
+                await ReplyAsync(Context.User.Username + ": Attempting to delete account...");
+                if (!await PlayerHandler.AttemptLogin(Context.User))
+                {
+                    await ReplyAsync(Context.User.Username + ": Cannot delete your account: You do not have an account");
+                    return;
+                }
+                PlayerHandler.RemovePlayerInstance(Context.User);
+                await DatabaseHandler.DeletePlayerAsync(Context.User);
+                await ReplyAsync(Context.User.Username + ": Your account has successfully been deleted");
+            }
+            else
+            {
+                await ReplyAsync(Context.User.Username + ": It looks like you're trying to delete your account.\n" +
+                    "If you are absolutely sure you would like to do this, use the command \"$$deluser yes\"\n" +
+                    "WARNING: This action cannot be reversed");
+            }
+        }
+
 
     }
 
