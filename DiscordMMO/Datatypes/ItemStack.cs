@@ -50,5 +50,12 @@ namespace DiscordMMO.Datatypes
                 return "Empty";
             return itemType.displayName;
         }
+
+        public override string ToString()
+        {
+            string afterItemName = count <= 0 ? "" : $", {count}";
+            return $"({itemType.itemName})";
+        }
+
     }
 }

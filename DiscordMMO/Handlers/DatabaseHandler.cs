@@ -38,7 +38,6 @@ namespace DiscordMMO.Handlers
             password = ConfigHelper.GetValue("sql_password");
 
 
-            // TODO: Move the database to a dedicated database and use that ip instead
             connString = ($"user={username};" +
                 $"password={password};server=localhost;" +
                 $"Database=discord_mmo_net;" +

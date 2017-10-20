@@ -13,8 +13,6 @@ namespace DiscordMMO.Datatypes.Items
 
         public override string displayName => "Test Helmet";
 
-        // TODO: Implement stackability
-
         public override bool stackable => false;
 
         public override PlayerEquipmentSlot slot => PlayerEquipmentSlot.HEAD;

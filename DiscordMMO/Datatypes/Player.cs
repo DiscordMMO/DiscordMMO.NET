@@ -383,6 +383,11 @@ namespace DiscordMMO.Datatypes
         public virtual void Equip(ItemStack toEquip, PlayerEquipmentSlot slot)
         {
             ItemStack currentEquip = equipment[slot];
+            if (currentEquip.itemType.stackable && currentEquip.itemType.itemName == toEquip.itemType.itemName)
+            {
+                equipment[slot].count += toEquip.count;
+                return;
+            }
             equipment[slot] = toEquip;
             ItemEquipable oldEquip = currentEquip.itemType as ItemEquipable;
             ItemEquipable newEquip = toEquip.itemType as ItemEquipable;
