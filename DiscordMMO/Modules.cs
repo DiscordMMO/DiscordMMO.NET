@@ -294,15 +294,9 @@ namespace DiscordMMO
 
             Player p = PlayerHandler.GetPlayer(Context.User);
 
-            if (!Enumerable.Range(1, p.inventory.size).Contains(itemToEqiupIndex))
-            {
-                await ReplyAsync($"{p.playerName}: That slot does not exist");
-                return;
-            }
-
             // Get the item to equip
-            // The -1 is to have slots 1-28, rather than 0-27
-            ItemStack itemToEquip = p.inventory[itemToEqiupIndex - 1];
+            // The +1 is to have slots 1-28, rather than 0-27
+            ItemStack itemToEquip = p.inventory[itemToEqiupIndex + 1];
 
             // Check if there is an item in the given slot
             if (itemToEquip == null || itemToEquip.IsEmpty)
