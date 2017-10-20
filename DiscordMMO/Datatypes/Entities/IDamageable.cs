@@ -8,11 +8,17 @@ namespace DiscordMMO.Datatypes.Entities
     public delegate void OnBeforeAttacked(ref OnAttackEventArgs args);
     public delegate void OnBeforeAttacking(ref OnAttackEventArgs args);
 
-    public interface IDamageable 
+    public delegate void OnAfterAttacked(ref OnAttackEventArgs args);
+    public delegate void OnAfterAttacking(ref OnAttackEventArgs args);
+
+    public interface IDamageable
     {
 
         event OnBeforeAttacked BeforeAttackedEvent;
         event OnBeforeAttacking BeforeAttackingEvent;
+
+        event OnAfterAttacked AfterAttackedEvent;
+        event OnAfterAttacking AfterAttackingEvent;
 
         string name { get; }
 
@@ -47,6 +53,16 @@ namespace DiscordMMO.Datatypes.Entities
         /// </summary>
         void CallBeforeAttackingEvent(ref OnAttackEventArgs args);
 
+        /// <summary>
+        /// This is a hack, to be able to call the <see cref="AfterAttackedEvent"/> from the extension methods
+        /// </summary>
+        void CallAfterAttackedEvent(ref OnAttackEventArgs args);
+
+        /// <summary>
+        /// This is a hack, to be able to call the <see cref="AfterAttackingEvent"/> from the extension methods
+        /// </summary>
+        void CallAfterAttackingEvent(ref OnAttackEventArgs args);
+
     }
 
     public static class IDamageableHelper
@@ -57,8 +73,19 @@ namespace DiscordMMO.Datatypes.Entities
         /// </summary>
         public const int MIN_DAMAGE_DIVISOR = 10;
 
-        #region Attacked
+        public static OnAttackEventArgs GetAttackingArgs(this IDamageable attacker, IDamageable target)
+        {
+            return new OnAttackEventArgs(attacker, target);
+        }
 
+        public static OnAttackEventArgs GetAttackedArgs(this IDamageable target, IDamageable attacker)
+        {
+            return new OnAttackEventArgs(attacker, target);
+        }
+
+        #region Attacked [DEPRECATED]
+
+        /*
         /// <summary>
         /// Called when this <see cref="IDamageable"/> is attacked
         /// </summary>
@@ -72,6 +99,7 @@ namespace DiscordMMO.Datatypes.Entities
             return damageable.Attacked(ref args);
         }
 
+        
         /// <summary>
         /// 
         /// </summary>
@@ -80,7 +108,6 @@ namespace DiscordMMO.Datatypes.Entities
         /// <returns></returns>
         public static bool Attacked(this IDamageable attacked, ref OnAttackEventArgs args)
         {
-
             attacked.CallBeforeAttackedEvent(ref args);
 
             int baseHit = args.damage;
@@ -90,7 +117,7 @@ namespace DiscordMMO.Datatypes.Entities
             attacked.AttemptAttack(ref args);
             attacked.CalculateFinalDamage(ref args);
 
-            attacked.health -= args.damage - attacked.defence;
+            attacked.health -= Math.Max(args.damage - attacked.defence, 0);
             if (attacked.health <= 0)
             {
                 attacked.Die(attacker);
@@ -98,9 +125,12 @@ namespace DiscordMMO.Datatypes.Entities
             }
 
             return false;
-
         }
 
+        */
+        #endregion
+
+        #region Damage calculation
         public static void CalculateMaxDamage(this IDamageable attacked, ref OnAttackEventArgs args)
         {
             args.damage = Math.Max(args.damage - args.attacked.defence, Math.Max(args.damage / MIN_DAMAGE_DIVISOR, 1));
@@ -120,8 +150,10 @@ namespace DiscordMMO.Datatypes.Entities
             if (args.damage <= 0)
                 return;
             Random r = new Random();
-            args.damage = r.Next(0, args.damage);
+            args.damage = r.Next(0, args.damage+1);
         }
+
+        #endregion
 
         // TOOD: Add a proper death callback
         // TODO: Add loot
@@ -129,16 +161,50 @@ namespace DiscordMMO.Datatypes.Entities
         {
             killer.OnOpponentDied(damageable.drops);
         }
-        #endregion
-
         #region Attacking
 
-        public static void Attacking(this IDamageable attacker, ref OnAttackEventArgs args)
+        public static bool Attack(this IDamageable attacker, IDamageable target, bool triggersEffects = true)
         {
-            attacker.CallBeforeAttackingEvent(ref args);
+            OnAttackEventArgs args = GetAttackingArgs(attacker, target);
+            args.triggersEffect = triggersEffects;
+            return Attack(attacker, target, ref args);
         }
 
-#endregion
+        public static bool Attack(this IDamageable attacker, IDamageable target, ref OnAttackEventArgs args)
+        {
+
+            if (args.triggersEffect)
+            {
+                attacker.CallBeforeAttackingEvent(ref args);
+                target.CallBeforeAttackedEvent(ref args);
+            }
+
+            int baseHit = args.damage;
+
+            target.CalculateMaxDamage(ref args);
+            target.AttemptAttack(ref args);
+            target.CalculateFinalDamage(ref args);
+
+            target.health -= Math.Max(args.damage - target.defence, 1);
+
+            if (args.triggersEffect)
+            {
+                attacker.CallAfterAttackingEvent(ref args);
+                attacker.CallAfterAttackedEvent(ref args);
+            }
+
+            if (target.health <= 0)
+            {
+                target.Die(attacker);
+                return true;
+            }
+
+            return false;
+
+
+        }
+
+        #endregion
 
     }
 

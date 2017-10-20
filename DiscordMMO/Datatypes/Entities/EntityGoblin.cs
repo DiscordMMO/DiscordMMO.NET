@@ -37,6 +37,9 @@ namespace DiscordMMO.Datatypes.Entities
         public override event OnBeforeAttacked BeforeAttackedEvent;
         public override event OnBeforeAttacking BeforeAttackingEvent;
 
+        public override event OnAfterAttacked AfterAttackedEvent;
+        public override event OnAfterAttacking AfterAttackingEvent;
+
         public override List<ItemStack> drops
         {
             get
@@ -54,15 +57,13 @@ namespace DiscordMMO.Datatypes.Entities
         {
         }
 
-        public override void CallBeforeAttackedEvent(ref OnAttackEventArgs args)
-        {
-            BeforeAttackedEvent?.Invoke(ref args);
-        }
+        public override void CallBeforeAttackedEvent(ref OnAttackEventArgs args) => BeforeAttackedEvent?.Invoke(ref args);
 
-        public override void CallBeforeAttackingEvent(ref OnAttackEventArgs args)
-        {
-            BeforeAttackingEvent?.Invoke(ref args);
-        }
+        public override void CallBeforeAttackingEvent(ref OnAttackEventArgs args) => BeforeAttackingEvent?.Invoke(ref args);
+
+        public override void CallAfterAttackedEvent(ref OnAttackEventArgs args) => AfterAttackedEvent?.Invoke(ref args);
+
+        public override void CallAfterAttackingEvent(ref OnAttackEventArgs args) => AfterAttackingEvent?.Invoke(ref args);
 
         public override void OnOpponentDied(List<ItemStack> drops)
         {

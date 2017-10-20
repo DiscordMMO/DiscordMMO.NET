@@ -61,6 +61,9 @@ namespace DiscordMMO.Datatypes.Entities
         public abstract event OnBeforeAttacked BeforeAttackedEvent;
         public abstract event OnBeforeAttacking BeforeAttackingEvent;
 
+        public abstract event OnAfterAttacked AfterAttackedEvent;
+        public abstract event OnAfterAttacking AfterAttackingEvent;
+
         public EntityFightable(SerializationInfo info, StreamingContext context)
         {
             health = info.GetInt32("health");
@@ -69,12 +72,16 @@ namespace DiscordMMO.Datatypes.Entities
 
         public EntityFightable()
         {
-
+            health = maxHealth;
         }
 
         public abstract void CallBeforeAttackedEvent(ref OnAttackEventArgs args);
 
         public abstract void CallBeforeAttackingEvent(ref OnAttackEventArgs args);
+
+        public abstract void CallAfterAttackedEvent(ref OnAttackEventArgs args);
+
+        public abstract void CallAfterAttackingEvent(ref OnAttackEventArgs args);
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {

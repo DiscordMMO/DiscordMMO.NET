@@ -7,5 +7,15 @@ namespace DiscordMMO.Datatypes.Items
 
         public abstract PlayerEquipmentSlot slot { get; }
 
+        public virtual void OnEquip(Player player)
+        {
+
+        }
+
+        public virtual void OnUnEquip(Player player)
+        {
+
+        }
+
     }
 }

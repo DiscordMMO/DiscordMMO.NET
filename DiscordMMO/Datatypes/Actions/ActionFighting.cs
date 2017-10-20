@@ -43,8 +43,7 @@ namespace DiscordMMO.Datatypes.Actions
             if (performer.ticksUntilNextAttack <= 0)
             {
                 OnAttackEventArgs args = new OnAttackEventArgs(performer, fighting);
-                performer.Attacking(ref args);
-                if (fighting.Attacked(ref args))
+                if (performer.Attack(fighting))
                 {
                     performer.Idle(false);
                     await Finish();
@@ -55,8 +54,7 @@ namespace DiscordMMO.Datatypes.Actions
             if (fighting.ticksUntilNextAttack <= 0)
             {
                 OnAttackEventArgs args = new OnAttackEventArgs(fighting, performer);
-                fighting.Attacking(ref args);
-                if (performer.Attacked(ref args))
+                if (fighting.Attack(performer))
                 {
                     // TODO: Probably some death handling
                     await Finish();

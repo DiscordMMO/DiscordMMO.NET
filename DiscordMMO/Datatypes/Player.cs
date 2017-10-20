@@ -121,6 +121,9 @@ namespace DiscordMMO.Datatypes
         public event OnBeforeAttacked BeforeAttackedEvent;
         public event OnBeforeAttacking BeforeAttackingEvent;
 
+        public event OnAfterAttacked AfterAttackedEvent;
+        public event OnAfterAttacking AfterAttackingEvent;
+
         public int maxHealth => 30;
 
         // You can't do { get; set; } = maxHealth
@@ -325,9 +328,13 @@ namespace DiscordMMO.Datatypes
             }
         }
 
-        public void CallAttackedEvent(ref OnAttackEventArgs args) => BeforeAttackedEvent?.Invoke(ref args);
+        public void CallBeforeAttackedEvent(ref OnAttackEventArgs args) => BeforeAttackedEvent?.Invoke(ref args);
 
         public void CallBeforeAttackingEvent(ref OnAttackEventArgs args) => BeforeAttackingEvent?.Invoke(ref args);
+
+        public void CallAfterAttackedEvent(ref OnAttackEventArgs args) => AfterAttackedEvent?.Invoke(ref args);
+
+        public void CallAfterAttackingEvent(ref OnAttackEventArgs args) => AfterAttackingEvent?.Invoke(ref args);
 
         public void Die(IDamageable killer)
         {
@@ -346,7 +353,8 @@ namespace DiscordMMO.Datatypes
         public void OnOpponentDied(List<ItemStack> drops)
         {
             // TODO: Implement loot from this
-           // throw new NotImplementedException();
+            IDMChannel pm = GetPrivateChannel().GetAwaiter().GetResult();
+            pm.SendMessageAsync("You killed an enemy").GetAwaiter().GetResult();
         }
 
         #endregion
@@ -375,6 +383,10 @@ namespace DiscordMMO.Datatypes
         {
             ItemStack currentEquip = equipment[slot];
             equipment[slot] = toEquip;
+            ItemEquipable oldEquip = currentEquip.itemType as ItemEquipable;
+            ItemEquipable newEquip = toEquip.itemType as ItemEquipable;
+            oldEquip?.OnUnEquip(this);
+            newEquip?.OnEquip(this);
             inventory.AddItem(currentEquip);
         }
 
@@ -413,10 +425,8 @@ namespace DiscordMMO.Datatypes
             return preferences;
         }
 
-        void IDamageable.CallBeforeAttackedEvent(ref OnAttackEventArgs args)
-        {
-            throw new NotImplementedException();
-        }
+        
+
 
         #endregion
     }
