@@ -184,7 +184,8 @@ namespace DiscordMMO.Datatypes
 
         protected Player()
         {
-            
+            preferences["pm"] = Preference.GetPreference(false);
+            preferences["mention"] = Preference.GetPreference(false);
         }
 
         public Player(IUser user) : this(user, user.Username)
