@@ -112,7 +112,7 @@ namespace DiscordMMO
             string doneIn = (firstPerson ? " You" : " They") + String.Format(Action.DONE_IN_FORMAT, (player.currentAction.finishTime - DateTime.Now));
 
             // Message the player with the status
-            await ReplyAsync(Context.User.Username + ": " + 
+            await ReplyAsync(Context.User.Username + ": " +
                 (firstPerson ? player.currentAction.GetActiveFormattingSecondPerson() : player.currentAction.GetActiveFormattingThridPerson(false)) +
                 ((!player.currentAction.hasSetFinishTime) ? "" : doneIn));
             return;
@@ -294,9 +294,15 @@ namespace DiscordMMO
 
             Player p = PlayerHandler.GetPlayer(Context.User);
 
+            if (!Enumerable.Range(1, p.inventory.size).Contains(itemToEqiupIndex))
+            {
+                await ReplyAsync($"{p.playerName}: That slot does not exist");
+                return;
+            }
+
             // Get the item to equip
-            // The +1 is to have slots 1-28, rather than 0-27
-            ItemStack itemToEquip = p.inventory[itemToEqiupIndex + 1];
+            // The -1 is to have slots 1-28, rather than 0-27
+            ItemStack itemToEquip = p.inventory[itemToEqiupIndex - 1];
 
             // Check if there is an item in the given slot
             if (itemToEquip == null || itemToEquip.IsEmpty)
@@ -333,7 +339,7 @@ namespace DiscordMMO
 
             // Create a stringbuilder for the output
             StringBuilder outp = new StringBuilder($"Equipment for {player.playerName}\n");
-            
+
             // Loop through the players equipment
             int i = 0;
             foreach (ItemStack stack in player.equipment.items)
@@ -393,7 +399,7 @@ namespace DiscordMMO
             }
 
             Player player = PlayerHandler.GetPlayer(Context.User);
-            
+
             if (player.currentAction is ActionFighting == false)
             {
                 await ReplyAsync(player.playerName + ": You are not fighting anything");
@@ -475,9 +481,9 @@ namespace DiscordMMO
                 await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
                 return;
             }
-            
+
             Player player = PlayerHandler.GetPlayer(Context.User);
-            
+
             // Check if the given item exists
             if (!ItemHandler.IsRegisteredItem(item))
             {
@@ -485,12 +491,12 @@ namespace DiscordMMO
                 await ReplyAsync(Context.User.Username + ": Invalid item");
                 return;
             }
-            
+
             Item toAdd = ItemHandler.GetItemInstanceFromName(item);
-            
+
             // Give the player the item
             player.inventory.AddItem(toAdd);
-            
+
             // Notify the player
             await ReplyAsync(Context.User.Username + ": Gave item " + toAdd.displayName);
         }
@@ -505,7 +511,7 @@ namespace DiscordMMO
                 await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
                 return;
             }
-            
+
             // Remove the player instance
             PlayerHandler.RemovePlayerInstance(Context.User);
         }
@@ -520,9 +526,9 @@ namespace DiscordMMO
                 await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
                 return;
             }
-            
+
             Player player = PlayerHandler.GetPlayer(Context.User);
-            
+
             // Check if the player is fighting something
             if (player.currentAction is ActionFighting)
             {
@@ -540,16 +546,16 @@ namespace DiscordMMO
 
             // The amount of objects
             int count = 100;
-            
+
             string path = Environment.GetEnvironmentVariable("DISCORDMMO_USERDATA") + @"\Debug";
 
             // Notify the player
             await ReplyAsync("Serializing " + count + " ItemStacks");
-            
+
             // Start a stopwatch
             Stopwatch w = Stopwatch.StartNew();
 
-            
+
             for (int i = 0; i < count; i++)
             {
                 try
@@ -580,7 +586,7 @@ namespace DiscordMMO
             }
             // Stop the stopwatch
             w.Stop();
-            
+
             // Notify the player with the stats
             await ReplyAsync("Serializing " + count + " objects took " + w.ElapsedMilliseconds + "ms \n" +
                              "Average time per object: " + w.ElapsedMilliseconds / count + "ms");
