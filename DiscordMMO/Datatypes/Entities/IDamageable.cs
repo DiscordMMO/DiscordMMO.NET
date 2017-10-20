@@ -5,14 +5,14 @@ using DiscordMMO.Util;
 
 namespace DiscordMMO.Datatypes.Entities
 {
-    public delegate void OnAttacked(ref OnAttackEventArgs args);
-    public delegate void OnAttacking(ref OnAttackEventArgs args);
+    public delegate void OnBeforeAttacked(ref OnAttackEventArgs args);
+    public delegate void OnBeforeAttacking(ref OnAttackEventArgs args);
 
     public interface IDamageable 
     {
 
-        event OnAttacked AttackedEvent;
-        event OnAttacking AttackingEvent;
+        event OnBeforeAttacked BeforeAttackedEvent;
+        event OnBeforeAttacking BeforeAttackingEvent;
 
         string name { get; }
 
@@ -38,14 +38,14 @@ namespace DiscordMMO.Datatypes.Entities
         void OnOpponentDied(List<ItemStack> drops);
 
         /// <summary>
-        /// This is a hack, to be able to call the <see cref="AttackedEvent"/> from the extension methods
+        /// This is a hack, to be able to call the <see cref="BeforeAttackedEvent"/> from the extension methods
         /// </summary>
-        void CallAttackedEvent(ref OnAttackEventArgs args);
+        void CallBeforeAttackedEvent(ref OnAttackEventArgs args);
 
         /// <summary>
-        /// This is a hack, to be able to call the <see cref="AttackingEvent"/> from the extension methods
+        /// This is a hack, to be able to call the <see cref="BeforeAttackingEvent"/> from the extension methods
         /// </summary>
-        void CallAttackingEvent(ref OnAttackEventArgs args);
+        void CallBeforeAttackingEvent(ref OnAttackEventArgs args);
 
     }
 
@@ -72,10 +72,16 @@ namespace DiscordMMO.Datatypes.Entities
             return damageable.Attacked(ref args);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="attacked"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
         public static bool Attacked(this IDamageable attacked, ref OnAttackEventArgs args)
         {
 
-            attacked.CallAttackedEvent(ref args);
+            attacked.CallBeforeAttackedEvent(ref args);
 
             int baseHit = args.damage;
             IDamageable attacker = args.attacker;
@@ -84,8 +90,8 @@ namespace DiscordMMO.Datatypes.Entities
             attacked.AttemptAttack(ref args);
             attacked.CalculateFinalDamage(ref args);
 
-            attacked.health -= baseHit - attacked.defence;
-            if (attacked.health >= 0)
+            attacked.health -= args.damage - attacked.defence;
+            if (attacked.health <= 0)
             {
                 attacked.Die(attacker);
                 return true;
@@ -97,7 +103,7 @@ namespace DiscordMMO.Datatypes.Entities
 
         public static void CalculateMaxDamage(this IDamageable attacked, ref OnAttackEventArgs args)
         {
-            args.damage = Math.Max(args.damage - args.attacked.defence, args.damage / MIN_DAMAGE_DIVISOR);
+            args.damage = Math.Max(args.damage - args.attacked.defence, Math.Max(args.damage / MIN_DAMAGE_DIVISOR, 1));
         }
 
         public static void AttemptAttack(this IDamageable attacked, ref OnAttackEventArgs args)
@@ -111,7 +117,7 @@ namespace DiscordMMO.Datatypes.Entities
 
         public static void CalculateFinalDamage(this IDamageable attacked, ref OnAttackEventArgs args)
         {
-            if (args.damage >= 0)
+            if (args.damage <= 0)
                 return;
             Random r = new Random();
             args.damage = r.Next(0, args.damage);
@@ -129,7 +135,7 @@ namespace DiscordMMO.Datatypes.Entities
 
         public static void Attacking(this IDamageable attacker, ref OnAttackEventArgs args)
         {
-            attacker.CallAttackingEvent(ref args);
+            attacker.CallBeforeAttackingEvent(ref args);
         }
 
 #endregion

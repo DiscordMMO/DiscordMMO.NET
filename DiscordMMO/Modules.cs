@@ -169,7 +169,7 @@ namespace DiscordMMO
                 StringBuilder outp = new StringBuilder(Modules.PREF_MSG_START);
                 foreach (string key in p.GetPreferences().Keys)
                 {
-                    IPreference pref = p.GetPreferences()[key];
+                    PreferenceAbstract pref = p.GetPreferences()[key];
                     outp.Append(key + ": " + pref + "\n");
                 }
                 await ReplyAsync(outp.ToString());
@@ -178,7 +178,7 @@ namespace DiscordMMO
             // Check if only a preference name was given
             else if (!String.IsNullOrWhiteSpace(prefName) && String.IsNullOrWhiteSpace(value))
             {
-                IPreference pref = p.GetPreferences()[prefName];
+                PreferenceAbstract pref = p.GetPreferences()[prefName];
 
                 // Check if the preference does not exist
                 if (pref == null)
@@ -194,7 +194,7 @@ namespace DiscordMMO
             // Check if both a preference name and value was given
             else if (!String.IsNullOrWhiteSpace(prefName) && !String.IsNullOrWhiteSpace(value))
             {
-                IPreference pref = p.GetPreferences()[prefName];
+                PreferenceAbstract pref = p.GetPreferences()[prefName];
 
                 // Check if the preference does not exist
                 if (pref == null)

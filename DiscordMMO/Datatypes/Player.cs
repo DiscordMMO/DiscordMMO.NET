@@ -19,6 +19,7 @@ namespace DiscordMMO.Datatypes
 {
     [XmlRoot]
     [HasOwnSerializer]
+    [AlsoRequires(typeof(PreferenceAbstract))]
     public class Player : IDamageable
     {
         #region Fields / Properties
@@ -66,7 +67,7 @@ namespace DiscordMMO.Datatypes
         /// <summary>
         /// The players preferences
         /// </summary>
-        protected readonly Dictionary<string, IPreference> preferences = new Dictionary<string, IPreference>();
+        protected readonly Dictionary<string, PreferenceAbstract> preferences = new Dictionary<string, PreferenceAbstract>();
 
         [XmlElement]
         /// <summary>
@@ -101,12 +102,13 @@ namespace DiscordMMO.Datatypes
 
         #region IDamageable
 
-        public event OnAttacked AttackedEvent;
-        public event OnAttacking AttackingEvent;
+        public event OnBeforeAttacked BeforeAttackedEvent;
+        public event OnBeforeAttacking BeforeAttackingEvent;
 
         public int maxHealth => 30;
 
-        public int health { get; set; }
+        // You can't do { get; set; } = maxHealth
+        public int health { get; set; } = 30;
 
         public int defence => 0;
 
@@ -161,19 +163,17 @@ namespace DiscordMMO.Datatypes
 
         #region Constructors
 
-        static Player()
+        protected Player()
         {
-
+            
         }
-
-        protected Player() { }
 
         public Player(IUser user) : this(user, user.Username)
         {
 
         }
 
-        public Player(IUser user, string name)
+        public Player(IUser user, string name) : this()
         {
             currentAction = new ActionIdle(this);
             this.user = user;
@@ -185,15 +185,15 @@ namespace DiscordMMO.Datatypes
             preferences["mention"] = (Preference<bool>)true;
         }
 
-        public Player(IUser user, string name, Action action)
+        public Player(IUser user, string name, Action action) : this()
         {
             this.user = user;
             ID = user.Id;
             playerName = name;
             currentAction = action;
             inventory = new PlayerInventory(this);
-            AttackedEvent += Player_AttackedEvent;
-            AttackingEvent += Player_AttackingEvent;
+            BeforeAttackedEvent += Player_AttackedEvent;
+            BeforeAttackingEvent += Player_AttackingEvent;
         }
 
         private void Player_AttackingEvent(ref OnAttackEventArgs args)
@@ -309,7 +309,9 @@ namespace DiscordMMO.Datatypes
             }
         }
 
-        public void CallAttackedEvent(ref OnAttackEventArgs args) => AttackedEvent(ref args);
+        public void CallAttackedEvent(ref OnAttackEventArgs args) => BeforeAttackedEvent?.Invoke(ref args);
+
+        public void CallBeforeAttackingEvent(ref OnAttackEventArgs args) => BeforeAttackingEvent?.Invoke(ref args);
 
         public void Die(IDamageable killer)
         {
@@ -323,13 +325,12 @@ namespace DiscordMMO.Datatypes
             
         }
 
-        public void CallAttackingEvent(ref OnAttackEventArgs args) => AttackingEvent(ref args);
 
 
         public void OnOpponentDied(List<ItemStack> drops)
         {
             // TODO: Implement loot from this
-            throw new NotImplementedException();
+           // throw new NotImplementedException();
         }
 
         #endregion
@@ -391,12 +392,12 @@ namespace DiscordMMO.Datatypes
             method.Invoke(this, new Object[] { key, value});
         }
 
-        public Dictionary<string, IPreference> GetPreferences()
+        public Dictionary<string, PreferenceAbstract> GetPreferences()
         {
             return preferences;
         }
 
-        void IDamageable.CallAttackedEvent(ref OnAttackEventArgs args)
+        void IDamageable.CallBeforeAttackedEvent(ref OnAttackEventArgs args)
         {
             throw new NotImplementedException();
         }

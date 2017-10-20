@@ -23,6 +23,8 @@ namespace DiscordMMO.Datatypes.Actions
         public ActionFighting(Player performer, EntityFightable against) : base(performer)
         {
             fighting = against;
+            performer.ticksUntilNextAttack = performer.attackRate;
+            fighting.ticksUntilNextAttack = performer.attackRate;
         }
 
         public override string GetActiveFormattingSecondPerson() => "You are fighting " + fighting.name;
@@ -64,12 +66,6 @@ namespace DiscordMMO.Datatypes.Actions
             }
 
         }
-
-        public override string ToString()
-        {
-            return $"{name}.({fighting})";
-        }
-
 
     }
 }

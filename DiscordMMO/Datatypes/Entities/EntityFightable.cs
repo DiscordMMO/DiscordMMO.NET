@@ -58,8 +58,8 @@ namespace DiscordMMO.Datatypes.Entities
         [XmlIgnore]
         public abstract List<ItemStack> drops { get; }
 
-        public abstract event OnAttacked AttackedEvent;
-        public abstract event OnAttacking AttackingEvent;
+        public abstract event OnBeforeAttacked BeforeAttackedEvent;
+        public abstract event OnBeforeAttacking BeforeAttackingEvent;
 
         public EntityFightable(SerializationInfo info, StreamingContext context)
         {
@@ -72,9 +72,9 @@ namespace DiscordMMO.Datatypes.Entities
 
         }
 
-        public abstract void CallAttackedEvent(ref OnAttackEventArgs args);
+        public abstract void CallBeforeAttackedEvent(ref OnAttackEventArgs args);
 
-        public abstract void CallAttackingEvent(ref OnAttackEventArgs args);
+        public abstract void CallBeforeAttackingEvent(ref OnAttackEventArgs args);
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {

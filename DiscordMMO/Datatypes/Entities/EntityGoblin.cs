@@ -34,8 +34,8 @@ namespace DiscordMMO.Datatypes.Entities
 
         protected override List<Interaction> interactions { get; set; }
 
-        public override event OnAttacked AttackedEvent;
-        public override event OnAttacking AttackingEvent;
+        public override event OnBeforeAttacked BeforeAttackedEvent;
+        public override event OnBeforeAttacking BeforeAttackingEvent;
 
         public override List<ItemStack> drops
         {
@@ -54,14 +54,14 @@ namespace DiscordMMO.Datatypes.Entities
         {
         }
 
-        public override void CallAttackedEvent(ref OnAttackEventArgs args)
+        public override void CallBeforeAttackedEvent(ref OnAttackEventArgs args)
         {
-            AttackedEvent(ref args);
+            BeforeAttackedEvent?.Invoke(ref args);
         }
 
-        public override void CallAttackingEvent(ref OnAttackEventArgs args)
+        public override void CallBeforeAttackingEvent(ref OnAttackEventArgs args)
         {
-            AttackingEvent(ref args);
+            BeforeAttackingEvent?.Invoke(ref args);
         }
 
         public override void OnOpponentDied(List<ItemStack> drops)
