@@ -381,6 +381,35 @@ namespace DiscordMMO
 
         }
 
+        [Command("combat")]
+        public async Task CombatCommand()
+        {
+            // Check if the player can log in
+            if (!await PlayerHandler.AttemptLogin(Context.User))
+            {
+                // If they cannot login, notify them
+                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
+                return;
+            }
+
+            Player player = PlayerHandler.GetPlayer(Context.User);
+            
+            if (player.currentAction is ActionFighting == false)
+            {
+                await ReplyAsync(player.playerName + ": You are not fighting anything");
+                return;
+            }
+
+            ActionFighting action = player.currentAction as ActionFighting;
+
+            string outp = "Combat information:\n" +
+                          $"{player.playerName}: [{player.health}/{player.maxHealth}]\n" +
+                          $"{action.fighting.name}: [{action.fighting.health}/{action.fighting.maxHealth}]";
+
+            await ReplyAsync(outp);
+
+        }
+
     }
 
     [Group("db")]
