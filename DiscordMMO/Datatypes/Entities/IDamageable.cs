@@ -141,7 +141,6 @@ namespace DiscordMMO.Datatypes.Entities
             lock (NumberUtil.randomLock)
             {
                 int hit = NumberUtil.random.Next(100);
-                Console.WriteLine("Target " + attacked + " RNG roll: " + hit);
                 if (hit > args.hitChance)
                 {
                     args.damage = 0;
