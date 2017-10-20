@@ -21,25 +21,11 @@ namespace DiscordMMO.Datatypes.Inventories
 
         protected PlayerInventory() { }
 
-        public PlayerInventory(Player owner)
+        public PlayerInventory(Player owner) : base(true)
         {
             this.owner = owner;
         }
 
-        public PlayerInventory(SerializationInfo info, StreamingContext context)
-        {
-            items = (List<ItemStack>)info.GetValue("items", typeof(List<ItemStack>));
-        }
-
-        public static PlayerInventory Deserialize(Stream s)
-        {
-            return (PlayerInventory)SerializationHandler.GetSerializer<PlayerInventory>().Deserialize(s);
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("items", items);
-        }
     }
 
 }

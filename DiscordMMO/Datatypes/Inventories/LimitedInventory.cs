@@ -25,11 +25,16 @@ namespace DiscordMMO.Datatypes.Inventories
             }
         }
 
-        public LimitedInventory()
+        public LimitedInventory() { }
+
+        public LimitedInventory(bool fill)
         {
-            for (int i = 0; i < size; i++)
+            if (fill)
             {
-                items.Add(ItemStack.empty);
+                for (int i = 0; i < size; i++)
+                {
+                    items.Add(ItemStack.empty);
+                }
             }
         }
 
