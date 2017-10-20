@@ -34,13 +34,18 @@ namespace DiscordMMO.Datatypes.Items
 
         public void AfterAttacking(ref OnAttackEventArgs args)
         {
+            // Don't trigger if the first attack missed
+            if (args.damage <= 0)
+                return;
             Random r = new Random();
             int triggerChance = 50;
             if (r.Next(100) >= triggerChance)
             {
-                args.attacker.Attack(args.attacked, false);
+                OnAttackEventArgs outArgs = args.attacker.GetAttackingArgs(args.attacked);
+                outArgs.triggersEffect = false;
+                args.attacker.Attack(args.attacked, ref outArgs);
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.WriteLine(args.attacker.name + "'s swiftness has activated");
+                Console.WriteLine(args.attacker.name + "'s swiftness has activated for " + outArgs.damage);
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }
