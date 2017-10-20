@@ -19,7 +19,7 @@ namespace DiscordMMO.Datatypes
 {
     [XmlRoot]
     [HasOwnSerializer]
-    [AlsoRequires(typeof(PreferenceAbstract))]
+    [AlsoRequires(typeof(Preference))]
     public class Player : IDamageable
     {
         #region Fields / Properties
@@ -63,11 +63,27 @@ namespace DiscordMMO.Datatypes
         /// </summary>
         public Action currentAction { get; set; }
 
-        [XmlElement]
+        [XmlIgnore]
         /// <summary>
         /// The players preferences
         /// </summary>
-        protected readonly Dictionary<string, PreferenceAbstract> preferences = new Dictionary<string, PreferenceAbstract>();
+        protected Dictionary<string, Preference> preferences = new Dictionary<string, Preference>();
+
+        [XmlArray]
+        public List<(string key, Preference value)> Preferences
+        {
+            get
+            {
+                return preferences.Select(x => (x.Key, x.Value)).ToList();
+            }
+            set
+            {
+                preferences = value.ToDictionary(x => x.key, x => x.value);
+            }
+        }
+            
+
+
 
         [XmlElement]
         /// <summary>
@@ -181,8 +197,8 @@ namespace DiscordMMO.Datatypes
             playerName = name;
             inventory = new PlayerInventory(this);
             equipment = new PlayerEquimentInventory(this);
-            preferences["pm"] = (Preference<bool>)true;
-            preferences["mention"] = (Preference<bool>)true;
+            preferences["pm"] = Preference.GetPreference(true);
+            preferences["mention"] = Preference.GetPreference(true);
         }
 
         public Player(IUser user, string name, Action action) : this()
@@ -373,12 +389,12 @@ namespace DiscordMMO.Datatypes
 
         public T GetPreference<T>(string key)
         {
-            return preferences[key] as Preference<T>;
+            return (T) preferences[key].value;
         }
 
-        public void SetPreference<T>(string key, T value)
+        public void SetPreference(string key, object value)
         {
-            preferences[key] = (Preference<T>)value;
+            preferences[key].value = value;
         }
 
         public void SetPreferenceWithType(string key, object value, Type type)
@@ -392,7 +408,7 @@ namespace DiscordMMO.Datatypes
             method.Invoke(this, new Object[] { key, value});
         }
 
-        public Dictionary<string, PreferenceAbstract> GetPreferences()
+        public Dictionary<string, Preference> GetPreferences()
         {
             return preferences;
         }

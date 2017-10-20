@@ -183,5 +183,20 @@ namespace DiscordMMO.Handlers
             }
         }
 
+        public static async Task DeletePlayerAsync(Player player)
+        {
+            await DeletePlayerAsync(player.user);
+        }
+
+        public static async Task DeletePlayerAsync(IUser user)
+        {
+            string path = BASE_PLAYER_PATH + user.Id + ".xml";
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+
+
     }
 }

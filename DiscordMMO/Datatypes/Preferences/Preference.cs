@@ -6,31 +6,26 @@ using System.Threading.Tasks;
 
 namespace DiscordMMO.Datatypes.Preferences
 {
-    public class Preference<T> : IPreference
+    public class Preference
     {
 
-        public Preference(T value)
+        public Preference() { }
+
+        public Preference(object value)
         {
             this.value = value;
         }
 
-        public T value { get; set; }
-
-        public Type type { get { return typeof(T); } }
+        public object value { get; set; }
 
         public override string ToString()
         {
             return value.ToString();
         }
 
-        public static implicit operator Preference<T>(T value)
+        public static Preference GetPreference(object value)
         {
-            return new Preference<T>(value);
-        }
-
-        public static implicit operator T(Preference<T> value)
-        {
-            return value.value;
+            return new Preference(value);
         }
 
     }
