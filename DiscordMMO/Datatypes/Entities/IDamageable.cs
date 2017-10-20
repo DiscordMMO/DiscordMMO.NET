@@ -138,19 +138,26 @@ namespace DiscordMMO.Datatypes.Entities
 
         public static void AttemptAttack(this IDamageable attacked, ref OnAttackEventArgs args)
         {
-            Random r = new Random();
-            if (r.Next(100) > args.hitChance)
+            lock (NumberUtil.randomLock)
             {
-                args.damage = 0;
+                int hit = NumberUtil.random.Next(100);
+                Console.WriteLine("Target " + attacked + " RNG roll: " + hit);
+                if (hit > args.hitChance)
+                {
+                    args.damage = 0;
+                }
             }
         }
 
         public static void CalculateFinalDamage(this IDamageable attacked, ref OnAttackEventArgs args)
         {
-            if (args.damage <= 0)
-                return;
-            Random r = new Random();
-            args.damage = r.Next(0, args.damage+1);
+            lock (NumberUtil.randomLock)
+            {
+                if (args.damage <= 0)
+                    return;
+
+                args.damage = NumberUtil.random.Next(0, args.damage + 1);
+            }
         }
 
         #endregion
