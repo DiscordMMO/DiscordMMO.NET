@@ -32,10 +32,10 @@ namespace DiscordMMO.Datatypes.Items
             player.AfterAttackingEvent -= AfterAttacking;
         }
 
-        public void AfterAttacking(ref OnAttackEventArgs args)
+        public void AfterAttacking(ref OnAttackEventArgs args, bool forced)
         {
             // Don't trigger if the first attack missed
-            if (args.damage <= 0)
+            if (forced || args.damage <= 0)
                 return;
             Random r = new Random();
             int triggerChance = 50;

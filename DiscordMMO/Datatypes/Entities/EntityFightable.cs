@@ -75,13 +75,13 @@ namespace DiscordMMO.Datatypes.Entities
             health = maxHealth;
         }
 
-        public abstract void CallBeforeAttackedEvent(ref OnAttackEventArgs args);
+        public abstract void CallBeforeAttackedEvent(ref OnAttackEventArgs args, bool forced);
 
-        public abstract void CallBeforeAttackingEvent(ref OnAttackEventArgs args);
+        public abstract void CallBeforeAttackingEvent(ref OnAttackEventArgs args, bool forced);
 
-        public abstract void CallAfterAttackedEvent(ref OnAttackEventArgs args);
+        public abstract void CallAfterAttackedEvent(ref OnAttackEventArgs args, bool forced);
 
-        public abstract void CallAfterAttackingEvent(ref OnAttackEventArgs args);
+        public abstract void CallAfterAttackingEvent(ref OnAttackEventArgs args, bool forced);
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {

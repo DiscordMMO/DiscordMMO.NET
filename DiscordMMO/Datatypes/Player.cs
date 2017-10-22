@@ -216,13 +216,13 @@ namespace DiscordMMO.Datatypes
             BeforeAttackingEvent += Player_AttackingEvent;
         }
 
-        private void Player_AttackingEvent(ref OnAttackEventArgs args)
+        private void Player_AttackingEvent(ref OnAttackEventArgs args, bool forced)
         {
             var pm = GetPrivateChannel().GetAwaiter().GetResult();
             pm.SendMessageAsync("Attacking " + args.attacked).GetAwaiter().GetResult();
         }
 
-        private void Player_AttackedEvent(ref OnAttackEventArgs args)
+        private void Player_AttackedEvent(ref OnAttackEventArgs args, bool forced)
         {
             var pm = GetPrivateChannel().GetAwaiter().GetResult();
             pm.SendMessageAsync("Attacked by " + args.attacked).GetAwaiter().GetResult();
@@ -329,13 +329,13 @@ namespace DiscordMMO.Datatypes
             }
         }
 
-        public void CallBeforeAttackedEvent(ref OnAttackEventArgs args) => BeforeAttackedEvent?.Invoke(ref args);
+        public void CallBeforeAttackedEvent(ref OnAttackEventArgs args, bool forced) => BeforeAttackedEvent?.Invoke(ref args, forced);
 
-        public void CallBeforeAttackingEvent(ref OnAttackEventArgs args) => BeforeAttackingEvent?.Invoke(ref args);
+        public void CallBeforeAttackingEvent(ref OnAttackEventArgs args, bool forced) => BeforeAttackingEvent?.Invoke(ref args, forced);
 
-        public void CallAfterAttackedEvent(ref OnAttackEventArgs args) => AfterAttackedEvent?.Invoke(ref args);
+        public void CallAfterAttackedEvent(ref OnAttackEventArgs args, bool forced) => AfterAttackedEvent?.Invoke(ref args, forced);
 
-        public void CallAfterAttackingEvent(ref OnAttackEventArgs args) => AfterAttackingEvent?.Invoke(ref args);
+        public void CallAfterAttackingEvent(ref OnAttackEventArgs args, bool forced) => AfterAttackingEvent?.Invoke(ref args, forced);
 
         public void Die(IDamageable killer)
         {

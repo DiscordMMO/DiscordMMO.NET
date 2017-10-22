@@ -13,6 +13,7 @@ namespace DiscordMMO.Util
         public IDamageable attacker;
         public IDamageable attacked;
 
+        public bool cancelled = false;
 
         public int hitChance;
         public int damage;

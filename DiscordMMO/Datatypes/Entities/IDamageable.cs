@@ -5,11 +5,11 @@ using DiscordMMO.Util;
 
 namespace DiscordMMO.Datatypes.Entities
 {
-    public delegate void OnBeforeAttacked(ref OnAttackEventArgs args);
-    public delegate void OnBeforeAttacking(ref OnAttackEventArgs args);
+    public delegate void OnBeforeAttacked(ref OnAttackEventArgs args, bool forced);
+    public delegate void OnBeforeAttacking(ref OnAttackEventArgs args, bool forced);
 
-    public delegate void OnAfterAttacked(ref OnAttackEventArgs args);
-    public delegate void OnAfterAttacking(ref OnAttackEventArgs args);
+    public delegate void OnAfterAttacked(ref OnAttackEventArgs args, bool forced);
+    public delegate void OnAfterAttacking(ref OnAttackEventArgs args, bool forced);
 
     public interface IDamageable
     {
@@ -46,22 +46,22 @@ namespace DiscordMMO.Datatypes.Entities
         /// <summary>
         /// This is a hack, to be able to call the <see cref="BeforeAttackedEvent"/> from the extension methods
         /// </summary>
-        void CallBeforeAttackedEvent(ref OnAttackEventArgs args);
+        void CallBeforeAttackedEvent(ref OnAttackEventArgs args, bool forced);
 
         /// <summary>
         /// This is a hack, to be able to call the <see cref="BeforeAttackingEvent"/> from the extension methods
         /// </summary>
-        void CallBeforeAttackingEvent(ref OnAttackEventArgs args);
+        void CallBeforeAttackingEvent(ref OnAttackEventArgs args, bool forced);
 
         /// <summary>
         /// This is a hack, to be able to call the <see cref="AfterAttackedEvent"/> from the extension methods
         /// </summary>
-        void CallAfterAttackedEvent(ref OnAttackEventArgs args);
+        void CallAfterAttackedEvent(ref OnAttackEventArgs args, bool forced);
 
         /// <summary>
         /// This is a hack, to be able to call the <see cref="AfterAttackingEvent"/> from the extension methods
         /// </summary>
-        void CallAfterAttackingEvent(ref OnAttackEventArgs args);
+        void CallAfterAttackingEvent(ref OnAttackEventArgs args, bool forced);
 
     }
 
@@ -179,11 +179,11 @@ namespace DiscordMMO.Datatypes.Entities
         public static bool Attack(this IDamageable attacker, IDamageable target, ref OnAttackEventArgs args)
         {
 
-            if (args.triggersEffect)
-            {
-                attacker.CallBeforeAttackingEvent(ref args);
-                target.CallBeforeAttackedEvent(ref args);
-            }
+            attacker.CallBeforeAttackingEvent(ref args, !args.triggersEffect);
+            target.CallBeforeAttackedEvent(ref args, !args.triggersEffect);
+
+            if (args.cancelled)
+                return false;
 
             int baseHit = args.damage;
 
@@ -195,8 +195,8 @@ namespace DiscordMMO.Datatypes.Entities
 
             if (args.triggersEffect)
             {
-                attacker.CallAfterAttackingEvent(ref args);
-                attacker.CallAfterAttackedEvent(ref args);
+                attacker.CallAfterAttackingEvent(ref args, !args.triggersEffect);
+                attacker.CallAfterAttackedEvent(ref args, !args.triggersEffect);
             }
 
             if (target.health <= 0)
