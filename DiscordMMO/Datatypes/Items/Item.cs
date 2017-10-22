@@ -6,7 +6,7 @@ namespace DiscordMMO.Datatypes.Items
 {
     [XmlRoot]
     [HasOwnSerializer]
-    public abstract class Item 
+    public abstract class Item
     {
 
         //TODO: Possibly make this code cleaner?
@@ -42,6 +42,9 @@ namespace DiscordMMO.Datatypes.Items
             }
             return ItemHandler.GetItemFromType(type);
         }
+
+        public static bool operator ==(Item item1, Item item2) => item1.itemName == item2.itemName;
+        public static bool operator !=(Item item1, Item item2) => item1.itemName != item2.itemName;
 
     }
 
