@@ -273,8 +273,16 @@ namespace DiscordMMO
                 }
                 else
                 {
-                    outp.Append(stack.ToStringDisplay() + " ");
+                    outp.Append(stack.ToStringDisplay());
                 }
+
+                // Seperate the items by commas, except when the next item will be on a new line
+                if (i % 4 != 0 || i == 0)
+                {
+                    outp.Append(",");
+                }
+
+                outp.Append(" ");
 
                 i++;
             }
