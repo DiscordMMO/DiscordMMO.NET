@@ -57,14 +57,6 @@ namespace DiscordMMO.Datatypes.Entities
         {
         }
 
-        public override void CallBeforeAttackedEvent(ref OnAttackEventArgs args) => BeforeAttackedEvent?.Invoke(ref args);
-
-        public override void CallBeforeAttackingEvent(ref OnAttackEventArgs args) => BeforeAttackingEvent?.Invoke(ref args);
-
-        public override void CallAfterAttackedEvent(ref OnAttackEventArgs args) => AfterAttackedEvent?.Invoke(ref args);
-
-        public override void CallAfterAttackingEvent(ref OnAttackEventArgs args) => AfterAttackingEvent?.Invoke(ref args);
-
         public override void OnOpponentDied(List<ItemStack> drops)
         {
         }

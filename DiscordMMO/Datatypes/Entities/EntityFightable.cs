@@ -58,11 +58,11 @@ namespace DiscordMMO.Datatypes.Entities
         [XmlIgnore]
         public abstract List<ItemStack> drops { get; }
 
-        public abstract event OnBeforeAttacked BeforeAttackedEvent;
-        public abstract event OnBeforeAttacking BeforeAttackingEvent;
+        public virtual event OnBeforeAttacked BeforeAttackedEvent;
+        public virtual event OnBeforeAttacking BeforeAttackingEvent;
 
-        public abstract event OnAfterAttacked AfterAttackedEvent;
-        public abstract event OnAfterAttacking AfterAttackingEvent;
+        public virtual event OnAfterAttacked AfterAttackedEvent;
+        public virtual event OnAfterAttacking AfterAttackingEvent;
 
         public EntityFightable(SerializationInfo info, StreamingContext context)
         {
@@ -75,15 +75,15 @@ namespace DiscordMMO.Datatypes.Entities
             health = maxHealth;
         }
 
-        public abstract void CallBeforeAttackedEvent(ref OnAttackEventArgs args, bool forced);
+        public virtual void CallBeforeAttackedEvent(ref OnAttackEventArgs args, bool forced) => BeforeAttackedEvent?.Invoke(ref args, forced);
 
-        public abstract void CallBeforeAttackingEvent(ref OnAttackEventArgs args, bool forced);
+        public virtual void CallBeforeAttackingEvent(ref OnAttackEventArgs args, bool forced) => BeforeAttackingEvent?.Invoke(ref args, forced);
 
-        public abstract void CallAfterAttackedEvent(ref OnAttackEventArgs args, bool forced);
+        public virtual void CallAfterAttackedEvent(ref OnAttackEventArgs args, bool forced) => AfterAttackedEvent?.Invoke(ref args, forced);
 
-        public abstract void CallAfterAttackingEvent(ref OnAttackEventArgs args, bool forced);
+        public virtual void CallAfterAttackingEvent(ref OnAttackEventArgs args, bool forced) => AfterAttackingEvent?.Invoke(ref args, forced);
 
-        public abstract bool CanAttack(ref OnAttackEventArgs args);
+        public virtual bool CanAttack(ref OnAttackEventArgs args) => true;
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
