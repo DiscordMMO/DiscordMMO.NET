@@ -82,9 +82,6 @@ namespace DiscordMMO.Datatypes
             }
         }
             
-
-
-
         [XmlElement]
         /// <summary>
         /// <c>False</c> if the player can be attacked by multiple enemies at once
@@ -176,7 +173,23 @@ namespace DiscordMMO.Datatypes
         [XmlIgnore]
         public List<ItemStack> drops => inventory.items.Concat(equipment.items).ToList();
 
-        public string convertPrefix => "player";
+        public bool CanAttack(ref OnAttackEventArgs args)
+        {
+            foreach (PlayerEquipmentSlot slot in Enum.GetValues(typeof(PlayerEquipmentSlot)))
+            {
+                if (equipment[slot] == null || equipment[slot].IsEmpty)
+                    continue;
+
+                if (!(equipment[slot].itemType as ItemEquipable).CanAttack(ref args))
+                    return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// The chance that the player loses ammo when attacking
+        /// </summary>
+        public float ammoLossChance = 50;
 
         #endregion
 

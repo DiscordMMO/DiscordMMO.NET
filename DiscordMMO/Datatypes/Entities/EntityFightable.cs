@@ -83,6 +83,8 @@ namespace DiscordMMO.Datatypes.Entities
 
         public abstract void CallAfterAttackingEvent(ref OnAttackEventArgs args, bool forced);
 
+        public abstract bool CanAttack(ref OnAttackEventArgs args);
+
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("name", name);

@@ -1,4 +1,5 @@
 ﻿using DiscordMMO.Datatypes.Inventories;
+using DiscordMMO.Util;
 
 namespace DiscordMMO.Datatypes.Items
 {
@@ -16,6 +17,8 @@ namespace DiscordMMO.Datatypes.Items
         {
 
         }
+
+        public virtual bool CanAttack(ref OnAttackEventArgs args) => true;
 
     }
 }

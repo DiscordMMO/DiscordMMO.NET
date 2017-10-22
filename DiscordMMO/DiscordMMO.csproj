@@ -168,6 +168,7 @@
     <Compile Include="Datatypes\ItemStack.cs" />
     <Compile Include="Datatypes\Items\Item.cs" />
     <Compile Include="Datatypes\Items\ItemEquipable.cs" />
+    <Compile Include="Datatypes\Items\ItemRangedWeapon.cs" />
     <Compile Include="Datatypes\Items\ItemTestHelmet.cs" />
     <Compile Include="Datatypes\Items\ItemTestWeapon.cs" />
     <Compile Include="Datatypes\Items\ItemWeapon.cs" />

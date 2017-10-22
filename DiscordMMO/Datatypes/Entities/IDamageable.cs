@@ -41,6 +41,8 @@ namespace DiscordMMO.Datatypes.Entities
         /// </summary>
         int attackRate { get; }
 
+        bool CanAttack(ref OnAttackEventArgs args);
+
         void OnOpponentDied(List<ItemStack> drops);
 
         /// <summary>
@@ -169,6 +171,13 @@ namespace DiscordMMO.Datatypes.Entities
         }
         #region Attacking
 
+        /// <summary>
+        /// Attack <paramref name="target"/>
+        /// </summary>
+        /// <param name="attacker">The attacker</param>
+        /// <param name="target">The target of the attack</param>
+        /// <param name="triggersEffects">Does the attack trigger any special effects?</param>
+        /// <returns><c>true</c> if <paramref name="target"/> died, <c>false</c> otherwise</returns>
         public static bool Attack(this IDamageable attacker, IDamageable target, bool triggersEffects = true)
         {
             OnAttackEventArgs args = GetAttackingArgs(attacker, target);
@@ -176,8 +185,18 @@ namespace DiscordMMO.Datatypes.Entities
             return Attack(attacker, target, ref args);
         }
 
+        /// <summary>
+        /// Attack <paramref name="target"/>
+        /// </summary>
+        /// <param name="attacker">The attacker</param>
+        /// <param name="target">The target of the attack</param>
+        /// <param name="args">The parameters of the attack</param>
+        /// <returns><c>true</c> if <paramref name="target"/> died, <c>false</c> otherwise</returns>
         public static bool Attack(this IDamageable attacker, IDamageable target, ref OnAttackEventArgs args)
         {
+
+            if (!attacker.CanAttack(ref args))
+                return false;
 
             attacker.CallBeforeAttackingEvent(ref args, !args.triggersEffect);
             target.CallBeforeAttackedEvent(ref args, !args.triggersEffect);
