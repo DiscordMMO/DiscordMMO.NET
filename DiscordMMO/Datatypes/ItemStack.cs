@@ -12,7 +12,27 @@ namespace DiscordMMO.Datatypes
         public Item itemType;
 
         [XmlElement]
-        public int count;
+        protected int _count;
+
+        public int count
+        {
+            get => _count;
+
+            set
+            {
+                if (value <= 0)
+                {
+                    _count = 1;
+                    itemType = empty.itemType;
+                    return;
+                }
+                else
+                {
+                    _count = value;
+                }
+            }
+        }
+
 
         [XmlIgnore]
         public bool IsEmpty => (itemType is ItemEmpty || count <= 0);
@@ -44,11 +64,12 @@ namespace DiscordMMO.Datatypes
             }
         }
 
-        public string ToStringNoCount()
+        public string ToStringDisplay()
         {
             if (IsEmpty)
                 return "Empty";
-            return itemType.displayName;
+
+            return itemType.displayName + (count == 1 ? "" : $" ({count})");
         }
 
         public override string ToString()

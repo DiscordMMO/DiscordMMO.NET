@@ -273,7 +273,7 @@ namespace DiscordMMO
                 }
                 else
                 {
-                    outp.Append(stack.itemType.displayName + " ");
+                    outp.Append(stack.ToStringDisplay() + " ");
                 }
 
                 i++;
@@ -354,7 +354,7 @@ namespace DiscordMMO
                 }
                 else
                 {
-                    outp.Append(stack.ToStringNoCount() + " ");
+                    outp.Append(stack.ToStringDisplay() + " ");
                 }
 
                 // Change to a new line
@@ -472,7 +472,7 @@ namespace DiscordMMO
         }
 
         [Command("give")]
-        public async Task GiveCommand(string item)
+        public async Task GiveCommand(string item, int count = 1)
         {
             // Check if the player can log in
             if (!await PlayerHandler.AttemptLogin(Context.User))
@@ -495,10 +495,44 @@ namespace DiscordMMO
             Item toAdd = ItemHandler.GetItemInstanceFromName(item);
 
             // Give the player the item
-            player.inventory.AddItem(toAdd);
+            player.inventory.AddItem(new ItemStack(toAdd, count));
 
             // Notify the player
-            await ReplyAsync(Context.User.Username + ": Gave item " + toAdd.displayName);
+            await ReplyAsync(Context.User.Username + ": Gave " + count + " of item " + toAdd.displayName);
+        }
+
+        [Command("dec")]
+        public async Task DecrementCommand(int slot)
+        {
+            // Check if the player can log in
+            if (!await PlayerHandler.AttemptLogin(Context.User))
+            {
+                // If they cannot login, notify them
+                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
+                return;
+            }
+
+            Player p = PlayerHandler.GetPlayer(Context.User);
+
+            if (!Enumerable.Range(1, p.inventory.size).Contains(slot))
+            {
+                await ReplyAsync($"{p.playerName}: That slot does not exist");
+                return;
+            }
+
+            // Get the item to equip
+            // The -1 is to have slots 1-28, rather than 0-27
+            ItemStack itemToEquip = p.inventory[slot - 1];
+
+            // Check if there is an item in the given slot
+            if (itemToEquip == null || itemToEquip.IsEmpty)
+            {
+                await ReplyAsync(p.playerName + ": That slot is empty");
+                return;
+            }
+
+            p.inventory[slot-1].count--;
+
         }
 
         [Command("lo")]
