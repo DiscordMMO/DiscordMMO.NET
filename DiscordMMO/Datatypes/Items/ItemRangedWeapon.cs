@@ -10,7 +10,7 @@ namespace DiscordMMO.Datatypes.Items
 {
     public abstract class ItemRangedWeapon : ItemWeapon
     {
-        public abstract Item[] ammoTypes { get; set; }
+        public abstract Item[] ammoTypes { get; }
 
         public override bool CanAttack(ref OnAttackEventArgs args)
         {
