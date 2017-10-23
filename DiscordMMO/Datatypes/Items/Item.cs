@@ -16,10 +16,10 @@ namespace DiscordMMO.Datatypes.Items
         /// This should be all lowercase with underscores for spaces
         /// </summary>
         [XmlElement]
-        public virtual string itemName => "empty";
+        public abstract string itemName { get; }
 
         [XmlIgnore]
-        public virtual string displayName => "Empty";
+        public abstract string displayName { get; }
 
         [XmlElement]
         public virtual bool stackable => true;
