@@ -420,7 +420,7 @@ namespace DiscordMMO
             ActionFighting action = player.currentAction as ActionFighting;
 
             string outp = "Combat information:\n" +
-                          $"{player.playerName}: [{player.health}/{player.maxHealth}]\n" +
+                          $"{player.playerName}: HP: [{player.health}/{player.maxHealth}] Mana: [{player.mana}/{player.maxMana}]\n" +
                           $"{action.fighting.name}: [{action.fighting.health}/{action.fighting.maxHealth}]";
 
             await ReplyAsync(outp);
