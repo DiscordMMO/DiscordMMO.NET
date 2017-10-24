@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DiscordMMO.Handlers;
 
-namespace DiscordMMO.Datatypes.Items
+namespace DiscordMMO.Datatypes.Items.Equipable.Weapons.Ranged
 {
     public class ItemTestBow : ItemRangedWeapon
     {

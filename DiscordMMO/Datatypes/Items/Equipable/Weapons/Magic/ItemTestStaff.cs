@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordMMO.Datatypes.Items
+namespace DiscordMMO.Datatypes.Items.Equipable.Weapons.Magic
 {
     public class ItemTestStaff : ItemMagicWeapon
     {

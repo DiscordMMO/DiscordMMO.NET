@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using DiscordMMO.Util;
 using DiscordMMO.Datatypes.Entities;
 
-namespace DiscordMMO.Datatypes.Items
+namespace DiscordMMO.Datatypes.Items.Equipable.Weapons.Melee
 {
     public class ItemTestWeapon : ItemWeapon
     {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using DiscordMMO.Util;
 using DiscordMMO.Datatypes.Inventories;
 
-namespace DiscordMMO.Datatypes.Items
+namespace DiscordMMO.Datatypes.Items.Equipable.Weapons.Ranged
 {
     public abstract class ItemRangedWeapon : ItemWeapon
     {

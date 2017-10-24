@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DiscordMMO.Datatypes.Inventories;
 
-namespace DiscordMMO.Datatypes.Items
+namespace DiscordMMO.Datatypes.Items.Equipable.Armor
 {
     public class ItemTestHelmet : ItemEquipable
     {

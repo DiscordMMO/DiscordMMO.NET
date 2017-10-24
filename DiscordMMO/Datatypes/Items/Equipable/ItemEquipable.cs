@@ -1,7 +1,7 @@
 ﻿using DiscordMMO.Datatypes.Inventories;
 using DiscordMMO.Util;
 
-namespace DiscordMMO.Datatypes.Items
+namespace DiscordMMO.Datatypes.Items.Equipable
 {
     public abstract class ItemEquipable : Item
     {

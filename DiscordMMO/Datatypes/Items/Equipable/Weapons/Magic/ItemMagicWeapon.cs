@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DiscordMMO.Util;
 
-namespace DiscordMMO.Datatypes.Items
+namespace DiscordMMO.Datatypes.Items.Equipable.Weapons.Magic
 {
     public abstract class ItemMagicWeapon : ItemWeapon
     {
