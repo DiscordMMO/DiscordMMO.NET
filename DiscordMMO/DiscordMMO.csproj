@@ -173,6 +173,7 @@
     <Compile Include="Datatypes\Items\ItemTestAmmo.cs" />
     <Compile Include="Datatypes\Items\ItemTestBow.cs" />
     <Compile Include="Datatypes\Items\ItemTestHelmet.cs" />
+    <Compile Include="Datatypes\Items\ItemTestStaff.cs" />
     <Compile Include="Datatypes\Items\ItemTestWeapon.cs" />
     <Compile Include="Datatypes\Items\ItemWeapon.cs" />
     <Compile Include="Datatypes\Items\ItemWood.cs" />
