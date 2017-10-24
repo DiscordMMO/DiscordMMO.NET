@@ -213,6 +213,9 @@ namespace DiscordMMO.Datatypes
 
         protected Player()
         {
+
+            // TODO: Make preferences work with serialization
+
             preferences["pm"] = Preference.GetPreference(false);
             preferences["mention"] = Preference.GetPreference(false);
         }
