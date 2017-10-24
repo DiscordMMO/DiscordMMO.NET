@@ -272,6 +272,7 @@ namespace DiscordMMO.Datatypes
 
         public virtual async Task Tick()
         {
+            mana = Math.Min(mana + manaRegen, maxMana);
             await currentAction.OnTick();
         }
         
