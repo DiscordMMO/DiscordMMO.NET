@@ -372,6 +372,7 @@ namespace DiscordMMO
             }
             // Message the player
             await ReplyAsync(outp.ToString());
+            
         }
 
         [Command("fight")]

@@ -407,6 +407,7 @@ namespace DiscordMMO.Datatypes
             oldEquip?.OnUnEquip(this);
             newEquip?.OnEquip(this);
             inventory.AddItem(currentEquip);
+            inventory.items.RemoveAt(inventory.items.FindIndex(x => x.itemType == toEquip.itemType));
         }
 
         #endregion
