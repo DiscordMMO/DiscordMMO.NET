@@ -55,6 +55,8 @@ namespace DiscordMMO
     public class NoPrefix : ModuleBase
     {
 
+        // TODO: Make messages delete themselves after some time
+
         [Command("register"), Summary("Register with the name, if one is given")]
         public async Task Register([Summary("The name to register with")] string name = null)
         {

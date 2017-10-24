@@ -1,18 +1,18 @@
-﻿using System;
-using System.Linq;
-using System.Xml.Serialization;
+﻿using Discord;
+using Discord.WebSocket;
+using DiscordMMO.Datatypes.Actions;
+using DiscordMMO.Datatypes.Entities;
+using DiscordMMO.Datatypes.Inventories;
+using DiscordMMO.Datatypes.Items;
+using DiscordMMO.Datatypes.Preferences;
+using DiscordMMO.Handlers;
+using DiscordMMO.Util;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
-using DiscordMMO.Datatypes.Preferences;
-using DiscordMMO.Datatypes.Actions;
-using DiscordMMO.Datatypes.Inventories;
-using DiscordMMO.Datatypes.Entities;
-using DiscordMMO.Datatypes.Items;
-using DiscordMMO.Util;
-using DiscordMMO.Handlers;
+using System.Xml.Serialization;
 using Action = DiscordMMO.Datatypes.Actions.Action;
 
 namespace DiscordMMO.Datatypes
@@ -22,6 +22,9 @@ namespace DiscordMMO.Datatypes
     [AlsoRequires(typeof(Preference))]
     public class Player : IDamageable
     {
+
+        // TODO: Add skills?
+
         #region Fields / Properties
 
         public static XmlSerializer serializer;
@@ -191,14 +194,27 @@ namespace DiscordMMO.Datatypes
         /// </summary>
         public float ammoLossChance = 50;
 
+        [XmlElement]
+        public int maxMana = 100;
+
+        [XmlElement]
+        public int mana;
+
+        public float manaUsageModifier = 1;
+
+        /// <summary>
+        /// How much mana is regenerated each tick
+        /// </summary>
+        public int manaRegen = 10;
+
         #endregion
 
         #region Constructors
 
         protected Player()
         {
-            preferences["pm"] = Preference.GetPreference(false);
-            preferences["mention"] = Preference.GetPreference(false);
+            //preferences["pm"] = Preference.GetPreference(false);
+            //preferences["mention"] = Preference.GetPreference(false);
         }
 
         public Player(IUser user) : this(user, user.Username)
@@ -216,6 +232,7 @@ namespace DiscordMMO.Datatypes
             equipment = new PlayerEquimentInventory(this);
             preferences["pm"] = Preference.GetPreference(true);
             preferences["mention"] = Preference.GetPreference(true);
+            mana = maxMana;
         }
 
         public Player(IUser user, string name, Action action) : this()
@@ -225,21 +242,9 @@ namespace DiscordMMO.Datatypes
             playerName = name;
             currentAction = action;
             inventory = new PlayerInventory(this);
-            BeforeAttackedEvent += Player_AttackedEvent;
-            BeforeAttackingEvent += Player_AttackingEvent;
+            mana = maxMana;
         }
 
-        private void Player_AttackingEvent(ref OnAttackEventArgs args, bool forced)
-        {
-            var pm = GetPrivateChannel().GetAwaiter().GetResult();
-            pm.SendMessageAsync("Attacking " + args.attacked).GetAwaiter().GetResult();
-        }
-
-        private void Player_AttackedEvent(ref OnAttackEventArgs args, bool forced)
-        {
-            var pm = GetPrivateChannel().GetAwaiter().GetResult();
-            pm.SendMessageAsync("Attacked by " + args.attacked).GetAwaiter().GetResult();
-        }
 
         public Player(ulong id, DiscordSocketClient client) : this(id, client, client.GetUser(id).Username)
         {
