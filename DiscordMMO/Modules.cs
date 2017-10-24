@@ -4,7 +4,7 @@ using DiscordMMO.Consts;
 using DiscordMMO.Datatypes.Actions;
 using DiscordMMO.Datatypes.Preferences;
 using DiscordMMO.Handlers;
-using System.Security.AccessControl;
+using DiscordMMO.Datatypes.Items.Equipable;
 using System;
 using System.IO;
 using System.Linq;
