@@ -83,7 +83,7 @@ namespace DiscordMMO.Handlers
         {
             if (HasPlayer(user))
                 return (true, "");
-            if (lastLogout.ContainsKey(user) && lastLogout[user].AddMinutes(1) <= DateTime.Now)
+            if (lastLogout.ContainsKey(user) && lastLogout[user].AddMinutes(1) > DateTime.Now)
                 return (false, "You can only log in 60 seconds after you log out");
             if (!await DatabaseHandler.CanFetchPlayer(user))
                 return (false, Modules.NOT_REGISTERED_MSG);
