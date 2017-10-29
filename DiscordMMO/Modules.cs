@@ -102,7 +102,7 @@ namespace DiscordMMO
 
             // Check if the player has a user
             var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
-            if (attemptLogin.success)
+            if (!attemptLogin.success)
             {
                 // If the player cannot login, notify them
                 await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
@@ -126,7 +126,7 @@ namespace DiscordMMO
         {
             // Check if the player has a user
             var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
-            if (attemptLogin.success)
+            if (!attemptLogin.success)
             {
                 // If the player cannot login, notify them
                 await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
@@ -157,7 +157,7 @@ namespace DiscordMMO
 
             // Check if the player has a user
             var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
-            if (attemptLogin.success)
+            if (!attemptLogin.success)
             {
                 // If the player cannot login, notify them
                 await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
@@ -229,7 +229,7 @@ namespace DiscordMMO
         {
             // Check if the player has a user
             var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
-            if (attemptLogin.success)
+            if (!attemptLogin.success)
             {
                 // If the player cannot login, notify them
                 await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
@@ -248,7 +248,7 @@ namespace DiscordMMO
 
             // Check if the player has a user
             var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
-            if (attemptLogin.success)
+            if (!attemptLogin.success)
             {
                 // If the player cannot login, notify them
                 await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
@@ -300,7 +300,7 @@ namespace DiscordMMO
         {
             // Check if the player has a user
             var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
-            if (attemptLogin.success)
+            if (!attemptLogin.success)
             {
                 // If the player cannot login, notify them
                 await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
@@ -344,7 +344,7 @@ namespace DiscordMMO
         {
             // Check if the player has a user
             var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
-            if (attemptLogin.success)
+            if (!attemptLogin.success)
             {
                 // If the player cannot login, notify them
                 await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
@@ -388,7 +388,7 @@ namespace DiscordMMO
         {
             // Check if the player has a user
             var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
-            if (attemptLogin.success)
+            if (!attemptLogin.success)
             {
                 // If the player cannot login, notify them
                 await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
@@ -410,7 +410,7 @@ namespace DiscordMMO
         {
             // Check if the player has a user
             var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
-            if (attemptLogin.success)
+            if (!attemptLogin.success)
             {
                 // If the player cannot login, notify them
                 await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
@@ -479,7 +479,7 @@ namespace DiscordMMO
         {
             // Check if the player has a user
             var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
-            if (attemptLogin.success)
+            if (!attemptLogin.success)
             {
                 // If the player cannot login, notify them
                 await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
@@ -501,7 +501,7 @@ namespace DiscordMMO
         {
             // Check if the player has a user
             var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
-            if (attemptLogin.success)
+            if (!attemptLogin.success)
             {
                 // If the player cannot login, notify them
                 await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
@@ -518,7 +518,7 @@ namespace DiscordMMO
         {
             // Check if the player has a user
             var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
-            if (attemptLogin.success)
+            if (!attemptLogin.success)
             {
                 // If the player cannot login, notify them
                 await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
@@ -549,7 +549,7 @@ namespace DiscordMMO
         {
             // Check if the player has a user
             var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
-            if (attemptLogin.success)
+            if (!attemptLogin.success)
             {
                 // If the player cannot login, notify them
                 await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
@@ -584,7 +584,7 @@ namespace DiscordMMO
         {
             // Check if the player has a user
             var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
-            if (attemptLogin.success)
+            if (!attemptLogin.success)
             {
                 // If the player cannot login, notify them
                 await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
@@ -665,7 +665,7 @@ namespace DiscordMMO
                 await ReplyAsync(Context.User.Username + ": Attempting to delete account...");
                 // Check if the player has a user
                 var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
-                if (attemptLogin.success)
+                if (!attemptLogin.success)
                 {
                     // If the player cannot login, notify them
                     await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
