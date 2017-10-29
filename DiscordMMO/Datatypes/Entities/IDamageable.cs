@@ -70,10 +70,13 @@ namespace DiscordMMO.Datatypes.Entities
     public static class IDamageableHelper
     {
 
+
         /// <summary>
         /// The lowest max hit for an instance will be baseDamage / <see cref="MIN_DAMAGE_DIVISOR"/>
         /// </summary>
         public const int MIN_DAMAGE_DIVISOR = 10;
+
+        #region Combat
 
         public static OnAttackEventArgs GetAttackingArgs(this IDamageable attacker, IDamageable target)
         {
@@ -230,6 +233,14 @@ namespace DiscordMMO.Datatypes.Entities
         }
 
         #endregion
+#endregion
+
+        public static void Heal(this IDamageable target, int amount, float maxOverheal = 1)
+        {
+            float afterHeal = target.health + amount;
+            target.health = (int)Math.Floor(afterHeal.Clamp(0f, target.maxHealth * maxOverheal));
+        }
+
 
     }
 
