@@ -494,6 +494,11 @@ namespace DiscordMMO
 
             // Remove the player instance
             PlayerHandler.RemovePlayerInstance(player);
+
+            await ReplyAsync($"{Context.User.Username}: You have been logged out");
+
+            PlayerHandler.LoggedOut(Context.User);
+
         }
 
         [Command("reply")]

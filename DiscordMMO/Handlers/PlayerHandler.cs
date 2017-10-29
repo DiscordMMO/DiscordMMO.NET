@@ -120,5 +120,10 @@ namespace DiscordMMO.Handlers
             return players;
         }
 
+        public static void LoggedOut(IUser user)
+        {
+            lastLogout[user] = DateTime.Now;
+        }
+
     }
 }
