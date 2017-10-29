@@ -166,6 +166,8 @@
     <Compile Include="Datatypes\Inventories\PlayerInventory.cs" />
     <Compile Include="Datatypes\Inventories\Inventory.cs" />
     <Compile Include="Datatypes\ItemStack.cs" />
+    <Compile Include="Datatypes\Items\Consumable\ItemConsumable.cs" />
+    <Compile Include="Datatypes\Items\Consumable\ItemHealingPotion.cs" />
     <Compile Include="Datatypes\Items\Item.cs" />
     <Compile Include="Datatypes\Items\Equipable\ItemEquipable.cs" />
     <Compile Include="Datatypes\Items\Equipable\Weapons\Magic\ItemMagicWeapon.cs" />
