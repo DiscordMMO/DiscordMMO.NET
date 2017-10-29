@@ -435,6 +435,33 @@ namespace DiscordMMO
 
         }
 
+        [Command("logout")]
+        public async Task LogoutCommand()
+        {
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (!attemptLogin.success)
+            {
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
+                return;
+            }
+
+
+            Player player = PlayerHandler.GetPlayer(Context.User);
+
+            // Save the player
+            await DatabaseHandler.SaveAsync(player);
+
+            // Remove the player instance
+            PlayerHandler.RemovePlayerInstance(player);
+
+            await ReplyAsync($"{Context.User.Username}: You have been logged out");
+
+            PlayerHandler.LoggedOut(Context.User);
+
+        }
+
     }
 
     [Group("db")]
@@ -472,33 +499,6 @@ namespace DiscordMMO
 
             // Output the stringbuilder
             await ReplyAsync(outp.ToString());
-        }
-
-        [Command("logout")]
-        public async Task LogoutCommand()
-        {
-            // Check if the player has a user
-            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
-            if (!attemptLogin.success)
-            {
-                // If the player cannot login, notify them
-                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
-                return;
-            }
-
-
-            Player player = PlayerHandler.GetPlayer(Context.User);
-
-            // Save the player
-            await DatabaseHandler.SaveAsync(player);
-
-            // Remove the player instance
-            PlayerHandler.RemovePlayerInstance(player);
-
-            await ReplyAsync($"{Context.User.Username}: You have been logged out");
-
-            PlayerHandler.LoggedOut(Context.User);
-
         }
 
         [Command("reply")]
