@@ -67,7 +67,7 @@ namespace DiscordMMO
                 name = Context.User.Username;
             }
             // Check if the player already has a user
-            if (await PlayerHandler.AttemptLogin(Context.User as SocketUser))
+            if ((await PlayerHandler.AttemptLogin(Context.User as SocketUser)).success)
             {
                 // Notify the player that they already have player
                 await ReplyAsync($"{Context.User.Username}: {Modules.ALREADY_REGISTERED_MSG}");
@@ -101,11 +101,11 @@ namespace DiscordMMO
             }
 
             // Check if the player has a user
-            if (!await PlayerHandler.AttemptLogin(user))
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (attemptLogin.success)
             {
-                // If the player is not registered, notify them
-                await ReplyAsync(Context.User.Username + ": " + (firstPerson ? Modules.NOT_REGISTERED_MSG
-                    : Modules.NOT_REGISTERED_THIRD_PERSON(user.Username)));
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
                 return;
             }
             Player player = PlayerHandler.GetPlayer(user);
@@ -124,11 +124,12 @@ namespace DiscordMMO
         [Command("chop"), Summary("Starts chopping wood")]
         public async Task Chop()
         {
-            // Check if the player can log in
-            if (!await PlayerHandler.AttemptLogin(Context.User))
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (attemptLogin.success)
             {
-                // If they cannot login, notify them
-                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
                 return;
             }
 
@@ -154,11 +155,12 @@ namespace DiscordMMO
         public async Task Prefs(string prefName = null, string value = null)
         {
 
-            // Check if the player can log in
-            if (!await PlayerHandler.AttemptLogin(Context.User))
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (attemptLogin.success)
             {
-                // If they cannot login, notify them
-                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
                 return;
             }
 
@@ -225,11 +227,12 @@ namespace DiscordMMO
         [Command("login")]
         public async Task LoginCommand()
         {
-            // Check if the player can log in
-            if (!await PlayerHandler.AttemptLogin(Context.User))
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (attemptLogin.success)
             {
-                // If they cannot login, notify them
-                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
                 return;
             }
 
@@ -243,11 +246,12 @@ namespace DiscordMMO
         public async Task InventoryCommand()
         {
 
-            // Check if the player can log in
-            if (!await PlayerHandler.AttemptLogin(Context.User))
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (attemptLogin.success)
             {
-                // If they cannot login, notify them
-                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
                 return;
             }
 
@@ -294,11 +298,12 @@ namespace DiscordMMO
         [Command("equip"), Summary("Equip an item")]
         public async Task EquipItemCommand(int itemToEqiupIndex)
         {
-            // Check if the player can log in
-            if (!await PlayerHandler.AttemptLogin(Context.User))
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (attemptLogin.success)
             {
-                // If they cannot login, notify them
-                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
                 return;
             }
 
@@ -337,11 +342,12 @@ namespace DiscordMMO
         [Command("equipment")]
         public async Task EquipmentCommand()
         {
-            // Check if the player can log in
-            if (!await PlayerHandler.AttemptLogin(Context.User))
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (attemptLogin.success)
             {
-                // If they cannot login, notify them
-                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
                 return;
             }
 
@@ -380,11 +386,12 @@ namespace DiscordMMO
         [Command("fight")]
         public async Task FightCommand()
         {
-            // Check if the player can log in
-            if (!await PlayerHandler.AttemptLogin(Context.User))
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (attemptLogin.success)
             {
-                // If they cannot login, notify them
-                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
                 return;
             }
 
@@ -401,11 +408,12 @@ namespace DiscordMMO
         [Command("combat")]
         public async Task CombatCommand()
         {
-            // Check if the player can log in
-            if (!await PlayerHandler.AttemptLogin(Context.User))
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (attemptLogin.success)
             {
-                // If they cannot login, notify them
-                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
                 return;
             }
 
@@ -469,11 +477,12 @@ namespace DiscordMMO
         [Command("reply")]
         public async Task Reply()
         {
-            // Check if the player can log in
-            if (!await PlayerHandler.AttemptLogin(Context.User))
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (attemptLogin.success)
             {
-                // If they cannot login, notify them
-                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
                 return;
             }
 
@@ -485,11 +494,12 @@ namespace DiscordMMO
         [Command("give")]
         public async Task GiveCommand(string item, int count = 1)
         {
-            // Check if the player can log in
-            if (!await PlayerHandler.AttemptLogin(Context.User))
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (attemptLogin.success)
             {
-                // If they cannot login, notify them
-                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
                 return;
             }
 
@@ -515,11 +525,12 @@ namespace DiscordMMO
         [Command("dec")]
         public async Task DecrementCommand(int slot)
         {
-            // Check if the player can log in
-            if (!await PlayerHandler.AttemptLogin(Context.User))
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (attemptLogin.success)
             {
-                // If they cannot login, notify them
-                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
                 return;
             }
 
@@ -549,11 +560,12 @@ namespace DiscordMMO
         [Command("lo")]
         public async Task LogoutCommand()
         {
-            // Check if the player can log in
-            if (!await PlayerHandler.AttemptLogin(Context.User))
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (attemptLogin.success)
             {
-                // If they cannot login, notify them
-                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
                 return;
             }
 
@@ -564,11 +576,12 @@ namespace DiscordMMO
         [Command("en")]
         public async Task EnemyInfoCommand()
         {
-            // Check if the player can log in
-            if (!await PlayerHandler.AttemptLogin(Context.User))
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (attemptLogin.success)
             {
-                // If they cannot login, notify them
-                await ReplyAsync(Context.User.Username + ": " + Modules.NOT_REGISTERED_MSG);
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
                 return;
             }
 
@@ -644,9 +657,12 @@ namespace DiscordMMO
             if (confirm == "yes")
             {
                 await ReplyAsync(Context.User.Username + ": Attempting to delete account...");
-                if (!await PlayerHandler.AttemptLogin(Context.User))
+                // Check if the player has a user
+                var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+                if (attemptLogin.success)
                 {
-                    await ReplyAsync(Context.User.Username + ": Cannot delete your account: You do not have an account");
+                    // If the player cannot login, notify them
+                    await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
                     return;
                 }
                 PlayerHandler.RemovePlayerInstance(Context.User);

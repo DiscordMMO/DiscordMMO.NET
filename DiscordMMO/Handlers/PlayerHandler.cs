@@ -12,6 +12,8 @@ namespace DiscordMMO.Handlers
     public static class PlayerHandler
     {
 
+        private static Dictionary<IUser, DateTime> lastLogout = new Dictionary<IUser, DateTime>();
+
         /// <summary>
         /// A list of all currently logged in players
         /// </summary>
@@ -77,14 +79,16 @@ namespace DiscordMMO.Handlers
         /// </summary>
         /// <param name="user">The user to log in</param>
         /// <returns><c>True</c> if the player for <paramref name="user"/> is now available</returns>
-        public static async Task<bool> AttemptLogin(IUser user)
+        public static async Task<(bool success, string errorReason)> AttemptLogin(IUser user)
         {
             if (HasPlayer(user))
-                return true;
+                return (true, "");
+            if (lastLogout.ContainsKey(user) && lastLogout[user].AddMinutes(1) <= DateTime.Now)
+                return (false, "You can only log in 60 seconds after you log out");
             if (!await DatabaseHandler.CanFetchPlayer(user))
-                return false;
+                return (false, Modules.NOT_REGISTERED_MSG);
             AddPlayerInstance(await DatabaseHandler.GetOrFetchPlayer(user, Program.client));
-            return true;
+            return (true, "");
         }
 
         public static Player CreatePlayer(IUser user)
