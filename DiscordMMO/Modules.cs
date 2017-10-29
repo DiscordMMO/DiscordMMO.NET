@@ -61,7 +61,7 @@ namespace DiscordMMO
         public async Task Register([Summary("The name to register with")] string name = null)
         {
             // Check if no name parameter was given
-            if (name == null || name.Trim().Equals(""))
+            if (String.IsNullOrWhiteSpace(name))
             {
                 // Set the players username to the discord username of the sender
                 name = Context.User.Username;
