@@ -474,6 +474,28 @@ namespace DiscordMMO
             await ReplyAsync(outp.ToString());
         }
 
+        [Command("logout")]
+        public async Task LogoutCommand()
+        {
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (attemptLogin.success)
+            {
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
+                return;
+            }
+
+
+            Player player = PlayerHandler.GetPlayer(Context.User);
+
+            // Save the player
+            await DatabaseHandler.SaveAsync(player);
+
+            // Remove the player instance
+            PlayerHandler.RemovePlayerInstance(player);
+        }
+
         [Command("reply")]
         public async Task Reply()
         {
@@ -555,22 +577,6 @@ namespace DiscordMMO
 
             p.inventory[slot-1].count--;
 
-        }
-
-        [Command("lo")]
-        public async Task LogoutCommand()
-        {
-            // Check if the player has a user
-            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
-            if (attemptLogin.success)
-            {
-                // If the player cannot login, notify them
-                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
-                return;
-            }
-
-            // Remove the player instance
-            PlayerHandler.RemovePlayerInstance(Context.User);
         }
 
         [Command("en")]
