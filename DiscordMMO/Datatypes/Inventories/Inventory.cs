@@ -67,7 +67,7 @@ namespace DiscordMMO.Datatypes.Inventories
             return o.Remove(o.Length-1);
         }
 
-        public abstract bool CanAdd(ItemStack item);
+        public virtual bool CanAdd(ItemStack item) => true;
 
     }
 }
