@@ -98,6 +98,11 @@ namespace DiscordMMO.Datatypes
         /// </summary>
         public List<EntityFightable> targetedBy = new List<EntityFightable>();
 
+        [XmlIgnore]
+        /// <summary>
+        /// The DateTime is the time that the ItemStack was last updated, this is used for making the ItemStack disappear after some time
+        /// </summary>
+        public InventoryLootPile lootPile = new InventoryLootPile();
 
         public bool CanStartFight
         {
@@ -277,6 +282,7 @@ namespace DiscordMMO.Datatypes
         public virtual async Task Tick()
         {
             mana = Math.Min(mana + manaRegen, maxMana);
+            lootPile.Update();
             await currentAction.OnTick();
         }
         
@@ -376,9 +382,10 @@ namespace DiscordMMO.Datatypes
 
         public void OnOpponentDied(List<ItemStack> drops)
         {
-            // TODO: Implement loot from this
-            IDMChannel pm = GetPrivateChannel().GetAwaiter().GetResult();
-            pm.SendMessageAsync("You killed an enemy").GetAwaiter().GetResult();
+            foreach (ItemStack item in drops)
+            {
+                lootPile.Add(item);
+            }
         }
 
         #endregion
@@ -418,6 +425,21 @@ namespace DiscordMMO.Datatypes
             newEquip?.OnEquip(this);
             inventory.AddItem(currentEquip);
             inventory.items.RemoveAt(inventory.items.FindIndex(x => x.itemType == toEquip.itemType));
+        }
+
+        /// <summary>
+        /// Try to take an item from the loot pile and add it to the inventory
+        /// </summary>
+        /// <param name="index">The index of the item to loot</param>
+        /// <returns><c>true</c> if the item was successfully added to the inventory, <c>false</c> otherwise</returns>
+        public virtual (bool success, string errorReason) AttemptLoot(int index)
+        {
+            ItemStack toAdd = lootPile[index].stack;
+            if (!inventory.CanAdd(toAdd))
+                return (false, "You do not have enough inventory space to do that");
+            lootPile.RemoveAt(index);
+            inventory.AddItem(toAdd);
+            return (true, "");
         }
 
         #endregion

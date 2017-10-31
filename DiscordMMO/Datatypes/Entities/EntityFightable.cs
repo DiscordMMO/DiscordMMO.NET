@@ -17,8 +17,6 @@ namespace DiscordMMO.Datatypes.Entities
         [XmlIgnore]
         public Player fightingAgainst { get; set; }
 
-        //TODO: Add fighting
-
         public bool CanStartFight
         {
             get

@@ -172,6 +172,7 @@ namespace DiscordMMO.Datatypes.Entities
         {
             killer.OnOpponentDied(damageable.drops);
         }
+
         #region Attacking
 
         /// <summary>
@@ -233,6 +234,7 @@ namespace DiscordMMO.Datatypes.Entities
         }
 
         #endregion
+
 #endregion
 
         public static void Heal(this IDamageable target, int amount, float maxOverheal = 1)

@@ -161,6 +161,7 @@
     <Compile Include="Datatypes\Interactions\FightInteraction.cs" />
     <Compile Include="Datatypes\Interactions\Interactibles\Interactible.cs" />
     <Compile Include="Datatypes\Interactions\Interaction.cs" />
+    <Compile Include="Datatypes\Inventories\InventoryLootPile.cs" />
     <Compile Include="Datatypes\Inventories\LimitedInventory.cs" />
     <Compile Include="Datatypes\Inventories\PlayerEquimentInventory.cs" />
     <Compile Include="Datatypes\Inventories\PlayerInventory.cs" />

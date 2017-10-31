@@ -380,7 +380,7 @@ namespace DiscordMMO
             }
             // Message the player
             await ReplyAsync(outp.ToString());
-            
+
         }
 
         [Command("fight")]
@@ -459,6 +459,90 @@ namespace DiscordMMO
             await ReplyAsync($"{Context.User.Username}: You have been logged out");
 
             PlayerHandler.LoggedOut(Context.User);
+
+        }
+
+        [Command("loot")]
+        public async Task LootCommand(int index = -1)
+        {
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (!attemptLogin.success)
+            {
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
+                return;
+            }
+
+            Player player = PlayerHandler.GetPlayer(Context.User);
+
+            // Interpret anything negative or zero as no input
+            if (index <= 0)
+            {
+
+                if (player.lootPile.Count <= 0)
+                {
+                    await ReplyAsync($"{Context.User.Username}: Your loot pile is empty");
+                    return;
+                }
+
+                // Create the string builder for the message
+                StringBuilder outp = new StringBuilder($"Loot pile for {player.playerName}:\n");
+
+                // Loop through all the items
+                int i = 0;
+                foreach (ItemStack stack in player.lootPile.GetAsItemStacks())
+                {
+                    // If the stack is null, treat it as empty
+                    if (stack == null)
+                    {
+                        // Skip empty stacks
+                        continue;
+                    }
+                    // Change to a new line every 5 items
+                    if (i % 5 == 0)
+                    {
+                        outp.Append("\n");
+                    }
+                    else
+                    {
+                        outp.Append(stack.ToStringDisplay());
+                    }
+
+                    // Seperate the items by commas, except when the next item will be on a new line
+                    if (i % 4 != 0 || i == 0)
+                    {
+                        outp.Append(",");
+                    }
+
+                    outp.Append(" ");
+
+                    i++;
+                }
+                await ReplyAsync(outp.ToString());
+                return;
+            }
+
+            if (!Enumerable.Range(1, player.lootPile.Count).Contains(index))
+            {
+                await ReplyAsync($"{Context.User.Username}: That is not within your loot pile");
+                return;
+            }
+
+            ItemStack toLoot = player.lootPile[index - 1].stack;
+
+            var attemptLoot = player.AttemptLoot(index - 1);
+
+            if (attemptLoot.success)
+            {
+                await ReplyAsync($"{Context.User.Username}: Looted {toLoot.itemType.displayName} + x {toLoot.count}");
+                return;
+            }
+            else
+            {
+                await ReplyAsync($"{Context.User.Username}: {attemptLoot.errorReason}");
+                return;
+            }
 
         }
 
@@ -580,7 +664,7 @@ namespace DiscordMMO
                 return;
             }
 
-            p.inventory[slot-1].count--;
+            p.inventory[slot - 1].count--;
 
         }
 
