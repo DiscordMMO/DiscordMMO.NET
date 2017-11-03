@@ -480,7 +480,7 @@ namespace DiscordMMO
             if (index <= 0)
             {
 
-                if (player.lootPile.Count <= 0)
+                if (player.lootPile.ItemStacks.Count <= 0)
                 {
                     await ReplyAsync($"{Context.User.Username}: Your loot pile is empty");
                     return;
@@ -491,7 +491,7 @@ namespace DiscordMMO
 
                 // Loop through all the items
                 int i = 0;
-                foreach (ItemStack stack in player.lootPile.GetAsItemStacks())
+                foreach (ItemStack stack in player.lootPile.ItemStacks)
                 {
                     // If the stack is null, treat it as empty
                     if (stack == null)
@@ -523,13 +523,13 @@ namespace DiscordMMO
                 return;
             }
 
-            if (!Enumerable.Range(1, player.lootPile.Count).Contains(index))
+            if (!Enumerable.Range(1, player.lootPile.Items.Count).Contains(index))
             {
                 await ReplyAsync($"{Context.User.Username}: That is not within your loot pile");
                 return;
             }
 
-            ItemStack toLoot = player.lootPile[index - 1].stack;
+            ItemStack toLoot = player.lootPile.ItemStacks[index - 1];
 
             var attemptLoot = player.AttemptLoot(index - 1);
 

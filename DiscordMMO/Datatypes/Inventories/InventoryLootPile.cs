@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DiscordMMO.Datatypes.Inventories
 {
-    public class InventoryLootPile : List<(ItemStack stack, DateTime updated)>
+    public class InventoryLootPile
     {
 
         /// <summary>
@@ -14,58 +14,60 @@ namespace DiscordMMO.Datatypes.Inventories
         /// </summary>
         public const int lootLingerTime = 300;
 
+        private List<ItemStackLootPile> items = new List<ItemStackLootPile>();
+
+        public List<ItemStackLootPile> Items => items;
+
+        public List<ItemStack> ItemStacks => items.Select(x => x.stack).ToList();
+
         public void Update()
         {
-            List<(ItemStack stack, DateTime updated)> toRemove = new List<(ItemStack stack, DateTime updated)>();
-            foreach ((ItemStack stack, DateTime updated) item in this)
+            List<ItemStackLootPile> toRemove = new List<ItemStackLootPile>();
+            foreach (ItemStackLootPile item in items)
             {
-                if (item.updated.AddSeconds(lootLingerTime) >= DateTime.Now)
+                if (item.lastUpdated.AddSeconds(lootLingerTime) >= DateTime.Now)
                 {
                     toRemove.Add(item);
                 }
             }
 
-            foreach ((ItemStack stack, DateTime updated) item in toRemove)
+            foreach (ItemStackLootPile item in toRemove)
             {
-                Remove(item);
+                items.Remove(item);
             }
         }
 
         public void Add(ItemStack item)
         {
-            if (this.Count(x => x.stack.itemType == item.itemType) > 0)
+            if (items.Count(x => x.stack.itemType == item.itemType) > 0)
             {
                 // Find the first stack that matches the type of the input stack
-                int indexOfMatching = FindIndex(x => x.stack.itemType == item.itemType);
+                int indexOfMatching = items.FindIndex(x => x.stack.itemType == item.itemType);
 
                 // Add the size of the input stack to that first stack
-                ItemStack newStack = this[indexOfMatching].stack;
-                newStack.count += item.count;
+                items[indexOfMatching].stack.count += item.count;
 
-                // Initialize a new stack
-                (ItemStack stack, DateTime updated) newElement = (newStack, DateTime.Now);
-
-                //Insert that new stack
-                this[indexOfMatching] = newElement;
+                // Refresh the stack
+                items[indexOfMatching].Refresh();
 
                 return;
             }
 
-            if (this.Count(x => x.stack.IsEmpty || x.stack == null) > 0)
+            if (items.Count(x => x.stack.IsEmpty || x.stack == null) > 0)
             {
-                this[FindIndex(x => x.stack.IsEmpty || x.stack == null)] = (item, DateTime.Now);
+                items[items.FindIndex(x => x.stack.IsEmpty || x.stack == null)] = (item, DateTime.Now);
             }
             else
             {
-                Add((item, DateTime.Now));
+                items.Add((item, DateTime.Now));
             }
 
 
         }
 
-        public List<ItemStack> GetAsItemStacks()
+        public void RemoveAt(int index)
         {
-            return this.Select<(ItemStack stack, DateTime), ItemStack>(x => x.stack).ToList();
+            items.RemoveAt(index);
         }
 
     }

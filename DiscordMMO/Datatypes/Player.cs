@@ -434,7 +434,7 @@ namespace DiscordMMO.Datatypes
         /// <returns><c>true</c> if the item was successfully added to the inventory, <c>false</c> otherwise</returns>
         public virtual (bool success, string errorReason) AttemptLoot(int index)
         {
-            ItemStack toAdd = lootPile[index].stack;
+            ItemStack toAdd = lootPile.ItemStacks[index];
             if (!inventory.CanAdd(toAdd))
                 return (false, "You do not have enough inventory space to do that");
             lootPile.RemoveAt(index);
