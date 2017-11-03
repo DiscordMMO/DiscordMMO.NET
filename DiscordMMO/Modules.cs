@@ -541,7 +541,6 @@ namespace DiscordMMO
                 await ReplyAsync($"{Context.User.Username}: {attemptLoot.errorReason}");
                 return;
             }
-
         }
 
     }
