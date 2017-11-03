@@ -487,7 +487,7 @@ namespace DiscordMMO
                 }
 
                 // Create the string builder for the message
-                StringBuilder outp = new StringBuilder($"Loot pile for {player.playerName}:\n");
+                StringBuilder outp = new StringBuilder($"Loot pile for {player.playerName}:");
 
                 // Loop through all the items
                 int i = 0;
@@ -504,13 +504,11 @@ namespace DiscordMMO
                     {
                         outp.Append("\n");
                     }
-                    else
-                    {
-                        outp.Append(stack.ToStringDisplay());
-                    }
 
-                    // Seperate the items by commas, except when the next item will be on a new line
-                    if (i % 4 != 0 || i == 0)
+                    outp.Append(stack.ToStringDisplay());
+
+                    // Seperate the items by commas, except when the next item will be on a new line, or it is the last item
+                    if ((i % 4 != 0 || i == 0) && i+1 < player.lootPile.ItemStacks.Count)
                     {
                         outp.Append(",");
                     }
@@ -535,7 +533,7 @@ namespace DiscordMMO
 
             if (attemptLoot.success)
             {
-                await ReplyAsync($"{Context.User.Username}: Looted {toLoot.itemType.displayName} + x {toLoot.count}");
+                await ReplyAsync($"{Context.User.Username}: Looted {toLoot.count} {toLoot.itemType.displayName}");
                 return;
             }
             else

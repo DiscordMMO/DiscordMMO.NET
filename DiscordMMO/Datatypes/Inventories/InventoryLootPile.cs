@@ -25,7 +25,7 @@ namespace DiscordMMO.Datatypes.Inventories
             List<ItemStackLootPile> toRemove = new List<ItemStackLootPile>();
             foreach (ItemStackLootPile item in items)
             {
-                if (item.lastUpdated.AddSeconds(lootLingerTime) >= DateTime.Now)
+                if (item.lastUpdated.AddSeconds(lootLingerTime) <= DateTime.Now)
                 {
                     toRemove.Add(item);
                 }
