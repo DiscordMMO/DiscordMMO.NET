@@ -52,12 +52,12 @@ namespace DiscordMMO.Datatypes.Actions
             Console.WriteLine("[Actions] Average time per action: " + watch.ElapsedMilliseconds / allItems.Length + "ms");
             Console.WriteLine("[Actions] Registering actions");
             watch = Stopwatch.StartNew();
-            //List<Task> toAdd = new List<Task>();
+            List<Task> toAdd = new List<Task>();
             foreach (Type action in allItems)
             {
-                await RegisterAction(action);
+                toAdd.Add(RegisterAction(action));
             }
-            //await Task.WhenAll(toAdd);
+            await Task.WhenAll(toAdd);
             watch.Stop();
             Console.WriteLine("[Actions] Registering actions took " + watch.ElapsedMilliseconds + "ms");
         }
@@ -70,12 +70,12 @@ namespace DiscordMMO.Datatypes.Actions
             {
 
             }
-            Action action = GetActionFromType(type, (Player)null);
+            Action action = GetActionFromType(type);
             string name = action.name;
             actions.Add(name, type);
         }
 
-        public static Action GetActionFromType(Type type, params object[] param)
+        public static Action GetActionFromType(Type type)
         {
             if (type == null)
             {
@@ -86,26 +86,23 @@ namespace DiscordMMO.Datatypes.Actions
                 throw new ArgumentException("Tried to get action instance from a type that is not an action");
             }
 
-            for (int i = 0; i < param.Length; i++)
+            var emptyConstructor = type.GetConstructor(Type.EmptyTypes);
+
+            if (emptyConstructor == null && !type.IsValueType)
             {
-                if (param[i] == null)
-                    continue;
-                if (param[i].ToString().StartsWith("dmg:"))
-                {
-                    //param[i] = EntityFightable.FromString(param[i].ToString());
-                }
+                throw new ArgumentException("The type does not have a parameterless constructor");
             }
 
-            return (Action)Activator.CreateInstance(type, param);
+            return (Action)Activator.CreateInstance(type);
         }
 
-        public static Action GetActionInstanceFromName(string name, params object[] param)
+        public static Action GetActionInstanceFromName(string name)
         {
             if (GetActionFromName(name) == null)
             {
 
             }
-            return GetActionFromType(GetActionFromName(name), param);
+            return GetActionFromType(GetActionFromName(name));
         }
 
         public static Type GetActionFromName(string name)
