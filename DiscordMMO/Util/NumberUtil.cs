@@ -19,5 +19,10 @@ namespace DiscordMMO.Util
             else return val;
         }
 
+        public static bool IsNegative(this int val)
+        {
+            return val < 0;
+        }
+
     }
 }
