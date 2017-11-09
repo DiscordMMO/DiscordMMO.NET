@@ -19,7 +19,7 @@ namespace DiscordMMO.Datatypes.Actions
         public static Dictionary<string, Type> actions = new Dictionary<string, Type>(); 
 
         [XmlIgnore]
-        public Player performer { get; protected set; }
+        public Player performer { get; set; }
 
         [XmlElement]
         public DateTime finishTime { get; set; }

@@ -8,13 +8,16 @@ using DiscordMMO.Datatypes.Items.Equipable.Weapons;
 using DiscordMMO.Datatypes.Preferences;
 using DiscordMMO.Handlers;
 using DiscordMMO.Util;
+using DiscordMMO.Datatypes.Areas;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using System.Drawing;
 using Action = DiscordMMO.Datatypes.Actions.Action;
+using Direction = DiscordMMO.Util.Direction;
 
 namespace DiscordMMO.Datatypes
 {
@@ -41,7 +44,6 @@ namespace DiscordMMO.Datatypes
         /// The <see cref="user"/>s id 
         /// </summary>
         public ulong ID;
-
 
         [XmlElement]
         /// <summary>
@@ -85,7 +87,32 @@ namespace DiscordMMO.Datatypes
                 preferences = value.ToDictionary(x => x.key, x => x.value);
             }
         }
-            
+        [XmlElement]
+        /// <summary>
+        /// The X position of the player
+        /// </summary>
+        public int x = 0;
+
+        [XmlElement]
+        /// <summary>
+        /// The Y position of the player
+        /// </summary>
+        public int y = 0;
+
+        [XmlIgnore]
+        public Point position
+        {
+            get
+            {
+                return new Point(x, y);
+            }
+            set
+            {
+                x = value.X;
+                y = value.Y;
+            }
+        }
+
         [XmlElement]
         /// <summary>
         /// <c>False</c> if the player can be attacked by multiple enemies at once
@@ -322,8 +349,58 @@ namespace DiscordMMO.Datatypes
             }
             return false;
         }
-
         
+        /// <summary>
+        /// Move in the given direction
+        /// </summary>
+        /// <param name="direction">The direction to move in</param>
+        /// <param name="force">whether the movement should be forced or not</param>
+        /// <returns><c>true</c> if the player was successfully moved, <c>false</c> otherwise</returns>
+        public virtual (bool succes, string reason) Move(Direction direction, bool force = false)
+        {
+            if (!force)
+            {
+
+                if (!IsIdle)
+                {
+                    return (false, "You are already doing something");
+                }
+
+                if (!CanMoveInDirection(direction))
+                {
+                    return (false, "You cannot move in that direction");
+                }
+            }
+
+
+            Point moveTo = new Point(x, y);
+
+            moveTo.Offset(direction.GetOffset());
+
+            Area area = AreaHandler.GetArea(moveTo);
+
+            ActionMoving action = new ActionMoving();
+            action.performer = this;
+            action.SetFinishTime(DateTime.Now.AddSeconds(area.GetMoveTime(direction)));
+            action.movingTo = area;
+
+            return (SetAction(action, force), "You are already doing something");
+
+        }
+
+        public virtual bool CanMoveInDirection(Direction direction)
+        {
+
+            Point offset = direction.GetOffset();
+
+            Point moveTo = new Point(x, y);
+            moveTo.Offset(offset);
+
+            Area area = AreaHandler.GetArea(moveTo);
+
+            return !area.blockedAt.HasFlag(direction);
+
+        }
 
 #endregion
 

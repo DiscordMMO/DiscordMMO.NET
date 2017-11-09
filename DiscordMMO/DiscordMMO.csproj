@@ -155,7 +155,10 @@
     <Compile Include="Datatypes\Actions\Action.cs" />
     <Compile Include="Datatypes\Actions\ActionChopWood.cs" />
     <Compile Include="Datatypes\Actions\ActionFighting.cs" />
+    <Compile Include="Datatypes\Actions\ActionMoving.cs" />
     <Compile Include="Datatypes\Areas\Area.cs" />
+    <Compile Include="Datatypes\Areas\AreaWilderness.cs" />
+    <Compile Include="Datatypes\Areas\Towns\AreaStartertown.cs" />
     <Compile Include="Datatypes\Entities\Entity.cs" />
     <Compile Include="Datatypes\Entities\EntityFightable.cs" />
     <Compile Include="Datatypes\Entities\EntityGoblin.cs" />

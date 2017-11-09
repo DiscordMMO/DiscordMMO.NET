@@ -84,7 +84,8 @@ namespace DiscordMMO
             ItemHandler.Init(),
             Datatypes.Actions.Action.Init(),
             EntityHandler.Init(),
-            SerializationHandler.Init()
+            SerializationHandler.Init(),
+            AreaHandler.Init()
             };
 
             await Task.WhenAll(init);

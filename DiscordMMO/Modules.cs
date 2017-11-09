@@ -1,23 +1,25 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using DiscordMMO.Consts;
+using DiscordMMO.Datatypes;
 using DiscordMMO.Datatypes.Actions;
+using DiscordMMO.Datatypes.Entities;
+using DiscordMMO.Datatypes.Inventories;
+using DiscordMMO.Datatypes.Items;
+using DiscordMMO.Datatypes.Items.Equipable;
 using DiscordMMO.Datatypes.Preferences;
 using DiscordMMO.Handlers;
-using DiscordMMO.Datatypes.Items.Equipable;
+using DiscordMMO.Helpers;
+using DiscordMMO.Util;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Diagnostics;
 using System.Threading.Tasks;
-using DiscordMMO.Datatypes.Inventories;
-using DiscordMMO.Helpers;
-using DiscordMMO.Datatypes;
-using DiscordMMO.Datatypes.Items;
-using DiscordMMO.Datatypes.Entities;
 using Action = DiscordMMO.Datatypes.Actions.Action;
-using Discord.WebSocket;
+using Direction = DiscordMMO.Util.Direction;
 
 namespace DiscordMMO
 {
@@ -543,6 +545,98 @@ namespace DiscordMMO
             }
         }
 
+        [Command("move")]
+        public async Task MoveCommand(string direction)
+        {
+
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (!attemptLogin.success)
+            {
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
+                return;
+            }
+
+            bool isDirection = false;
+            foreach (Direction d in Enum.GetValues(typeof(Direction)))
+            {
+                if (d.ToString().ToLowerInvariant().Equals(direction.ToLowerInvariant()))
+                {
+                    isDirection = true;
+                    break;
+                }
+            }
+
+            if (direction.ToLowerInvariant().Equals(Direction.NONE.ToString().ToLowerInvariant()))
+                isDirection = false;
+
+            if (!isDirection)
+            {
+                await ReplyAsync($"{Context.User.Username}: That is not a valid direction");
+                return;
+            }
+
+            Player player = PlayerHandler.GetPlayer(Context.User);
+
+            Direction dir = DirectionHelper.FromString(direction);
+
+            (bool success, string reason) moveAttempt = player.Move(dir, false);
+
+            if (!moveAttempt.success)
+            {
+                await ReplyAsync($"{Context.User.Username}: {moveAttempt.reason}");
+                return;
+            }
+
+            ActionMoving action = player.currentAction as ActionMoving;
+
+            if (action == null)
+            {
+                await ReplyAsync($"{Context.User.Username}: Something went wrong");
+                return;
+            }
+
+            await ReplyAsync($"{Context.User.Username}: Started moving towards {action.movingTo.displayName}. You will arrive there in {action.finishTime - DateTime.Now}");
+
+        }
+
+        [Command("where")]
+        public async Task PositionCommand()
+        {
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (!attemptLogin.success)
+            {
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
+                return;
+            }
+
+            Player player = PlayerHandler.GetPlayer(Context.User);
+
+            await ReplyAsync($"{Context.User.Username}: You are at {AreaHandler.GetArea(player.x, player.y).displayName}, at position ({player.x}, {player.y})");
+
+        }
+
+        [Command("look")]
+        public async Task LookCommand()
+        {
+
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (!attemptLogin.success)
+            {
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
+                return;
+            }
+
+            Player player = PlayerHandler.GetPlayer(Context.User);
+
+
+        }
+
     }
 
     [Group("db")]
@@ -769,6 +863,43 @@ namespace DiscordMMO
             }
         }
 
+        [Command("setpos")]
+        public async Task SetPositionCommand(int x, int y)
+        {
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (!attemptLogin.success)
+            {
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
+                return;
+            }
+
+            Player player = PlayerHandler.GetPlayer(Context.User);
+            player.x = x;
+            player.y = y;
+
+            await ReplyAsync($"{Context.User.Username}: Set position to ({x},{y})");
+
+        }
+
+        [Command("nowpls")]
+        public async Task NowCommand()
+        {
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (!attemptLogin.success)
+            {
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
+                return;
+            }
+
+            Player player = PlayerHandler.GetPlayer(Context.User);
+
+            player.currentAction.finishTime = DateTime.Now.AddSeconds(1);
+
+        }
 
     }
 
