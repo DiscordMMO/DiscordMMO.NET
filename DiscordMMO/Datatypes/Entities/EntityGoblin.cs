@@ -15,6 +15,8 @@ namespace DiscordMMO.Datatypes.Entities
 
         public override string name { get; set; } = "goblin";
 
+        public override string displayName { get; set; } = "Goblin";
+
         public override bool singleOnly { get; set; } = true;
 
         public override int maxHealth => 10;

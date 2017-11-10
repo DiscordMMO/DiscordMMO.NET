@@ -9,8 +9,9 @@ namespace DiscordMMO.Datatypes.Interactions.Interactibles
     public abstract class Interactible
     {
 
-        
         public abstract string name { get; set; }
+        public abstract string displayName { get; set; }
+
 
         protected virtual List<Interaction> interactions { get; set; }
 
