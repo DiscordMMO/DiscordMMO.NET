@@ -9,8 +9,8 @@ namespace DiscordMMO.Datatypes.Areas
 {
     public class AreaWilderness : Area
     {
-        public override string name { get; protected set; } = "wilderness";
-        public override string displayName { get; protected set; } = "Wilderness";
+        public override string name { get; set; } = "wilderness";
+        public override string displayName { get; set; } = "Wilderness";
 
         public override Direction blockedAt => Direction.NONE;
 

@@ -6,22 +6,32 @@ using System.Drawing;
 using System.Threading.Tasks;
 using DiscordMMO.Datatypes.Entities;
 using DiscordMMO.Util;
+using DiscordMMO.Handlers;
+using System.Xml.Serialization;
 
 namespace DiscordMMO.Datatypes.Areas
 {
+    [XmlRoot]
+    [AlsoRequires(typeof(Entity))]
     public class Area
     {
 
-        public virtual string name { get; protected set; }
+        [XmlElement]
+        public virtual string name { get; set; }
 
-        public virtual string displayName { get; protected set; }
+        [XmlIgnore]
+        public virtual string displayName { get; set; }
 
+        [XmlElement]
         public virtual Direction blockedAt { get; set; } = Direction.NONE;
 
-        public List<Entity> content { get; protected set; }
+        [XmlElement]
+        public List<Entity> content { get; set; }
 
+        [XmlElement]
         public int x, y;
 
+        [XmlIgnore]
         public Point position
         {
             get
