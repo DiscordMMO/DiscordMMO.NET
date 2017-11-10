@@ -5,7 +5,7 @@ using System.Xml.Serialization;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Reflection;
-using DiscordMMO.Datatypes;
+using DiscordMMO.Helpers;
 
 namespace DiscordMMO.Handlers
 {
@@ -24,7 +24,7 @@ namespace DiscordMMO.Handlers
             Console.WriteLine("[Serialization Handler] Detecting serializeable items");
             var watch = Stopwatch.StartNew();
 
-            allItems = GetTypesWithXmlRootAttribute(Assembly.GetExecutingAssembly()).ToList();
+            allItems = ReflectionHelper.GetTypesWithAttribute(Assembly.GetExecutingAssembly(), typeof(XmlRootAttribute)).ToList();
 
             watch.Stop();
             Console.WriteLine("[Serialization Handler] Detecting serializeable items took " + watch.ElapsedMilliseconds + "ms");
@@ -40,17 +40,6 @@ namespace DiscordMMO.Handlers
             watch.Stop();
             Console.WriteLine("[Serialization Handler] Registering serializeable items took " + watch.ElapsedMilliseconds + "ms");
             Console.WriteLine("[Serialization Handler] Average registration time per item: " + watch.ElapsedMilliseconds / allItems.Count + "ms");
-        }
-
-        public static IEnumerable<Type> GetTypesWithXmlRootAttribute(Assembly assembly)
-        {
-            foreach (Type type in assembly.GetTypes())
-            {
-                if (type.GetCustomAttributes(typeof(XmlRootAttribute), true).Length > 0)
-                {
-                    yield return type;
-                }
-            }
         }
 
         public static async Task RegisterItem(Type type)
