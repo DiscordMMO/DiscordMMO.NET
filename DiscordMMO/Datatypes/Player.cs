@@ -113,6 +113,20 @@ namespace DiscordMMO.Datatypes
             }
         }
 
+        [XmlIgnore]
+        public Area currentArea
+        {
+            get
+            {
+                return AreaHandler.GetArea(position);
+            }
+            set
+            {
+                position = value.position;
+            }
+        }
+
+
         [XmlElement]
         /// <summary>
         /// <c>False</c> if the player can be attacked by multiple enemies at once
