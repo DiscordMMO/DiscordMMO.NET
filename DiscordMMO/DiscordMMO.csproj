@@ -151,6 +151,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AreaLoaders\IAreaLoader.cs" />
+    <Compile Include="AreaLoaders\TownLoader.cs" />
     <Compile Include="Consts\UserConsts.cs" />
     <Compile Include="Datatypes\Actions\Action.cs" />
     <Compile Include="Datatypes\Actions\ActionChopWood.cs" />
@@ -187,8 +189,10 @@
     <Compile Include="Datatypes\Items\Equipable\Weapons\ItemWeapon.cs" />
     <Compile Include="Datatypes\Items\ItemWood.cs" />
     <Compile Include="Handlers\AreaHandler.cs" />
+    <Compile Include="Handlers\AreaLoaderHandler.cs" />
     <Compile Include="Handlers\EntityHandler.cs" />
     <Compile Include="Handlers\SerializationHandler.cs" />
+    <Compile Include="Helpers\ReflectionHelper.cs" />
     <Compile Include="Modules.cs" />
     <Compile Include="Datatypes\Player.cs" />
     <Compile Include="Datatypes\Preferences\Preference.cs" />
