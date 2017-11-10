@@ -634,6 +634,20 @@ namespace DiscordMMO
 
             Player player = PlayerHandler.GetPlayer(Context.User);
 
+            if (player.currentArea.content == null || player.currentArea.content.Count <= 0)
+            {
+                await ReplyAsync($"{Context.User.Username}: You see nothing");
+                return;
+            }
+
+            StringBuilder outp = new StringBuilder($"{Context.User.Username}: You look around and see the following:\n");
+
+            for (int i = 0; i < player.currentArea.content.Count; i++)
+            {
+                outp.Append($"{i}. {player.currentArea.content[i].displayName}");
+            }
+
+            await ReplyAsync(outp.ToString());
 
         }
 
