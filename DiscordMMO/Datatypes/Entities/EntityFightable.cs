@@ -72,7 +72,6 @@ namespace DiscordMMO.Datatypes.Entities
         public EntityFightable()
         {
             health = maxHealth;
-            interactions.Add(new FightInteraction { owner = this });
         }
 
         public virtual void CallBeforeAttackedEvent(ref OnAttackEventArgs args, bool forced) => BeforeAttackedEvent?.Invoke(ref args, forced);

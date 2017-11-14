@@ -153,6 +153,7 @@
   <ItemGroup>
     <Compile Include="AreaLoaders\IAreaLoader.cs" />
     <Compile Include="AreaLoaders\TownLoader.cs" />
+    <Compile Include="AreaLoaders\WildernessLoader.cs" />
     <Compile Include="Consts\UserConsts.cs" />
     <Compile Include="Datatypes\Actions\Action.cs" />
     <Compile Include="Datatypes\Actions\ActionChopWood.cs" />
@@ -188,6 +189,7 @@
     <Compile Include="Datatypes\Items\Equipable\Weapons\Melee\ItemTestWeapon.cs" />
     <Compile Include="Datatypes\Items\Equipable\Weapons\ItemWeapon.cs" />
     <Compile Include="Datatypes\Items\ItemWood.cs" />
+    <Compile Include="Factories\EntityFactory.cs" />
     <Compile Include="Handlers\AreaHandler.cs" />
     <Compile Include="Handlers\AreaLoaderHandler.cs" />
     <Compile Include="Handlers\EntityHandler.cs" />
