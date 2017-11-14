@@ -85,6 +85,7 @@ namespace DiscordMMO
             Datatypes.Actions.Action.Init(),
             EntityHandler.Init(),
             SerializationHandler.Init(),
+            AreaLoaderHandler.Init(),
             AreaHandler.Init()
             };
 
