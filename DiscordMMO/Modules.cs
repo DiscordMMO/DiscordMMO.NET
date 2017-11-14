@@ -651,6 +651,44 @@ namespace DiscordMMO
 
         }
 
+        [Command("interact")]
+        public async Task InteractCommand(int entityIndex = -1, int interactionIndex = -1)
+        {
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (!attemptLogin.success)
+            {
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
+                return;
+            }
+
+            Player player = PlayerHandler.GetPlayer(Context.User);
+
+            if (player.currentArea.content.ElementAtOrDefault(entityIndex-1) == null)
+            {
+                await ReplyAsync($"{Context.User.Username}: There is nothing there");
+                return;
+            }
+
+            Entity e = player.currentArea.content[entityIndex];
+
+            if (interactionIndex <= 0)
+            {
+                StringBuilder interactions = new StringBuilder($"{Context.User.Username}: You can interact with {e.displayName} in the following ways:\n");
+
+                for (int i = 0; i < e.interactions.Count; i++)
+                {
+                    interactions.Append($"{i}. {e.interactions[i].displayName}");
+                }
+
+            }
+
+            if (e.interactions.ElementAtOrDefault(interactionIndex-1))
+
+
+        }
+
     }
 
     [Group("db")]

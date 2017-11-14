@@ -10,6 +10,9 @@ namespace DiscordMMO.Datatypes.Interactions
     public class FightInteraction : Interaction
     {
 
+        public override string name { get; set; } = "fight";
+        public override string displayName { get; set; } = "Fight";
+
         public EntityFightable owner;
 
         public override void Interact(Player interactor)
