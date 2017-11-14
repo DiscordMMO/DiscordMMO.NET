@@ -34,7 +34,7 @@ namespace DiscordMMO.Datatypes.Entities
         public override int ticksUntilNextAttack { get; set; } = 0;
 
 
-        protected override List<Interaction> interactions { get; set; }
+        public override List<Interaction> interactions { get; set; }
 
         public override event OnBeforeAttacked BeforeAttackedEvent;
         public override event OnBeforeAttacking BeforeAttackingEvent;
