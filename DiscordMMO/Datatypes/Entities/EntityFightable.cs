@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml.Serialization;
 using System.Runtime.Serialization;
 using DiscordMMO.Util;
+using DiscordMMO.Datatypes.Interactions;
 
 namespace DiscordMMO.Datatypes.Entities
 {
@@ -71,6 +72,7 @@ namespace DiscordMMO.Datatypes.Entities
         public EntityFightable()
         {
             health = maxHealth;
+            interactions.Add(new FightInteraction { owner = this });
         }
 
         public virtual void CallBeforeAttackedEvent(ref OnAttackEventArgs args, bool forced) => BeforeAttackedEvent?.Invoke(ref args, forced);
