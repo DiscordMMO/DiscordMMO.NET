@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DiscordMMO.Datatypes.Entities;
+using Discord.Commands;
 
 namespace DiscordMMO.Datatypes.Interactions
 {
@@ -15,7 +16,7 @@ namespace DiscordMMO.Datatypes.Interactions
 
         public EntityFightable owner;
 
-        public override void Interact(ref Player interactor)
+        public override void Interact(ref Player interactor, ICommandContext Context)
         {
             if (owner.CanStartFight && interactor.CanStartFight)
             {

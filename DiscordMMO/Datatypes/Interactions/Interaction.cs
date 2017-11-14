@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Discord.Commands;
 
 namespace DiscordMMO.Datatypes.Interactions
 {
@@ -12,7 +13,7 @@ namespace DiscordMMO.Datatypes.Interactions
         public abstract string name { get; set; }
         public abstract string displayName { get; set; }
 
-        public abstract void Interact(ref Player interactor);
+        public abstract void Interact(ref Player interactor, ICommandContext Context);
 
 
     }
