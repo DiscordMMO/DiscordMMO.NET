@@ -13,7 +13,7 @@ namespace DiscordMMO.Handlers
     public static class AreaLoaderHandler
     {
 
-        private static List<Type> areaLoaders;
+        private static List<Type> areaLoaders = new List<Type>();
 
         public async static Task Init()
         {
@@ -55,7 +55,8 @@ namespace DiscordMMO.Handlers
         {
             foreach (Type t in areaLoaders)
             {
-                t.GetMethod("PreLoad").Invoke(null, null);
+                IAreaLoader loader = (IAreaLoader)Activator.CreateInstance(t);
+                loader.PreLoad();
             }
         }
 
@@ -63,7 +64,8 @@ namespace DiscordMMO.Handlers
         {
             foreach (Type t in areaLoaders)
             {
-                t.GetMethod("Load").Invoke(null, null);
+                IAreaLoader loader = (IAreaLoader)Activator.CreateInstance(t);
+                loader.Load();
             }
         }
 
@@ -71,7 +73,8 @@ namespace DiscordMMO.Handlers
         {
             foreach (Type t in areaLoaders)
             {
-                t.GetMethod("PostLoad").Invoke(null, null);
+                IAreaLoader loader = (IAreaLoader)Activator.CreateInstance(t);
+                loader.PostLoad();
             }
         }
 

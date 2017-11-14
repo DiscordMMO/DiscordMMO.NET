@@ -25,7 +25,7 @@ namespace DiscordMMO.Helpers
         {
             foreach (Type type in assembly.GetTypes())
             {
-                if (parent.IsAssignableFrom(type))
+                if (parent.IsAssignableFrom(type) && !(type.IsAbstract || type.IsInterface))
                 {
                     yield return type;
                 }
