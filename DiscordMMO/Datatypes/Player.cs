@@ -149,7 +149,7 @@ namespace DiscordMMO.Datatypes
         {
             get
             {
-                return currentAction is ActionFighting;
+                return currentAction is ActionIdle;
             }
         }
 
