@@ -24,6 +24,10 @@ namespace DiscordMMO.Datatypes.Interactions
                 interactor.StartFight(owner, false);
                 Context.Channel.SendMessage($"{Context.User.Username}: Started fighting {owner.displayName}");
             }
+            else
+            {
+                Context.Channel.SendMessage($"{Context.User.Username}: You cannot fight that right now");
+            }
         }
 
     }
