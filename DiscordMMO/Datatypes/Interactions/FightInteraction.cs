@@ -15,7 +15,7 @@ namespace DiscordMMO.Datatypes.Interactions
 
         public EntityFightable owner;
 
-        public override void Interact(Player interactor)
+        public override void Interact(ref Player interactor)
         {
             if (owner.CanStartFight && interactor.CanStartFight)
             {

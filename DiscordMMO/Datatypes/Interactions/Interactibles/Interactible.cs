@@ -15,9 +15,9 @@ namespace DiscordMMO.Datatypes.Interactions.Interactibles
 
         public virtual List<Interaction> interactions { get; set; }
 
-        public virtual void Interact(int index, Player interactor)
+        public virtual void Interact(int index, ref Player interactor)
         {
-            interactions[index].Interact(interactor);
+            interactions[index].Interact(ref interactor);
         }
 
     }

@@ -12,7 +12,7 @@ namespace DiscordMMO.Datatypes.Interactions
         public abstract string name { get; set; }
         public abstract string displayName { get; set; }
 
-        public abstract void Interact(Player interactor);
+        public abstract void Interact(ref Player interactor);
 
 
     }
