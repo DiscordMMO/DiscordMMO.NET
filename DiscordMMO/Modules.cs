@@ -644,7 +644,7 @@ namespace DiscordMMO
 
             for (int i = 0; i < player.currentArea.content.Count; i++)
             {
-                outp.Append($"{i}. {player.currentArea.content[i].displayName}");
+                outp.Append($"{i+1}. {player.currentArea.content[i].displayName}");
             }
 
             await ReplyAsync(outp.ToString());
@@ -671,7 +671,7 @@ namespace DiscordMMO
                 return;
             }
 
-            Entity e = player.currentArea.content[entityIndex];
+            Entity e = player.currentArea.content[entityIndex-1];
 
             if (interactionIndex <= 0)
             {
@@ -679,13 +679,21 @@ namespace DiscordMMO
 
                 for (int i = 0; i < e.interactions.Count; i++)
                 {
-                    interactions.Append($"{i}. {e.interactions[i].displayName}");
+                    interactions.Append($"{i+1}. {e.interactions[i].displayName}");
                 }
 
+                await ReplyAsync(interactions.ToString());
+                return;
             }
 
-            if (e.interactions.ElementAtOrDefault(interactionIndex-1))
+            if (e.interactions.ElementAtOrDefault(interactionIndex-1) == null)
+            {
+                await ReplyAsync($"{Context.User.Username}: That is not a valid interaction");
+                return;
+            }
 
+
+            e.Interact(interactionIndex - 1, ref player, Context);
 
         }
 
