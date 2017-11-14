@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DiscordMMO.Datatypes.Entities;
 using Discord.Commands;
+using DiscordMMO.Util;
 
 namespace DiscordMMO.Datatypes.Interactions
 {
@@ -21,6 +22,7 @@ namespace DiscordMMO.Datatypes.Interactions
             if (owner.CanStartFight && interactor.CanStartFight)
             {
                 interactor.StartFight(owner, false);
+                Context.Channel.SendMessage($"{Context.User.Username}: Started fighting {owner.displayName}");
             }
         }
 
