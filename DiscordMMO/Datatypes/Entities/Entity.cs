@@ -11,7 +11,7 @@ namespace DiscordMMO.Datatypes.Entities
     public abstract class Entity : Interactible
     {
 
-        protected override List<Interaction> interactions { get; set; }
+        public override List<Interaction> interactions { get; set; }
 
     }
 }

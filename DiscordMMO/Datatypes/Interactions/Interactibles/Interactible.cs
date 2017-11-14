@@ -13,7 +13,7 @@ namespace DiscordMMO.Datatypes.Interactions.Interactibles
         public abstract string displayName { get; set; }
 
 
-        protected virtual List<Interaction> interactions { get; set; }
+        public virtual List<Interaction> interactions { get; set; }
 
         public virtual void Interact(int index, Player interactor)
         {
