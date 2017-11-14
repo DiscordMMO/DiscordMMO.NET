@@ -26,7 +26,7 @@ namespace DiscordMMO.Datatypes.Areas
         public virtual Direction blockedAt { get; set; } = Direction.NONE;
 
         [XmlElement]
-        public List<Entity> content { get; set; }
+        public List<Entity> content { get; set; } = new List<Entity>();
 
         [XmlElement]
         public int x, y;
