@@ -222,7 +222,7 @@ namespace DiscordMMO.Datatypes
         
         public int ticksUntilNextAttack { get; set; }
 
-        string IDamageable.name => playerName;
+        public string name => playerName;
 
         [XmlIgnore]
         public List<ItemStack> drops => inventory.items.Concat(equipment.items).ToList();
