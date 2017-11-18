@@ -12,8 +12,6 @@ namespace DiscordMMO.Handlers
     public static class DatabaseHandler
     {
 
-        private static readonly string connString;
-
         public static readonly string BASE_PLAYER_PATH;
 
         #region Save or overwrite string
