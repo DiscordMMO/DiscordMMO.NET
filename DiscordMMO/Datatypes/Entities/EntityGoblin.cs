@@ -55,10 +55,6 @@ namespace DiscordMMO.Datatypes.Entities
 
         }
 
-        public EntityGoblin(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
-
         public override void OnOpponentDied(List<ItemStack> drops)
         {
         }

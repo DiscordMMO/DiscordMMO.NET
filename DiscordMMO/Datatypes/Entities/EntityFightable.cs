@@ -63,12 +63,6 @@ namespace DiscordMMO.Datatypes.Entities
         public virtual event OnAfterAttacked AfterAttackedEvent;
         public virtual event OnAfterAttacking AfterAttackingEvent;
 
-        public EntityFightable(SerializationInfo info, StreamingContext context)
-        {
-            health = info.GetInt32("health");
-            ticksUntilNextAttack = info.GetInt32("attackDelay");
-        }
-
         public EntityFightable()
         {
             health = maxHealth;
@@ -83,13 +77,6 @@ namespace DiscordMMO.Datatypes.Entities
         public virtual void CallAfterAttackingEvent(ref OnAttackEventArgs args, bool forced) => AfterAttackingEvent?.Invoke(ref args, forced);
 
         public virtual bool CanAttack(ref OnAttackEventArgs args) => true;
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("name", name);
-            info.AddValue("health", health);
-            info.AddValue("attackDelay", ticksUntilNextAttack);
-        }
 
         public abstract void OnOpponentDied(List<ItemStack> drops);
 
