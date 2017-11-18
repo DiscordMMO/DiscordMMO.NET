@@ -16,6 +16,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using System.Drawing;
+using DiscordMMO.Datatypes.Interactions.Dialogues;
 using Action = DiscordMMO.Datatypes.Actions.Action;
 using Direction = DiscordMMO.Util.Direction;
 
@@ -160,6 +161,9 @@ namespace DiscordMMO.Datatypes
                 return currentAction is ActionIdle;
             }
         }
+
+        [XmlElement]
+        public Dialogue currentDialogue;
 
 #endregion
 

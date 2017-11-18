@@ -692,10 +692,40 @@ namespace DiscordMMO
                 return;
             }
 
-
             e.Interact(interactionIndex - 1, ref player, Context);
 
         }
+
+        [Command("reply")]
+        public async Task RespondCommand(int index = -1)
+        {
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (!attemptLogin.success)
+            {
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
+                return;
+            }
+
+            Player player = PlayerHandler.GetPlayer(Context.User);
+
+            if (player.currentDialogue == null)
+            {
+                await ReplyAsync($"{Context.User.Username}: You are not in a conversation right now");
+                return;
+            }
+
+            if (index <= 0)
+            {
+                player.currentDialogue.currentNode.ShowOptions(player, await player.GetPrivateChannel());
+                return;
+            }
+
+            player.currentDialogue.SelectOption(index - 1);
+
+        }
+
 
     }
 

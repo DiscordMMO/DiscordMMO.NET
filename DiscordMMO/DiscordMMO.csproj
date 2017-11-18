@@ -189,10 +189,16 @@
     <Compile Include="Datatypes\Entities\Entity.cs" />
     <Compile Include="Datatypes\Entities\EntityFightable.cs" />
     <Compile Include="Datatypes\Entities\EntityGoblin.cs" />
+    <Compile Include="Datatypes\Entities\EntityMan.cs" />
     <Compile Include="Datatypes\Entities\IDamageable.cs" />
+    <Compile Include="Datatypes\Interactions\Dialogues\Dialogue.cs" />
+    <Compile Include="Datatypes\Interactions\Dialogues\DialogueNode.cs" />
+    <Compile Include="Datatypes\Interactions\Dialogues\DialogueLink.cs" />
+    <Compile Include="Datatypes\Interactions\Dialogues\DialogueNodeGiveItems.cs" />
     <Compile Include="Datatypes\Interactions\FightInteraction.cs" />
     <Compile Include="Datatypes\Interactions\Interactibles\Interactible.cs" />
     <Compile Include="Datatypes\Interactions\Interaction.cs" />
+    <Compile Include="Datatypes\Interactions\InteractionTalk.cs" />
     <Compile Include="Datatypes\Inventories\InventoryLootPile.cs" />
     <Compile Include="Datatypes\Inventories\LimitedInventory.cs" />
     <Compile Include="Datatypes\Inventories\PlayerEquimentInventory.cs" />
@@ -213,6 +219,7 @@
     <Compile Include="Datatypes\Items\Equipable\Weapons\Melee\ItemTestWeapon.cs" />
     <Compile Include="Datatypes\Items\Equipable\Weapons\ItemWeapon.cs" />
     <Compile Include="Datatypes\Items\ItemWood.cs" />
+    <Compile Include="Factories\DialogueFactory.cs" />
     <Compile Include="Factories\EntityFactory.cs" />
     <Compile Include="Handlers\AreaHandler.cs" />
     <Compile Include="Handlers\AreaLoaderHandler.cs" />
