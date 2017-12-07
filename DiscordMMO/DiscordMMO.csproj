@@ -189,6 +189,7 @@
     <Compile Include="Datatypes\Entities\Entity.cs" />
     <Compile Include="Datatypes\Entities\EntityFightable.cs" />
     <Compile Include="Datatypes\Entities\EntityGoblin.cs" />
+    <Compile Include="Datatypes\Entities\EntityGravestone.cs" />
     <Compile Include="Datatypes\Entities\EntityMan.cs" />
     <Compile Include="Datatypes\Entities\IDamageable.cs" />
     <Compile Include="Datatypes\Interactions\Dialogues\Dialogue.cs" />
@@ -198,6 +199,8 @@
     <Compile Include="Datatypes\Interactions\FightInteraction.cs" />
     <Compile Include="Datatypes\Interactions\Interactibles\Interactible.cs" />
     <Compile Include="Datatypes\Interactions\Interaction.cs" />
+    <Compile Include="Datatypes\Interactions\InteractionLookLoot.cs" />
+    <Compile Include="Datatypes\Interactions\InteractionLoot.cs" />
     <Compile Include="Datatypes\Interactions\InteractionTalk.cs" />
     <Compile Include="Datatypes\Inventories\InventoryLootPile.cs" />
     <Compile Include="Datatypes\Inventories\LimitedInventory.cs" />
