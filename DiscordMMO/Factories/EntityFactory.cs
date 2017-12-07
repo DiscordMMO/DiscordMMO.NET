@@ -11,9 +11,9 @@ namespace DiscordMMO.Factories
     public static class EntityFactory
     {
 
-        public static EntityFightable CreateFightable<T>() where T : EntityFightable, new()
+        public static T CreateFightable<T>() where T : EntityFightable, new()
         {
-            EntityFightable fightable = new T();
+            T fightable = new T();
 
             fightable.interactions.Add(new FightInteraction { owner = fightable });
 
