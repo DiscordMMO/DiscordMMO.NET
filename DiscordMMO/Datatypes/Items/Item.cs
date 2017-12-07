@@ -46,6 +46,18 @@ namespace DiscordMMO.Datatypes.Items
         public static bool operator ==(Item item1, Item item2) => item1.itemName == item2.itemName;
         public static bool operator !=(Item item1, Item item2) => item1.itemName != item2.itemName;
 
+        public override bool Equals(object obj)
+        {
+            if (obj is Item == false)
+                return false;
+            return this == (obj as Item);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
     }
 
     public class ItemEmpty : Item
