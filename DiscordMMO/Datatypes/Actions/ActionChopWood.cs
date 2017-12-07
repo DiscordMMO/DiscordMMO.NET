@@ -26,9 +26,9 @@ namespace DiscordMMO.Datatypes.Actions
 
         protected async override Task Finish()
         {
-            if (performer.inventory.CanAdd(ItemHandler.GetItemInstanceFromName(ItemWood.name)))
+            if (performer.inventory.CanAdd(ItemHandler.GetItemInstanceFromName("wood")))
             {
-                if (!performer.inventory.AddItem(new ItemStack(ItemHandler.GetItemInstanceFromName(ItemWood.name))))
+                if (!performer.inventory.AddItem(new ItemStack(ItemHandler.GetItemInstanceFromName("wood"))))
                 {
                     if (performer.GetPreference<bool>("pm"))
                     {
