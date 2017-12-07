@@ -73,13 +73,6 @@ namespace DiscordMMO.Datatypes.Inventories
             return slots[name].GetValueOrDefault(-1);
         }
 
-        public static new PlayerEquimentInventory Deserialize(Stream s)
-        {
-
-            return SerializationHandler.GetSerializer<PlayerEquimentInventory>().Deserialize(s) as PlayerEquimentInventory;
-          
-        }
-
         public override string ToString()
         {
             StringBuilder b = new StringBuilder();
