@@ -12,6 +12,7 @@ using DiscordMMO.Datatypes.Preferences;
 using DiscordMMO.Handlers;
 using DiscordMMO.Helpers;
 using DiscordMMO.Util;
+using DiscordMMO.Factories;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -81,7 +82,9 @@ namespace DiscordMMO
                 Player player = PlayerHandler.CreatePlayer(Context.User as SocketUser, name);
 
                 // Save the player
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 DatabaseHandler.SaveAsync(player);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
                 // Notify the player that they have been registered
                 await ReplyAsync($"{Context.User.Username}: {String.Format(Modules.REGISTERED_FORMAT, name)}");
@@ -988,6 +991,26 @@ namespace DiscordMMO
             Player player = PlayerHandler.GetPlayer(Context.User);
 
             player.currentAction.finishTime = DateTime.Now.AddSeconds(1);
+
+        }
+
+        [Command("creategoblin")]
+        public async Task CreateGoblinCommand()
+        {
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (!attemptLogin.success)
+            {
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
+                return;
+            }
+
+            Player player = PlayerHandler.GetPlayer(Context.User);
+
+            EntityGoblin g = EntityFactory.CreateFightable<EntityGoblin>();
+
+            await ReplyAsync(g.createdAt.ToString());
 
         }
 
