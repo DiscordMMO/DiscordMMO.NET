@@ -9,7 +9,7 @@ namespace DiscordMMO.Datatypes.Items
     public class ItemWood : Item
     {
 
-        public override string itemName => name;
+        public override string itemName => "wood";
 
         public override string displayName => "Wood";
 
