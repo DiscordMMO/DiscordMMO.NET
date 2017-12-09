@@ -61,5 +61,11 @@ namespace DiscordMMO.Datatypes.Areas
              
         }
 
+        public virtual void CreateGravestone(Player player)
+        {
+            
+
+        }
+
     }
 }

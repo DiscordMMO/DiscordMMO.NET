@@ -15,6 +15,18 @@ namespace DiscordMMO.Datatypes.Entities
         public string playerName { get; set; }
         public List<ItemStack> items { get; set; }
 
+        public EntityGravestone() : base() { }
+
+        public EntityGravestone(Player player) : this(player.playerName, player.inventory.items) { }
+
+        public EntityGravestone(string playerName, List<ItemStack> items)
+        {
+            this.playerName = playerName;
+            displayName = $"{playerName}\'s gravestone";
+            interactions.Add(new InteractionLookLoot { targetName = displayName, items = items });
+            interactions.Add(new InteractionLoot { items = items });
+        }
+
         /// <summary>
         /// Calling this function will set the display name to <code>{playername}'s gravestone</code>\n
         /// and add the interactions
