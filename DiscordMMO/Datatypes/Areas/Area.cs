@@ -63,8 +63,7 @@ namespace DiscordMMO.Datatypes.Areas
 
         public virtual void CreateGravestone(Player player)
         {
-            
-
+            content.Add(new EntityGravestone(player));
         }
 
     }
