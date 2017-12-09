@@ -15,6 +15,10 @@ namespace DiscordMMO.Datatypes.Entities
         public string playerName { get; set; }
         public List<ItemStack> items { get; set; }
 
+        /// <summary>
+        /// Calling this function will set the display name to <code>{playername}'s gravestone</code>\n
+        /// and add the interactions
+        /// </summary>
         public void FieldsInitialized()
         {
             displayName = $"{playerName}\'s gravestone";
