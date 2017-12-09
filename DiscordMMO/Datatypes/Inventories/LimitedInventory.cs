@@ -90,5 +90,19 @@ namespace DiscordMMO.Datatypes.Inventories
                 return -1;
             return items.FindIndex(item => item.itemType is ItemEmpty || item.IsEmpty);
         }
+
+        public virtual void Clear()
+        {
+            ReplaceAllWith(ItemStack.empty);
+        }
+
+        public virtual void ReplaceAllWith(ItemStack item)
+        {
+            for (int i = 0; i < size; i++)
+            {
+                items[i] = item;
+            }
+        }
+
     }
 }
