@@ -55,7 +55,18 @@ namespace DiscordMMO
         }
 
     }
-    public class NoPrefix : ModuleBase
+
+    public class DiscordMMOModuleBase : ModuleBase
+    {
+        protected async override Task<IUserMessage> ReplyAsync(string message, bool isTTS = false, Embed embed = null, RequestOptions options = null)
+        {
+            SentMessage msg = await MessageHandler.SendMessageAsync(Context.Channel, message, isTTS, embed, options);
+            return msg.message as IUserMessage;
+        }
+    }
+
+
+    public class NoPrefix : DiscordMMOModuleBase
     {
 
         // TODO: Make messages delete themselves after some time
@@ -734,7 +745,7 @@ namespace DiscordMMO
 
     [Group("db")]
     [RequireOwner]
-    public class DebugModules : ModuleBase
+    public class DebugModules : DiscordMMOModuleBase
     {
 
         protected override void BeforeExecute(CommandInfo command)

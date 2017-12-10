@@ -43,13 +43,17 @@ namespace DiscordMMO
             while (!stop)
             {
                 // Tick every player
-                List<Task> playerTicks = new List<Task>();
+                List<Task> toTick = new List<Task>();
                 foreach (Player p in PlayerHandler.GetPlayers())
                 {
-                    playerTicks.Add(p.Tick());
+                    toTick.Add(p.Tick());
                 }
-                // Make sure every player has been ticked
-                await Task.WhenAll(playerTicks);
+
+                // Tick the message handler
+                toTick.Add(MessageHandler.Tick());
+
+                // Make sure everything has been ticked
+                await Task.WhenAll(toTick);
                 
                 // Wait for the next tick to occur
                 await Task.Delay((int)(1000 / tickRate));

@@ -174,11 +174,13 @@
     <Compile Include="Datatypes\Items\Equipable\Weapons\Melee\ItemTestWeapon.cs" />
     <Compile Include="Datatypes\Items\Equipable\Weapons\ItemWeapon.cs" />
     <Compile Include="Datatypes\Items\ItemWood.cs" />
+    <Compile Include="Datatypes\SentMessage.cs" />
     <Compile Include="Factories\DialogueFactory.cs" />
     <Compile Include="Factories\EntityFactory.cs" />
     <Compile Include="Handlers\AreaHandler.cs" />
     <Compile Include="Handlers\AreaLoaderHandler.cs" />
     <Compile Include="Handlers\EntityHandler.cs" />
+    <Compile Include="Handlers\MessageHandler.cs" />
     <Compile Include="Handlers\SerializationHandler.cs" />
     <Compile Include="Helpers\ReflectionHelper.cs" />
     <Compile Include="Modules.cs" />
