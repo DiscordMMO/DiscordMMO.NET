@@ -222,7 +222,11 @@ namespace DiscordMMO.Datatypes
         
         public int ticksUntilNextAttack { get; set; }
 
+        [XmlIgnore]
         public string name => playerName;
+
+        [XmlIgnore]
+        public string displayName => playerName;
 
         [XmlIgnore]
         public List<ItemStack> drops => inventory.items.Concat(equipment.items).ToList();
@@ -461,7 +465,7 @@ namespace DiscordMMO.Datatypes
             
             var pm = GetPrivateChannel().GetAwaiter().GetResult();
 
-            pm.SendMessageAsync(killer.name + " killed you").Wait();
+            pm.SendMessageAsync(killer.displayName + " killed you").Wait();
             
             
         }

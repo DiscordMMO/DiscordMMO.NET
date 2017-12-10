@@ -22,6 +22,8 @@ namespace DiscordMMO.Datatypes.Entities
 
         string name { get; }
 
+        string displayName { get; }
+
         int maxHealth { get; }
 
         int health { get; set; }
@@ -73,6 +75,8 @@ namespace DiscordMMO.Datatypes.Entities
     public class DamageSourceUnknown : IDamageable
     {
         public string name => "unknown_source";
+
+        public string displayName => "the forces above";
 
         public int maxHealth => 0;
 
