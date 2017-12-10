@@ -467,7 +467,8 @@ namespace DiscordMMO.Datatypes
 
             currentArea.CreateGravestone(this);
             inventory.Clear();
-            
+            equipment.Clear();
+
             var pm = await GetPrivateChannel();
 
             await pm.SendMessageAsync(killer.displayName.CapitalizeFirst() + " killed you");
