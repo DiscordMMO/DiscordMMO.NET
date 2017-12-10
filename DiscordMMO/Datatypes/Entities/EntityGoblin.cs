@@ -7,6 +7,7 @@ using DiscordMMO.Datatypes.Interactions;
 using DiscordMMO.Util;
 using DiscordMMO.Handlers;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace DiscordMMO.Datatypes.Entities
 {
@@ -36,11 +37,15 @@ namespace DiscordMMO.Datatypes.Entities
 
         public override List<Interaction> interactions { get; set; }
 
-        public override OnBeforeAttacked BeforeAttackedEvent { get; set; }
-        public override OnBeforeAttacking BeforeAttackingEvent { get; set; }
+        //[XmlIgnore]
+        //public override OnBeforeAttacked BeforeAttackedEvent { get; set; }
+        //[XmlIgnore]
+        //public override OnBeforeAttacking BeforeAttackingEvent { get; set; }
 
-        public override OnAfterAttacked AfterAttackedEvent { get; set; }
-        public override OnAfterAttacking AfterAttackingEvent { get; set; }
+        //[XmlIgnore]
+        //public override OnAfterAttacked AfterAttackedEvent { get; set; }
+        //[XmlIgnore]
+        //public override OnAfterAttacking AfterAttackingEvent { get; set; }
 
         public override List<ItemStack> drops
         {

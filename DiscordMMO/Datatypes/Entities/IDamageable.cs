@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DiscordMMO.Util;
+using System.Xml.Serialization;
 
 namespace DiscordMMO.Datatypes.Entities
 {
@@ -13,11 +14,14 @@ namespace DiscordMMO.Datatypes.Entities
 
     public interface IDamageable
     {
-
+        [XmlIgnore]
         OnBeforeAttacked BeforeAttackedEvent { get; set; }
+        [XmlIgnore]
         OnBeforeAttacking BeforeAttackingEvent { get; set; }
 
+        [XmlIgnore]
         OnAfterAttacked AfterAttackedEvent { get; set; }
+        [XmlIgnore]
         OnAfterAttacking AfterAttackingEvent { get; set; }
 
         string name { get; }
@@ -213,6 +217,10 @@ namespace DiscordMMO.Datatypes.Entities
         public static async Task Die(this IDamageable damageable, IDamageable killer)
         {
             killer.OnOpponentDied(damageable.drops);
+            Player p = damageable as Player;
+
+            await p?.Die(killer);
+
         }
 
         #region Attacking
@@ -266,9 +274,7 @@ namespace DiscordMMO.Datatypes.Entities
 
             if (target.health <= 0)
             {
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                target.Die(attacker);
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                target.Die(attacker).GetAwaiter().GetResult();
                 return true;
             }
 
@@ -289,9 +295,7 @@ namespace DiscordMMO.Datatypes.Entities
             target.health -= amount;
             if (target.health <= 0)
             {
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                target.Die(source);
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                target.Die(source).GetAwaiter().GetResult();
             }
         }
 

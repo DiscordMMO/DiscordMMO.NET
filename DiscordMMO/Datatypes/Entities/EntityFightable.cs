@@ -57,10 +57,14 @@ namespace DiscordMMO.Datatypes.Entities
         [XmlIgnore]
         public abstract List<ItemStack> drops { get; }
 
+        [XmlIgnore]
         public virtual OnBeforeAttacked BeforeAttackedEvent { get; set; }
+        [XmlIgnore]
         public virtual OnBeforeAttacking BeforeAttackingEvent { get; set; }
 
+        [XmlIgnore]
         public virtual OnAfterAttacked AfterAttackedEvent { get; set; }
+        [XmlIgnore]
         public virtual OnAfterAttacking AfterAttackingEvent { get; set; }
 
         public virtual bool CanAttack(ref OnAttackEventArgs args) => true;
