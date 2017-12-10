@@ -36,11 +36,11 @@ namespace DiscordMMO.Datatypes.Entities
 
         public override List<Interaction> interactions { get; set; }
 
-        public override event OnBeforeAttacked BeforeAttackedEvent;
-        public override event OnBeforeAttacking BeforeAttackingEvent;
+        public override OnBeforeAttacked BeforeAttackedEvent { get; set; }
+        public override OnBeforeAttacking BeforeAttackingEvent { get; set; }
 
-        public override event OnAfterAttacked AfterAttackedEvent;
-        public override event OnAfterAttacking AfterAttackingEvent;
+        public override OnAfterAttacked AfterAttackedEvent { get; set; }
+        public override OnAfterAttacking AfterAttackingEvent { get; set; }
 
         public override List<ItemStack> drops
         {
