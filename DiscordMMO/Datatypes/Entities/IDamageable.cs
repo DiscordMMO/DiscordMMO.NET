@@ -212,8 +212,6 @@ namespace DiscordMMO.Datatypes.Entities
 
         #endregion
 
-        // TOOD: Add a proper death callback
-        // TODO: Add loot
         public static async Task Die(this IDamageable damageable, IDamageable killer)
         {
             killer.OnOpponentDied(damageable.drops);

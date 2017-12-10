@@ -9,7 +9,6 @@ namespace DiscordMMO.Datatypes.Items
     public abstract class Item
     {
 
-        //TODO: Possibly make this code cleaner?
 
         /// <summary>
         /// This is used as an id for the item

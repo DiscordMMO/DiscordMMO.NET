@@ -12,9 +12,6 @@ namespace DiscordMMO.Handlers
     {
         private readonly static Dictionary<string, Type> items = new Dictionary<string, Type>();
 
-        //TODO: Possibly clean this up?
-
-        
         public async static Task Init()
         {
             Console.WriteLine("[Item Handler] Detecting items");
