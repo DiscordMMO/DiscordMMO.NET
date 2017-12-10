@@ -15,13 +15,20 @@ namespace DiscordMMO
 
         private volatile bool stop = false;
 
-        // The amount of ticks per second
+        /// <summary>
+        /// The amount of ticks per second
+        /// </summary>
         private static double tickRate = 2;
 
         public static Server INSTANCE { get; private set; }
 
         private static int tickBetweenSaves = 120;
         private static int ticksSinceLastSave = 110;
+
+        /// <summary>
+        /// The amount of seconds a player can do nothing for, before their instance gets removed from the player list (ie. they get kicked)
+        /// </summary>
+        public const int IDLE_TIME = 300;
 
         static Server()
         {

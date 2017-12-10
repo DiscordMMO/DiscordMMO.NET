@@ -166,6 +166,9 @@ namespace DiscordMMO.Datatypes
         [XmlElement]
         public Dialogue currentDialogue;
 
+        [XmlIgnore]
+        public DateTime lastActive = DateTime.Now;
+
 #endregion
 
         #region IDamageable
@@ -335,6 +338,15 @@ namespace DiscordMMO.Datatypes
 
         public virtual async Task Tick()
         {
+            // Remove the player instance if the player has been inactive for more than Server.IDLE_TIME seconds
+            if (lastActive.AddSeconds(Server.IDLE_TIME) <= DateTime.Now)
+            {
+                await DatabaseHandler.SaveAsync(this);
+                var pm = await GetPrivateChannel();
+                await pm.SendMessageAsync("You have been kicked for being idle for too long");
+
+                PlayerHandler.RemovePlayerInstance(this);
+            }
             mana = Math.Min(mana + manaRegen, maxMana);
             lootPile.Update();
             await currentAction.OnTick();
@@ -543,6 +555,12 @@ namespace DiscordMMO.Datatypes
         #endregion
 
         #region Misc.
+
+        public void PingActivity()
+        {
+            lastActive = DateTime.Now;
+        }
+
         public async Task<IDMChannel> GetPrivateChannel()
         {
             var channel = await user.GetOrCreateDMChannelAsync();

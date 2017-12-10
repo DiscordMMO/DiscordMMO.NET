@@ -17,7 +17,6 @@ namespace DiscordMMO.Handlers
         /// <summary>
         /// A list of all currently logged in players
         /// </summary>
-        // TODO: Periodically wipe this list to save RAM
         private static List<Player> players = new List<Player>();
 
         /// <summary>
@@ -79,14 +78,21 @@ namespace DiscordMMO.Handlers
         /// </summary>
         /// <param name="user">The user to log in</param>
         /// <returns><c>True</c> if the player for <paramref name="user"/> is now available</returns>
-        public static async Task<(bool success, string errorReason)> AttemptLogin(IUser user)
+        public static async Task<(bool success, string errorReason)> AttemptLogin(IUser user, bool pingActivity = true)
         {
-            if (HasPlayer(user))
-                return (true, "");
             if (lastLogout.ContainsKey(user) && lastLogout[user].AddMinutes(1) > DateTime.Now)
                 return (false, "You can only log in 60 seconds after you log out");
             if (!await DatabaseHandler.CanFetchPlayer(user))
                 return (false, Modules.NOT_REGISTERED_MSG);
+            if (HasPlayer(user))
+            {
+                if (pingActivity)
+                {
+                    Player p = GetPlayer(user);
+                    p.PingActivity();
+                }
+                return (true, "");
+            }
             AddPlayerInstance(await DatabaseHandler.GetOrFetchPlayer(user, Program.client));
             return (true, "");
         }
