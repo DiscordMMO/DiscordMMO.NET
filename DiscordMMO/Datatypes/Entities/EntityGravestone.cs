@@ -23,6 +23,7 @@ namespace DiscordMMO.Datatypes.Entities
         {
             this.playerName = playerName;
             displayName = $"{playerName}\'s gravestone";
+            this.items = items;
             interactions.Add(new InteractionLookLoot { targetName = displayName, items = items });
             interactions.Add(new InteractionLoot { items = items });
         }
