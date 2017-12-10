@@ -16,6 +16,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using System.Drawing;
+using DiscordMMO.Helpers;
 using DiscordMMO.Datatypes.Interactions.Dialogues;
 using Action = DiscordMMO.Datatypes.Actions.Action;
 using Direction = DiscordMMO.Util.Direction;
@@ -465,7 +466,7 @@ namespace DiscordMMO.Datatypes
             
             var pm = GetPrivateChannel().GetAwaiter().GetResult();
 
-            pm.SendMessageAsync(killer.displayName + " killed you").Wait();
+            pm.SendMessageAsync(killer.displayName.CapitalizeFirst() + " killed you").Wait();
             
             
         }
