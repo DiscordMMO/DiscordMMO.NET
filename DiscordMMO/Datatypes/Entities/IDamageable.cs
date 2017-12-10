@@ -95,15 +95,13 @@ namespace DiscordMMO.Datatypes.Entities
         public OnAfterAttacked AfterAttackedEvent { get; set; }
         public OnAfterAttacking AfterAttackingEvent { get; set; }
 
-        public bool CanAttack(ref OnAttackEventArgs args)
-        {
-            throw new NotImplementedException();
-        }
+        public bool CanAttack(ref OnAttackEventArgs args) => true;
 
         public void OnOpponentDied(List<ItemStack> drops)
         {
-            throw new NotImplementedException();
+
         }
+
     }
 
 
