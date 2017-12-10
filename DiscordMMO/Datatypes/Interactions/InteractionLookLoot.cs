@@ -23,6 +23,8 @@ namespace DiscordMMO.Datatypes.Interactions
             int i = 1;
             foreach (ItemStack item in items)
             {
+                if (item == null || item.IsEmpty)
+                    continue;
                 builder.Append($"{i}: {item.ToStringDisplay()}\n");
                 i++;
             }

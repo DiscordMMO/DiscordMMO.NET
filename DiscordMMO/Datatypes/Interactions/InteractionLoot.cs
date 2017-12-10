@@ -20,6 +20,8 @@ namespace DiscordMMO.Datatypes.Interactions
             StringBuilder b = new StringBuilder($"{Context.User.Username}: Looted:\n");
             foreach (ItemStack item in items)
             {
+                if (item == null || item.IsEmpty)
+                    continue;
                 if (interactor.inventory.CanAdd(item))
                 {
                     interactor.inventory.AddItem(item);
