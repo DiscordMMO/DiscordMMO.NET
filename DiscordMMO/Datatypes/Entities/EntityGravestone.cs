@@ -23,9 +23,11 @@ namespace DiscordMMO.Datatypes.Entities
         {
             this.playerName = playerName;
             displayName = $"{playerName}\'s gravestone";
-            this.items = items;
-            interactions.Add(new InteractionLookLoot { targetName = displayName, items = items });
-            interactions.Add(new InteractionLoot { items = items });
+
+            // Clone the list, as lists are reference types, so when the items are cleared afterwards, they aren't cleared from the gravestone
+            this.items = new List<ItemStack>(items);
+            interactions.Add(new InteractionLookLoot { targetName = displayName, items = this.items });
+            interactions.Add(new InteractionLoot { items = this.items });
         }
 
         /// <summary>
