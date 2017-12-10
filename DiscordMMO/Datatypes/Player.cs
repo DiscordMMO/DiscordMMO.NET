@@ -169,11 +169,11 @@ namespace DiscordMMO.Datatypes
 
         #region IDamageable
 
-        public event OnBeforeAttacked BeforeAttackedEvent;
-        public event OnBeforeAttacking BeforeAttackingEvent;
+        public OnBeforeAttacked BeforeAttackedEvent { get; set; }
+        public OnBeforeAttacking BeforeAttackingEvent { get; set; }
 
-        public event OnAfterAttacked AfterAttackedEvent;
-        public event OnAfterAttacking AfterAttackingEvent;
+        public OnAfterAttacked AfterAttackedEvent { get; set; }
+        public OnAfterAttacking AfterAttackingEvent { get; set; }
 
         public int maxHealth => 30;
 
@@ -453,18 +453,11 @@ namespace DiscordMMO.Datatypes
             }
         }
 
-        public void CallBeforeAttackedEvent(ref OnAttackEventArgs args, bool forced) => BeforeAttackedEvent?.Invoke(ref args, forced);
-
-        public void CallBeforeAttackingEvent(ref OnAttackEventArgs args, bool forced) => BeforeAttackingEvent?.Invoke(ref args, forced);
-
-        public void CallAfterAttackedEvent(ref OnAttackEventArgs args, bool forced) => AfterAttackedEvent?.Invoke(ref args, forced);
-
-        public void CallAfterAttackingEvent(ref OnAttackEventArgs args, bool forced) => AfterAttackingEvent?.Invoke(ref args, forced);
-
         public void Die(IDamageable killer)
         {
-        
-            // TODO: Handle death
+
+            currentArea.CreateGravestone(this);
+            inventory.Clear();
             
             var pm = GetPrivateChannel().GetAwaiter().GetResult();
 

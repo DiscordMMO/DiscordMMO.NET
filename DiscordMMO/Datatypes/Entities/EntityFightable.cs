@@ -57,26 +57,18 @@ namespace DiscordMMO.Datatypes.Entities
         [XmlIgnore]
         public abstract List<ItemStack> drops { get; }
 
-        public virtual event OnBeforeAttacked BeforeAttackedEvent;
-        public virtual event OnBeforeAttacking BeforeAttackingEvent;
+        public virtual OnBeforeAttacked BeforeAttackedEvent { get; set; }
+        public virtual OnBeforeAttacking BeforeAttackingEvent { get; set; }
 
-        public virtual event OnAfterAttacked AfterAttackedEvent;
-        public virtual event OnAfterAttacking AfterAttackingEvent;
+        public virtual OnAfterAttacked AfterAttackedEvent { get; set; }
+        public virtual OnAfterAttacking AfterAttackingEvent { get; set; }
+
+        public virtual bool CanAttack(ref OnAttackEventArgs args) => true;
 
         public EntityFightable()
         {
             health = maxHealth;
         }
-
-        public virtual void CallBeforeAttackedEvent(ref OnAttackEventArgs args, bool forced) => BeforeAttackedEvent?.Invoke(ref args, forced);
-
-        public virtual void CallBeforeAttackingEvent(ref OnAttackEventArgs args, bool forced) => BeforeAttackingEvent?.Invoke(ref args, forced);
-
-        public virtual void CallAfterAttackedEvent(ref OnAttackEventArgs args, bool forced) => AfterAttackedEvent?.Invoke(ref args, forced);
-
-        public virtual void CallAfterAttackingEvent(ref OnAttackEventArgs args, bool forced) => AfterAttackingEvent?.Invoke(ref args, forced);
-
-        public virtual bool CanAttack(ref OnAttackEventArgs args) => true;
 
         public abstract void OnOpponentDied(List<ItemStack> drops);
 

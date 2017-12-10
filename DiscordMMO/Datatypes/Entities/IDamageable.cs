@@ -14,11 +14,11 @@ namespace DiscordMMO.Datatypes.Entities
     public interface IDamageable
     {
 
-        event OnBeforeAttacked BeforeAttackedEvent;
-        event OnBeforeAttacking BeforeAttackingEvent;
+        OnBeforeAttacked BeforeAttackedEvent { get; set; }
+        OnBeforeAttacking BeforeAttackingEvent { get; set; }
 
-        event OnAfterAttacked AfterAttackedEvent;
-        event OnAfterAttacking AfterAttackingEvent;
+        OnAfterAttacked AfterAttackedEvent { get; set; }
+        OnAfterAttacking AfterAttackingEvent { get; set; }
 
         string name { get; }
 
@@ -45,6 +45,8 @@ namespace DiscordMMO.Datatypes.Entities
 
         void OnOpponentDied(List<ItemStack> drops);
 
+        #region Deprecated
+        /*
         /// <summary>
         /// This is a hack, to be able to call the <see cref="BeforeAttackedEvent"/> from the extension methods
         /// </summary>
@@ -64,8 +66,46 @@ namespace DiscordMMO.Datatypes.Entities
         /// This is a hack, to be able to call the <see cref="AfterAttackingEvent"/> from the extension methods
         /// </summary>
         void CallAfterAttackingEvent(ref OnAttackEventArgs args, bool forced);
-
+        */
+        #endregion
     }
+
+    public class DamageSourceUnknown : IDamageable
+    {
+        public string name => "unknown_source";
+
+        public int maxHealth => 0;
+
+        public int health { get; set; } = 0;
+
+        public int defence => 0;
+
+        public int attackDamage => 999999999;
+
+        public int accuracy => 999;
+
+        public int ticksUntilNextAttack { get; set; } = 0;
+
+        public List<ItemStack> drops => null;
+
+        public int attackRate => 1;
+
+        public OnBeforeAttacked BeforeAttackedEvent { get; set; }
+        public OnBeforeAttacking BeforeAttackingEvent { get; set; }
+        public OnAfterAttacked AfterAttackedEvent { get; set; }
+        public OnAfterAttacking AfterAttackingEvent { get; set; }
+
+        public bool CanAttack(ref OnAttackEventArgs args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnOpponentDied(List<ItemStack> drops)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 
     public static class IDamageableHelper
     {
@@ -202,8 +242,8 @@ namespace DiscordMMO.Datatypes.Entities
             if (!attacker.CanAttack(ref args))
                 return false;
 
-            attacker.CallBeforeAttackingEvent(ref args, !args.triggersEffect);
-            target.CallBeforeAttackedEvent(ref args, !args.triggersEffect);
+            attacker.BeforeAttackingEvent(ref args, !args.triggersEffect);
+            target.BeforeAttackedEvent(ref args, !args.triggersEffect);
 
             if (args.cancelled)
                 return false;
@@ -218,8 +258,8 @@ namespace DiscordMMO.Datatypes.Entities
 
             if (args.triggersEffect)
             {
-                attacker.CallAfterAttackingEvent(ref args, !args.triggersEffect);
-                attacker.CallAfterAttackedEvent(ref args, !args.triggersEffect);
+                attacker.AfterAttackingEvent(ref args, !args.triggersEffect);
+                attacker.AfterAttackedEvent(ref args, !args.triggersEffect);
             }
 
             if (target.health <= 0)
@@ -236,6 +276,22 @@ namespace DiscordMMO.Datatypes.Entities
         }
 
         #endregion
+
+        /// <summary>
+        /// Damage <paramref name="target"/> by <paramref name="amount"/>, ignoring all armor, defence, etc.
+        /// </summary>
+        /// <param name="target">The target to damage</param>
+        /// <param name="amount">The amount to damage the target by</param>
+        public static void TrueDamage(this IDamageable target, int amount, IDamageable source)
+        {
+            target.health -= amount;
+            if (target.health <= 0)
+            {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                target.Die(source);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            }
+        }
 
 #endregion
 

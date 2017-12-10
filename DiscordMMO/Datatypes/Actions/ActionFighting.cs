@@ -56,7 +56,7 @@ namespace DiscordMMO.Datatypes.Actions
                 OnAttackEventArgs args = new OnAttackEventArgs(fighting, performer);
                 if (fighting.Attack(performer))
                 {
-                    // TODO: Probably some death handling
+                    performer.Die(fighting);
                     await Finish();
                     return;
                 }
