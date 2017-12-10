@@ -170,10 +170,14 @@ namespace DiscordMMO.Datatypes
 
         #region IDamageable
 
+        [XmlIgnore]
         public OnBeforeAttacked BeforeAttackedEvent { get; set; }
+        [XmlIgnore]
         public OnBeforeAttacking BeforeAttackingEvent { get; set; }
 
+        [XmlIgnore]
         public OnAfterAttacked AfterAttackedEvent { get; set; }
+        [XmlIgnore]
         public OnAfterAttacking AfterAttackingEvent { get; set; }
 
         public int maxHealth => 30;
@@ -458,15 +462,15 @@ namespace DiscordMMO.Datatypes
             }
         }
 
-        public void Die(IDamageable killer)
+        public async Task Die(IDamageable killer)
         {
 
             currentArea.CreateGravestone(this);
             inventory.Clear();
             
-            var pm = GetPrivateChannel().GetAwaiter().GetResult();
+            var pm = await GetPrivateChannel();
 
-            pm.SendMessageAsync(killer.displayName.CapitalizeFirst() + " killed you").Wait();
+            await pm.SendMessageAsync(killer.displayName.CapitalizeFirst() + " killed you");
             
             
         }
