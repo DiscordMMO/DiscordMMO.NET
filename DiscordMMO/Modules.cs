@@ -1014,6 +1014,23 @@ namespace DiscordMMO
 
         }
 
+        [Command("killme")]
+        public async Task KillMe()
+        {
+            // Check if the player has a user
+            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+            if (!attemptLogin.success)
+            {
+                // If the player cannot login, notify them
+                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
+                return;
+            }
+
+            Player player = PlayerHandler.GetPlayer(Context.User);
+
+            player.TrueDamage(999999, new DamageSourceUnknown());
+        }
+
     }
 
 
