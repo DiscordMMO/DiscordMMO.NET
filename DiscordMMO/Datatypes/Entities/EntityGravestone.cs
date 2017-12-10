@@ -17,7 +17,7 @@ namespace DiscordMMO.Datatypes.Entities
 
         public EntityGravestone() : base() { }
 
-        public EntityGravestone(Player player) : this(player.playerName, player.inventory.items) { }
+        public EntityGravestone(Player player) : this(player.playerName, player.drops) { }
 
         public EntityGravestone(string playerName, List<ItemStack> items)
         {
