@@ -8,7 +8,7 @@ using DiscordMMO.Handlers;
 
 namespace DiscordMMO.Datatypes
 {
-    public class SentMessage
+    public class Message
     {
 
         public IMessage message;
@@ -17,18 +17,18 @@ namespace DiscordMMO.Datatypes
 
         public virtual bool IsExpired => expiry <= DateTime.Now;
 
-        public SentMessage()
+        public Message()
         {
 
         }
 
-        public SentMessage(IMessage msg)
+        public Message(IMessage msg)
         {
             message = msg;
             expiry = DateTime.Now.AddSeconds(MessageHandler.DEFAULT_MESSAGE_LIFESPAN);
         }
 
-        public SentMessage(IMessage msg, DateTime expiryDate)
+        public Message(IMessage msg, DateTime expiryDate)
         {
             message = msg;
             expiry = expiryDate;

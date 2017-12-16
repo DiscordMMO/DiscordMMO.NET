@@ -16,14 +16,14 @@ namespace DiscordMMO.Handlers
         /// </summary>
         public const int DEFAULT_MESSAGE_LIFESPAN = 120;
 
-        private static List<SentMessage> messages = new List<SentMessage>();
+        private static List<Message> messages = new List<Message>();
 
         public static async Task Tick()
         {
 
             List<Task> toDelete = new List<Task>();
 
-            foreach (SentMessage msg in messages)
+            foreach (Message msg in messages)
             {
                 if (msg.IsExpired)
                 {
@@ -34,12 +34,12 @@ namespace DiscordMMO.Handlers
             await Task.WhenAll(toDelete);
         }
 
-        public static async Task<SentMessage> SendMessageAsync(IMessageChannel channel, string text, bool isTTS = false, Embed embed = null, RequestOptions options = null)
+        public static async Task<Message> SendMessageAsync(IMessageChannel channel, string text, bool isTTS = false, Embed embed = null, RequestOptions options = null)
         {
-            return await SendMessageAsync<SentMessage>(channel, text, isTTS, embed, options);
+            return await SendMessageAsync<Message>(channel, text, isTTS, embed, options);
         }
 
-        public static async Task<T> SendMessageAsync<T>(IMessageChannel channel, string text, bool isTTS = false, Embed embed = null, RequestOptions options = null) where T : SentMessage, new()
+        public static async Task<T> SendMessageAsync<T>(IMessageChannel channel, string text, bool isTTS = false, Embed embed = null, RequestOptions options = null) where T : Message, new()
         {
             IMessage msg = await channel.SendMessageAsync(text, isTTS, embed, options) as IMessage;
             T sent = new T { message = msg };
@@ -47,7 +47,8 @@ namespace DiscordMMO.Handlers
             return sent;
         }
 
-        public static void RemoveMessage(SentMessage toRemove)
+
+        public static void RemoveMessage(Message toRemove)
         {
             messages.Remove(toRemove);
         }
