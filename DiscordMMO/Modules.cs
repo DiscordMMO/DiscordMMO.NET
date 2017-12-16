@@ -8,6 +8,7 @@ using DiscordMMO.Datatypes.Entities;
 using DiscordMMO.Datatypes.Inventories;
 using DiscordMMO.Datatypes.Items;
 using DiscordMMO.Datatypes.Items.Equipable;
+using DiscordMMO.Datatypes.Messages;
 using DiscordMMO.Datatypes.Preferences;
 using DiscordMMO.Factories;
 using DiscordMMO.Handlers;
