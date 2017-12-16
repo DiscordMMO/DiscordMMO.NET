@@ -174,7 +174,7 @@
     <Compile Include="Datatypes\Items\Equipable\Weapons\Melee\ItemTestWeapon.cs" />
     <Compile Include="Datatypes\Items\Equipable\Weapons\ItemWeapon.cs" />
     <Compile Include="Datatypes\Items\ItemWood.cs" />
-    <Compile Include="Datatypes\Message.cs" />
+    <Compile Include="Datatypes\Messages\Message.cs" />
     <Compile Include="Factories\DialogueFactory.cs" />
     <Compile Include="Factories\EntityFactory.cs" />
     <Compile Include="Handlers\AreaHandler.cs" />
