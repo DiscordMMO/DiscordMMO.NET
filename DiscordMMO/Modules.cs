@@ -9,10 +9,10 @@ using DiscordMMO.Datatypes.Inventories;
 using DiscordMMO.Datatypes.Items;
 using DiscordMMO.Datatypes.Items.Equipable;
 using DiscordMMO.Datatypes.Preferences;
+using DiscordMMO.Factories;
 using DiscordMMO.Handlers;
 using DiscordMMO.Helpers;
 using DiscordMMO.Util;
-using DiscordMMO.Factories;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -801,7 +801,7 @@ namespace DiscordMMO
 
             Player p = PlayerHandler.GetPlayer(Context.User);
             string eq = p.equipment.ToString();
-            await base.ReplyAsync(p.equipment.ToString());
+            await ReplyAsync(p.equipment.ToString());
         }
 
         [Command("give")]
