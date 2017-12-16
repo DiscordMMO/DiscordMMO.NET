@@ -56,7 +56,9 @@ namespace DiscordMMO.Datatypes.Actions
                 OnAttackEventArgs args = new OnAttackEventArgs(fighting, performer);
                 if (fighting.Attack(performer))
                 {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                     performer.Die(fighting);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                     await Finish();
                     return;
                 }
