@@ -175,6 +175,7 @@
     <Compile Include="Datatypes\Items\Equipable\Weapons\ItemWeapon.cs" />
     <Compile Include="Datatypes\Items\ItemWood.cs" />
     <Compile Include="Datatypes\Messages\Message.cs" />
+    <Compile Include="Datatypes\Messages\MessageDefault.cs" />
     <Compile Include="Datatypes\Messages\MessageStaying.cs" />
     <Compile Include="Factories\DialogueFactory.cs" />
     <Compile Include="Factories\EntityFactory.cs" />

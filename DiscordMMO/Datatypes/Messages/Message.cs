@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Discord;
 using DiscordMMO.Handlers;
+using Discord;
 
-namespace DiscordMMO.Datatypes
+namespace DiscordMMO.Datatypes.Messages
 {
-    public class Message
+    public abstract class Message
     {
 
         public IMessage message;
 
-        public DateTime expiry;
+        public abstract DateTime expiry { get; set; }
 
         public virtual bool IsExpired => expiry <= DateTime.Now;
 
@@ -22,15 +22,13 @@ namespace DiscordMMO.Datatypes
 
         }
 
-        public Message(IMessage msg)
+        public Message(IMessage msg) : this()
         {
             message = msg;
-            expiry = DateTime.Now.AddSeconds(MessageHandler.DEFAULT_MESSAGE_LIFESPAN);
         }
 
-        public Message(IMessage msg, DateTime expiryDate)
+        public Message(IMessage msg, DateTime expiryDate) : this(msg)
         {
-            message = msg;
             expiry = expiryDate;
         }
 
@@ -47,6 +45,7 @@ namespace DiscordMMO.Datatypes
         {
             DeleteAsync().GetAwaiter().GetResult();
         }
+
 
     }
 }

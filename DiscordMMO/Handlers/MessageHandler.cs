@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DiscordMMO.Datatypes;
 using Discord;
+using DiscordMMO.Datatypes.Messages;
 
 namespace DiscordMMO.Handlers
 {
@@ -36,7 +37,7 @@ namespace DiscordMMO.Handlers
 
         public static async Task<Message> SendMessageAsync(IMessageChannel channel, string text, bool isTTS = false, Embed embed = null, RequestOptions options = null)
         {
-            return await SendMessageAsync<Message>(channel, text, isTTS, embed, options);
+            return await SendMessageAsync<MessageDefault>(channel, text, isTTS, embed, options);
         }
 
         public static async Task<T> SendMessageAsync<T>(IMessageChannel channel, string text, bool isTTS = false, Embed embed = null, RequestOptions options = null) where T : Message, new()
@@ -44,6 +45,7 @@ namespace DiscordMMO.Handlers
             IMessage msg = await channel.SendMessageAsync(text, isTTS, embed, options) as IMessage;
             T sent = new T { message = msg };
             messages.Add(sent);
+            Console.WriteLine(sent.expiry);
             return sent;
         }
 

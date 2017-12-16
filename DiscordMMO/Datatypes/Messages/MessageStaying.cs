@@ -11,15 +11,7 @@ namespace DiscordMMO.Datatypes.Messages
     public class MessageStaying : Message
     {
 
-        public MessageStaying() : base()
-        {
-            expiry = DateTime.MaxValue.AddYears(-1);
-        }
-
-        public MessageStaying(IMessage msg) : this()
-        {
-            message = msg;
-        }
+        public override DateTime expiry { get; set; } = DateTime.MaxValue.AddYears(-1);
 
     }
 }
