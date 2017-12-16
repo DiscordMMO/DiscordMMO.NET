@@ -60,9 +60,16 @@ namespace DiscordMMO
     {
         protected async override Task<IUserMessage> ReplyAsync(string message, bool isTTS = false, Embed embed = null, RequestOptions options = null)
         {
-            SentMessage msg = await MessageHandler.SendMessageAsync(Context.Channel, message, isTTS, embed, options);
+            Message msg = await MessageHandler.SendMessageAsync(Context.Channel, message, isTTS, embed, options);
             return msg.message as IUserMessage;
         }
+
+        protected async Task<IUserMessage> ReplyAsync<T>(string message, bool isTTS = false, Embed embed = null, RequestOptions options = null) where T : Message, new()
+        {
+            Message msg = await MessageHandler.SendMessageAsync<T>(Context.Channel, message, isTTS, embed, options);
+            return msg.message as IUserMessage;
+        }
+
     }
 
 
@@ -794,7 +801,7 @@ namespace DiscordMMO
 
             Player p = PlayerHandler.GetPlayer(Context.User);
             string eq = p.equipment.ToString();
-            await ReplyAsync(p.equipment.ToString());
+            await base.ReplyAsync(p.equipment.ToString());
         }
 
         [Command("give")]
