@@ -72,6 +72,7 @@ namespace DiscordMMO.Datatypes.Entities
         public EntityFightable()
         {
             health = maxHealth;
+            interactions.Add(new FightInteraction());
         }
 
         public abstract void OnOpponentDied(List<ItemStack> drops);

@@ -31,7 +31,7 @@ namespace DiscordMMO.Datatypes.Entities
 
         public override string displayName { get; set; } = "Man";
 
-        public EntityMan()
+        public EntityMan() : base()
         {
 
             DialogueFactory factory = new DialogueFactory();
