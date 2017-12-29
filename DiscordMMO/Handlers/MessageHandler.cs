@@ -45,7 +45,6 @@ namespace DiscordMMO.Handlers
             IMessage msg = await channel.SendMessageAsync(text, isTTS, embed, options) as IMessage;
             T sent = new T { message = msg };
             messages.Add(sent);
-            Console.WriteLine(sent.expiry);
             return sent;
         }
 
