@@ -15,39 +15,36 @@ namespace DiscordMMO.Datatypes.Interactions.Dialogues
 
         public string npcName;
 
-        public string text;
-        public string playerResponse;
-
-        public bool hasPlayerResponse;
-        public bool hasNpcResonse;
+        public List<DialogueText> text = new List<DialogueText>();
 
         public List<DialogueLink> links = new List<DialogueLink>();
 
 
         public DialogueNode() { }
 
-        public DialogueNode(string text)
-        {
-            this.text = text;
-        }
-
         public virtual void Execute(ref Player player, IMessageChannel channel)
         {
             string outp = "";
 
-            if (hasPlayerResponse)
+            foreach (DialogueText textPiece in text)
             {
-                outp += $"{player.playerName}: {playerResponse}";
-            }
 
-            if (hasNpcResonse && hasPlayerResponse)
-            {
+                switch (textPiece.type)
+                {
+                    case DialogueType.NONE:
+                        outp += textPiece.text;
+                        break;
+                    case DialogueType.NPC_RESPONSE:
+                        outp += $"{npcName}: {textPiece.text}";
+                        break;
+                    case DialogueType.PLAYER_RESPONSE:
+                        outp += $"{player.name}: {textPiece.text}";
+                        break;
+                    default:
+                        outp += "Something went terribly wrong in the dialogue system! The default case was hit in DialogueNode.Execute";
+                        break;
+                }
                 outp += "\n";
-            }
-
-            if (hasNpcResonse)
-            {
-                outp += $"{npcName}: {text}";
             }
 
             channel.SendMessage(outp);
@@ -56,6 +53,12 @@ namespace DiscordMMO.Datatypes.Interactions.Dialogues
             if (GetAvailableLinks(player).Count() <= 0)
             {
                 player.currentDialogue = null;
+            }
+
+            if (GetAvailableLinks(player).Count() == 1)
+            {
+                player.currentDialogue.SelectOption(0);
+                return;
             }
 
         }
@@ -72,6 +75,17 @@ namespace DiscordMMO.Datatypes.Interactions.Dialogues
                 i++;
             }
             channel.SendMessage(outp.ToString());
+        }
+
+        public DialogueNode AddText(string text, DialogueType type)
+        {
+            return AddText(new DialogueText(text, type));
+        }
+
+        public DialogueNode AddText(DialogueText text)
+        {
+            this.text.Add(text);
+            return this;
         }
 
         public IEnumerable<DialogueLink> GetAvailableLinks(Player player)

@@ -36,11 +36,11 @@ namespace DiscordMMO.Datatypes.Entities
 
             DialogueFactory factory = new DialogueFactory();
 
-            // TOOD: Make this not terrible
+            factory.npcName = "Man";
 
-            factory.AddNode("entry", "Hello", "Man", true, "Hello", true);
-            factory.AddNode(new DialogueNodeGiveItems { id = "freeStuffResponse", hasNpcResonse = true, hasPlayerResponse = true, items = { ItemHandler.GetItemInstanceFromName("wood") }, npcName = "Man", playerResponse = "free stuff pl0x", text = "k" });
-            factory.AddNode("goodbyeResponse", "what is wrong with you", "Man", false, "Goodbye", true);
+            factory.AddNode("entry", "Hello", DialogueType.NPC_RESPONSE);
+            factory.AddNode(new DialogueNodeGiveItems { id = "freeStuffResponse", items = { ItemHandler.GetItemInstanceFromName("wood") }}.AddText("free stuff pl0x", DialogueType.PLAYER_RESPONSE).AddText("k", DialogueType.NPC_RESPONSE).AddText("You got 1 piece of wood", DialogueType.NONE));
+            factory.AddNode("goodbyeResponse", "what is wrong with you", DialogueType.NPC_RESPONSE);
 
             factory.LinkNodes("entry", "freeStuffResponse", "free stuff pl0x");
             factory.LinkNodes("entry", "goodbyeResponse", "Goodbye");

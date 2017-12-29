@@ -12,22 +12,42 @@ namespace DiscordMMO.Factories
 
         List<DialogueNode> nodes = new List<DialogueNode>();
 
-        public void AddNode(string id, string text, string npcName)
-        {
-            nodes.Add(new DialogueNode {id = id, text = text, npcName = npcName, hasPlayerResponse = false, playerResponse = "" });
-        }
+        public string npcName;
 
-        public void AddNode(string id, string text, string npcName, bool hasPlayerResponse, string playerResponse, bool hasNpcResponse)
+        public DialogueNode AddNode(string id, string text, DialogueType type)
         {
-            nodes.Add(new DialogueNode {id = id, text = text, npcName = npcName, hasPlayerResponse = hasPlayerResponse, playerResponse = playerResponse, hasNpcResonse = hasNpcResponse });
-        }
-
-        public void AddNode(DialogueNode node)
-        {
+            DialogueNode node = new DialogueNode { id = id, npcName = npcName };
+            node.text.Add(new DialogueText(text, type));
             nodes.Add(node);
+            return node;
         }
 
-        public void LinkNodes(string from, string to, string displayName)
+        public DialogueNode AddNode(DialogueNode node)
+        {
+            node.npcName = npcName;
+            nodes.Add(node);
+            return node;
+        }
+
+        public DialogueNode AddText(string id, string text, DialogueType type)
+        {
+            return AddText(id, new DialogueText(text, type));
+        }
+
+        public DialogueNode AddText(string id, DialogueText text)
+        {
+            DialogueNode node = GetNode(id);
+            return node.AddText(text);
+        }
+
+        /// <summary>
+        /// Link two nodes
+        /// </summary>
+        /// <param name="from">The node the link goes from</param>
+        /// <param name="to">The node the link goes to</param>
+        /// <param name="displayName">The name of the option</param>
+        /// <returns>The node that the link goes to</returns>
+        public DialogueNode LinkNodes(string from, string to, string displayName)
         {
             DialogueNode fromNode = GetNode(from);
             DialogueNode toNode = GetNode(to);
@@ -46,9 +66,11 @@ namespace DiscordMMO.Factories
 
             fromNode.links.Add(link);
 
+            return toNode;
+
         }
 
-        public void LinkNodes(string from, DialogueLink link)
+        public DialogueNode LinkNodes(string from, DialogueLink link)
         {
             DialogueNode fromNode = GetNode(from);
 
@@ -58,7 +80,7 @@ namespace DiscordMMO.Factories
             }
 
             fromNode.links.Add(link);
-
+            return link.to;
         }
 
         public DialogueNode GetDoneEntryNode(string entryNodeId)

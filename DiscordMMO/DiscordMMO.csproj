@@ -148,6 +148,8 @@
     <Compile Include="Datatypes\Interactions\Dialogues\DialogueNode.cs" />
     <Compile Include="Datatypes\Interactions\Dialogues\DialogueLink.cs" />
     <Compile Include="Datatypes\Interactions\Dialogues\DialogueNodeGiveItems.cs" />
+    <Compile Include="Datatypes\Interactions\Dialogues\DialogueText.cs" />
+    <Compile Include="Datatypes\Interactions\Dialogues\DialogueType.cs" />
     <Compile Include="Datatypes\Interactions\FightInteraction.cs" />
     <Compile Include="Datatypes\Interactions\Interactibles\Interactible.cs" />
     <Compile Include="Datatypes\Interactions\Interaction.cs" />
