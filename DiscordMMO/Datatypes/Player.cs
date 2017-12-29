@@ -343,7 +343,7 @@ namespace DiscordMMO.Datatypes
             {
                 await DatabaseHandler.SaveAsync(this);
                 var pm = await GetPrivateChannel();
-                await pm.SendMessageAsync("You have been kicked for being idle for too long");
+                await MessageHandler.SendMessageAsync(pm, "You have been kicked for being idle for too long");
 
                 PlayerHandler.RemovePlayerInstance(this);
             }
