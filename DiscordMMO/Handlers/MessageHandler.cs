@@ -48,6 +48,11 @@ namespace DiscordMMO.Handlers
             return sent;
         }
 
+        public static async Task<IMessage> SendMessageAsync(IMessageChannel channel, Message toSend)
+        {
+            IMessage msg = toSend.message;
+            return await channel.SendMessageAsync(msg.Content, msg.IsTTS, null, null);
+        }
 
         public static void RemoveMessage(Message toRemove)
         {
