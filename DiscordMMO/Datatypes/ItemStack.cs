@@ -52,6 +52,10 @@ namespace DiscordMMO.Datatypes
             this.count = count;
         }
 
+        public ItemStack(string itemId, int count = 1) : this(ItemHandler.GetItemInstanceFromName(itemId), count)
+        {
+
+        }
 
         static ItemStack()
         {
