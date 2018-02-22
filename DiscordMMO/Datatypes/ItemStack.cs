@@ -46,16 +46,12 @@ namespace DiscordMMO.Datatypes
             itemType = ItemHandler.GetItemInstanceFromName("empty");
         }
 
-        public ItemStack(Item type, int count)
+        public ItemStack(Item type, int count=1)
         {
             itemType = type;
             this.count = count;
         }
 
-        public ItemStack(Item type) : this(type, 1)
-        {
-
-        }
 
         static ItemStack()
         {
