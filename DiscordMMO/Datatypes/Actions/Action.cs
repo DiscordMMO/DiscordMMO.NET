@@ -41,16 +41,16 @@ namespace DiscordMMO.Datatypes.Actions
 
         public async static Task Init()
         {
-            Console.WriteLine("[Actions] Detecting actions");
+            Logger.Log("[Actions] Detecting actions");
             var watch = Stopwatch.StartNew();
             var allItems = (from domainAssembly in AppDomain.CurrentDomain.GetAssemblies()
                             from assemblyType in domainAssembly.GetTypes()
                             where typeof(Action).IsAssignableFrom(assemblyType) && !assemblyType.IsAbstract
                             select assemblyType).ToArray();
             watch.Stop();
-            Console.WriteLine("[Actions] Detecting actions took " + watch.ElapsedMilliseconds + "ms");
-            Console.WriteLine("[Actions] Average time per action: " + watch.ElapsedMilliseconds / allItems.Length + "ms");
-            Console.WriteLine("[Actions] Registering actions");
+            Logger.Log("[Actions] Detecting actions took " + watch.ElapsedMilliseconds + "ms");
+            Logger.Log("[Actions] Average time per action: " + watch.ElapsedMilliseconds / allItems.Length + "ms");
+            Logger.Log("[Actions] Registering actions");
             watch = Stopwatch.StartNew();
             List<Task> toAdd = new List<Task>();
             foreach (Type action in allItems)
@@ -59,7 +59,7 @@ namespace DiscordMMO.Datatypes.Actions
             }
             await Task.WhenAll(toAdd);
             watch.Stop();
-            Console.WriteLine("[Actions] Registering actions took " + watch.ElapsedMilliseconds + "ms");
+            Logger.Log("[Actions] Registering actions took " + watch.ElapsedMilliseconds + "ms");
         }
 
         public static async Task RegisterAction(Type type)

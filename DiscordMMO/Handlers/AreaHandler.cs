@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DiscordMMO.Datatypes.Areas;
 using System.Drawing;
+using Discord;
 
 namespace DiscordMMO.Handlers
 {
@@ -31,8 +32,8 @@ namespace DiscordMMO.Handlers
             {
                 if (!silent)
                 {
-                    Console.Write($"Tried to load an area at an alredy loaded position at: ({x},{y})");
-                    Console.WriteLine("The area was " + (forced ? "" : "not ") + "loaded");
+                    Logger.Log($"Tried to load an area at an alredy loaded position at: ({x},{y})", LogSeverity.Warning);
+                    Logger.Log("The area was " + (forced ? "" : "not ") + "loaded", LogSeverity.Warning);
                 }
                 if (!forced)
                     return;

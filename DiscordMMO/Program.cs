@@ -39,6 +39,9 @@ namespace DiscordMMO
             Thread.CurrentThread.CurrentCulture = culture;
             Thread.CurrentThread.CurrentUICulture = culture;
 
+            // Initialize the logger
+            Logger.Init();
+
             // Init the client
             client = new DiscordSocketClient();
             
@@ -131,11 +134,9 @@ namespace DiscordMMO
             {
                 if (typeof(ExecuteResult).IsAssignableFrom(result.GetType()))
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("An error occurred");
+                    Logger.Log("An error occurred", LogSeverity.Error);
                     ExecuteResult res = (ExecuteResult) result;
-                    Console.WriteLine(res.Exception.ToString());
-                    Console.ForegroundColor = ConsoleColor.White;
+                    Logger.Log(res.Exception.ToString(), LogSeverity.Error);
                     await context.Channel.SendMessageAsync(result.ErrorReason);
                 }
             }

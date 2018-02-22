@@ -157,7 +157,7 @@ namespace DiscordMMO.Handlers
 
         public static async Task SaveAllAsync()
         {
-            Console.WriteLine("[Database Handler] Starting save");
+            Logger.Log("[Database Handler] Starting save");
             var watch = Stopwatch.StartNew();
             List<Task> toSave = new List<Task>();
             foreach (Player p in PlayerHandler.GetPlayers())
@@ -166,7 +166,7 @@ namespace DiscordMMO.Handlers
             }
             await Task.WhenAll(toSave);
             watch.Stop();
-            Console.WriteLine($"[Database Handler] Save done after {watch.ElapsedMilliseconds}ms");
+            Logger.Log($"[Database Handler] Save done after {watch.ElapsedMilliseconds}ms");
         }
 
         public static async Task SaveAsync(Player player)

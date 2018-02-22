@@ -14,16 +14,16 @@ namespace DiscordMMO.Handlers
 
         public async static Task Init()
         {
-            Console.WriteLine("[Item Handler] Detecting items");
+            Logger.Log("[Item Handler] Detecting items");
             var watch = Stopwatch.StartNew();
             var allItems = (from domainAssembly in AppDomain.CurrentDomain.GetAssemblies()
                             from assemblyType in domainAssembly.GetTypes()
                             where typeof(Item).IsAssignableFrom(assemblyType) && !assemblyType.IsAbstract
                             select assemblyType).ToArray();
             watch.Stop();
-            Console.WriteLine("[Item Handler] Detecting items took " + watch.ElapsedMilliseconds + "ms");
-            Console.WriteLine("[Item Handler] Average time per item: " + watch.ElapsedMilliseconds / allItems.Length + "ms");
-            Console.WriteLine("[Item Handler] Registering items");
+            Logger.Log("[Item Handler] Detecting items took " + watch.ElapsedMilliseconds + "ms");
+            Logger.Log("[Item Handler] Average time per item: " + watch.ElapsedMilliseconds / allItems.Length + "ms");
+            Logger.Log("[Item Handler] Registering items");
             watch = Stopwatch.StartNew();
             List<Task> toAdd = new List<Task>();
             foreach (Type item in allItems)
@@ -32,7 +32,7 @@ namespace DiscordMMO.Handlers
             }
             await Task.WhenAll(toAdd);
             watch.Stop();
-            Console.WriteLine("[Item Handler] Registering items took " + watch.ElapsedMilliseconds + "ms");
+            Logger.Log("[Item Handler] Registering items took " + watch.ElapsedMilliseconds + "ms");
         }
 
         public static Item GetItemInstanceFromName(string name, params object[] param)

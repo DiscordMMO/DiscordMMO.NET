@@ -13,16 +13,16 @@ namespace DiscordMMO.Handlers
 
         public async static Task Init()
         {
-            Console.WriteLine("[Entity Handler] Detecting entities");
+            Logger.Log("[Entity Handler] Detecting entities");
             var watch = Stopwatch.StartNew();
             var allEntities = (from domainAssembly in AppDomain.CurrentDomain.GetAssemblies()
                             from assemblyType in domainAssembly.GetTypes()
                             where typeof(Entity).IsAssignableFrom(assemblyType) && !assemblyType.IsAbstract
                             select assemblyType).ToArray();
             watch.Stop();
-            Console.WriteLine("[Entity Handler] Detecting entities took " + watch.ElapsedMilliseconds + "ms");
-            Console.WriteLine("[Entity Handler] Average time per entity: " + watch.ElapsedMilliseconds / allEntities.Length + "ms");
-            Console.WriteLine("[Entity Handler] Registering entities");
+            Logger.Log("[Entity Handler] Detecting entities took " + watch.ElapsedMilliseconds + "ms");
+            Logger.Log("[Entity Handler] Average time per entity: " + watch.ElapsedMilliseconds / allEntities.Length + "ms");
+            Logger.Log("[Entity Handler] Registering entities");
             watch = Stopwatch.StartNew();
             List<Task> toAdd = new List<Task>();
             foreach (Type entity in allEntities)
@@ -31,7 +31,7 @@ namespace DiscordMMO.Handlers
             }
             await Task.WhenAll(toAdd);
             watch.Stop();
-            Console.WriteLine("[Entity Handler] Registering entities took " + watch.ElapsedMilliseconds + "ms");
+            Logger.Log("[Entity Handler] Registering entities took " + watch.ElapsedMilliseconds + "ms");
         }
 
         public static Entity GetEntityInstanceFromName(string name, params object[] param)

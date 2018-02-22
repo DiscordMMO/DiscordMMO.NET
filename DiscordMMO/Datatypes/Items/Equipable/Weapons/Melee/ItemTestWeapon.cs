@@ -44,9 +44,7 @@ namespace DiscordMMO.Datatypes.Items.Equipable.Weapons.Melee
                 OnAttackEventArgs outArgs = args.attacker.GetAttackingArgs(args.attacked);
                 outArgs.triggersEffect = false;
                 args.attacker.Attack(args.attacked, ref outArgs);
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.WriteLine(args.attacker.name + "'s swiftness has activated for " + outArgs.damage);
-                Console.ForegroundColor = ConsoleColor.White;
+                Logger.Log(args.attacker.name + "'s swiftness has activated for " + outArgs.damage, ConsoleColor.Blue);
             }
         }
 

@@ -21,15 +21,15 @@ namespace DiscordMMO.Handlers
 
         public async static Task Init()
         {
-            Console.WriteLine("[Serialization Handler] Detecting serializeable items");
+            Logger.Log("[Serialization Handler] Detecting serializeable items");
             var watch = Stopwatch.StartNew();
 
             allItems = ReflectionHelper.GetTypesWithAttribute(Assembly.GetExecutingAssembly(), typeof(XmlRootAttribute)).ToList();
 
             watch.Stop();
-            Console.WriteLine("[Serialization Handler] Detecting serializeable items took " + watch.ElapsedMilliseconds + "ms");
-            Console.WriteLine("[Serialization Handler] Average time per item: " + watch.ElapsedMilliseconds / allItems.Count + "ms");
-            Console.WriteLine("[Serialization Handler] Registering serializeable items");
+            Logger.Log("[Serialization Handler] Detecting serializeable items took " + watch.ElapsedMilliseconds + "ms");
+            Logger.Log("[Serialization Handler] Average time per item: " + watch.ElapsedMilliseconds / allItems.Count + "ms");
+            Logger.Log("[Serialization Handler] Registering serializeable items");
             watch = Stopwatch.StartNew();
             List<Task> toAdd = new List<Task>();
             foreach (Type item in allItems)
@@ -38,8 +38,8 @@ namespace DiscordMMO.Handlers
             }
             await Task.WhenAll(toAdd);
             watch.Stop();
-            Console.WriteLine("[Serialization Handler] Registering serializeable items took " + watch.ElapsedMilliseconds + "ms");
-            Console.WriteLine("[Serialization Handler] Average registration time per item: " + watch.ElapsedMilliseconds / allItems.Count + "ms");
+            Logger.Log("[Serialization Handler] Registering serializeable items took " + watch.ElapsedMilliseconds + "ms");
+            Logger.Log("[Serialization Handler] Average registration time per item: " + watch.ElapsedMilliseconds / allItems.Count + "ms");
         }
 
         public static async Task RegisterItem(Type type)

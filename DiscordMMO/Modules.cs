@@ -935,7 +935,7 @@ namespace DiscordMMO
                 }
                 catch (IOException e)
                 {
-                    Console.WriteLine(e.ToString());
+                    Logger.Log(e.ToString(), LogSeverity.Error);
                 }
             }
             // Stop the stopwatch

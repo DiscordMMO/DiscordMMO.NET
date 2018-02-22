@@ -17,13 +17,13 @@ namespace DiscordMMO.Handlers
 
         public async static Task Init()
         {
-            Console.WriteLine("[Area Loader Handler] Detecting area loaders");
+            Logger.Log("[Area Loader Handler] Detecting area loaders");
             var watch = Stopwatch.StartNew();
             var allItems = ReflectionHelper.GetTypesInheriting(Assembly.GetExecutingAssembly(), typeof(IAreaLoader));
             watch.Stop();
-            Console.WriteLine("[Area Loader Handler] Detecting area loaders took " + watch.ElapsedMilliseconds + "ms");
-            Console.WriteLine("[Area Loader Handler] Average time per area loader: " + watch.ElapsedMilliseconds / allItems.Count() + "ms");
-            Console.WriteLine("[Area Loader Handler] Registering area loaders");
+            Logger.Log("[Area Loader Handler] Detecting area loaders took " + watch.ElapsedMilliseconds + "ms");
+            Logger.Log("[Area Loader Handler] Average time per area loader: " + watch.ElapsedMilliseconds / allItems.Count() + "ms");
+            Logger.Log("[Area Loader Handler] Registering area loaders");
             watch = Stopwatch.StartNew();
             List<Task> toAdd = new List<Task>();
             foreach (Type item in allItems)
@@ -32,7 +32,7 @@ namespace DiscordMMO.Handlers
             }
             await Task.WhenAll(toAdd);
             watch.Stop();
-            Console.WriteLine("[Area Loader Handler] Registering area loaders took " + watch.ElapsedMilliseconds + "ms");
+            Logger.Log("[Area Loader Handler] Registering area loaders took " + watch.ElapsedMilliseconds + "ms");
 
             AreaHandler.beforeLoadEvent += PreLoad;
             AreaHandler.loadEvent += Load;
