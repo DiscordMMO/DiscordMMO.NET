@@ -176,9 +176,11 @@
     <Compile Include="Datatypes\Items\Equipable\Weapons\Melee\ItemTestWeapon.cs" />
     <Compile Include="Datatypes\Items\Equipable\Weapons\ItemWeapon.cs" />
     <Compile Include="Datatypes\Items\ItemWood.cs" />
+    <Compile Include="Datatypes\LootTables\ILootTableContent.cs" />
+    <Compile Include="Datatypes\LootTables\LootTable.cs" />
     <Compile Include="Datatypes\Messages\Message.cs" />
     <Compile Include="Datatypes\Messages\MessageDefault.cs" />
-    <Compile Include="Datatypes\Messages\MessageStaying.cs" />
+    <Compile Include="Datatypes\Messages\MessagePermanent.cs" />
     <Compile Include="Factories\DialogueFactory.cs" />
     <Compile Include="Factories\EntityFactory.cs" />
     <Compile Include="Handlers\AreaHandler.cs" />
@@ -187,6 +189,7 @@
     <Compile Include="Handlers\MessageHandler.cs" />
     <Compile Include="Handlers\SerializationHandler.cs" />
     <Compile Include="Helpers\ReflectionHelper.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="Modules.cs" />
     <Compile Include="Datatypes\Player.cs" />
     <Compile Include="Datatypes\Preferences\Preference.cs" />

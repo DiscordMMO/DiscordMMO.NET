@@ -1,12 +1,13 @@
 ﻿using System.Xml.Serialization;
 using DiscordMMO.Handlers;
 using DiscordMMO.Datatypes.Items;
+using DiscordMMO.Datatypes.LootTables;
 
 namespace DiscordMMO.Datatypes
 {
     [XmlRoot]
     [HasOwnSerializer]
-    public class ItemStack
+    public class ItemStack : ILootTableContent
     {
         [XmlElement]
         public Item itemType;
@@ -78,5 +79,6 @@ namespace DiscordMMO.Datatypes
             return $"({itemType.itemName})";
         }
 
+        public ItemStack GetDrop() => this;
     }
 }

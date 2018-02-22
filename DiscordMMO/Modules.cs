@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiscordMMO.Datatypes.LootTables;
 using Action = DiscordMMO.Datatypes.Actions.Action;
 using Direction = DiscordMMO.Util.Direction;
 
@@ -1046,6 +1047,27 @@ namespace DiscordMMO
             Player player = PlayerHandler.GetPlayer(Context.User);
 
             player.TrueDamage(999999, new DamageSourceUnknown());
+        }
+
+        [Command("drop")]
+        public async Task DebugDrop()
+        {
+            LootTable table = new LootTable(((ItemStack)ItemHandler.GetItemInstanceFromName("wood"), 3), ((ItemStack)ItemHandler.GetItemInstanceFromName("test_weapon"), 1));
+
+            int wood = 0, weapon = 0;
+
+            int loops = 1000;
+
+            for (int i = 0; i < loops; i++)
+            {
+                if (table.GetDrop().itemType.itemName.Equals("wood"))
+                    wood++;
+                else
+                    weapon++;
+            }
+
+            await ReplyAsync($"Distribution: {(float)wood / loops * 100}% wood, {(float)weapon / loops * 100}% weapon");
+
         }
 
     }
