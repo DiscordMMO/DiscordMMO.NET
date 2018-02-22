@@ -9,6 +9,7 @@ using DiscordMMO.Helpers;
 
 namespace DiscordMMO.Handlers
 {
+    [Handler(15)]
     public static class SerializationHandler
     {
 
@@ -18,7 +19,7 @@ namespace DiscordMMO.Handlers
 
         private static Dictionary<Type, XmlSerializer> serializers = new Dictionary<Type, XmlSerializer>();
 
-
+        [InitMethod]
         public async static Task Init()
         {
             Logger.Log("[Serialization Handler] Detecting serializeable items");

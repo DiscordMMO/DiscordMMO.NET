@@ -44,7 +44,7 @@ namespace DiscordMMO
 
             // Init the client
             client = new DiscordSocketClient();
-            
+
             // Init the command service
             commands = new CommandService();
 
@@ -84,12 +84,15 @@ namespace DiscordMMO
 
             Task[] init = new Task[]
             {
+            /*
             ItemHandler.Init(),
             Datatypes.Actions.Action.Init(),
             EntityHandler.Init(),
             SerializationHandler.Init(),
             AreaLoaderHandler.Init(),
             AreaHandler.Init()
+            */
+            HandlerHandler.Init()
             };
 
             await Task.WhenAll(init);
@@ -135,7 +138,7 @@ namespace DiscordMMO
                 if (typeof(ExecuteResult).IsAssignableFrom(result.GetType()))
                 {
                     Logger.Log("An error occurred", LogSeverity.Error);
-                    ExecuteResult res = (ExecuteResult) result;
+                    ExecuteResult res = (ExecuteResult)result;
                     Logger.Log(res.Exception.ToString(), LogSeverity.Error);
                     await context.Channel.SendMessageAsync(result.ErrorReason);
                 }

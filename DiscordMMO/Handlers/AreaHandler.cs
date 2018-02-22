@@ -9,6 +9,7 @@ using Discord;
 
 namespace DiscordMMO.Handlers
 {
+    [Handler(25)]
     public static class AreaHandler
     {
         public const int fillSize = 128;
@@ -43,6 +44,7 @@ namespace DiscordMMO.Handlers
 
         }
 
+        [InitMethod]
         public static async Task Init()
         {
             LoadAll();

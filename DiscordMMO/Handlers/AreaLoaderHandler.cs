@@ -10,11 +10,13 @@ using System.Reflection;
 
 namespace DiscordMMO.Handlers
 {
+    [Handler(20)]
     public static class AreaLoaderHandler
     {
 
         private static List<Type> areaLoaders = new List<Type>();
 
+        [InitMethod]
         public async static Task Init()
         {
             Logger.Log("[Area Loader Handler] Detecting area loaders");

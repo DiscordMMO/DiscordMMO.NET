@@ -4,12 +4,13 @@ using System.Linq;
 using System.Xml.Serialization;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using DiscordMMO.Datatypes.Preferences;
+using DiscordMMO.Handlers;
 using DiscordMMO.Datatypes.Entities;
 
 namespace DiscordMMO.Datatypes.Actions
 {
     [XmlRoot]
+    [Handler(5)]
     public abstract class Action
     {
         [XmlIgnore]
@@ -39,6 +40,7 @@ namespace DiscordMMO.Datatypes.Actions
 
         #region Static methods
 
+        [InitMethod]
         public async static Task Init()
         {
             Logger.Log("[Actions] Detecting actions");

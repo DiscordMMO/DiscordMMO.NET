@@ -8,10 +8,12 @@ using System.Threading.Tasks;
 
 namespace DiscordMMO.Handlers
 {
+    [Handler(0)]
     public static class ItemHandler
     {
         private readonly static Dictionary<string, Type> items = new Dictionary<string, Type>();
 
+        [InitMethod]
         public async static Task Init()
         {
             Logger.Log("[Item Handler] Detecting items");

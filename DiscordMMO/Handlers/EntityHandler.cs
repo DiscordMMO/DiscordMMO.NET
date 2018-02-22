@@ -7,10 +7,12 @@ using DiscordMMO.Datatypes.Entities;
 
 namespace DiscordMMO.Handlers
 {
+    [Handler(10)]
     public static class EntityHandler
     {
         private static Dictionary<string, Type> entities = new Dictionary<string, Type>();
 
+        [InitMethod]
         public async static Task Init()
         {
             Logger.Log("[Entity Handler] Detecting entities");
