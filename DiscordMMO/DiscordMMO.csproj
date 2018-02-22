@@ -186,6 +186,7 @@
     <Compile Include="Handlers\AreaHandler.cs" />
     <Compile Include="Handlers\AreaLoaderHandler.cs" />
     <Compile Include="Handlers\EntityHandler.cs" />
+    <Compile Include="Handlers\HandlerHandler.cs" />
     <Compile Include="Handlers\MessageHandler.cs" />
     <Compile Include="Handlers\SerializationHandler.cs" />
     <Compile Include="Helpers\ReflectionHelper.cs" />
