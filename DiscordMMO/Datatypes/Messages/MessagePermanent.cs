@@ -7,8 +7,7 @@ using Discord;
 
 namespace DiscordMMO.Datatypes.Messages
 {
-    // TODO: Come up with a better name
-    public class MessageStaying : Message
+    public class MessagePermanent : Message
     {
 
         public override DateTime expiry { get; set; } = DateTime.MaxValue.AddYears(-1);
