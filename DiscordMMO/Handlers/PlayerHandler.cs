@@ -99,7 +99,6 @@ namespace DiscordMMO.Handlers
 
         public static Player CreatePlayer(IUser user)
         {
-            Console.WriteLine(user.Username);
             return CreatePlayer(user, user.Username);
         }
 
