@@ -28,5 +28,30 @@ namespace DiscordMMO.Datatypes.Preferences
             return new Preference(value);
         }
 
+        public static implicit operator Preference(bool value)
+        {
+            return GetPreference(value);
+        }
+
+        public static implicit operator Preference(int value)
+        {
+            return GetPreference(value);
+        }
+
+        public static implicit operator Preference(float value)
+        {
+            return GetPreference(value);
+        }
+
+        public static implicit operator Preference(double value)
+        {
+            return GetPreference(value);
+        }
+
+        public static implicit operator Preference(string value)
+        {
+            return GetPreference(value);
+        }
+
     }
 }
