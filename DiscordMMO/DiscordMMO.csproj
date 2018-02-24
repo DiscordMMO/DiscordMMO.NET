@@ -181,6 +181,7 @@
     <Compile Include="Datatypes\Messages\Message.cs" />
     <Compile Include="Datatypes\Messages\MessageDefault.cs" />
     <Compile Include="Datatypes\Messages\MessagePermanent.cs" />
+    <Compile Include="Datatypes\Preferences\PreferenceDictionary.cs" />
     <Compile Include="Factories\DialogueFactory.cs" />
     <Compile Include="Factories\EntityFactory.cs" />
     <Compile Include="Handlers\AreaHandler.cs" />

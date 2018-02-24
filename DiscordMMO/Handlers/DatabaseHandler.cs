@@ -6,6 +6,8 @@ using Discord.WebSocket;
 using DiscordMMO.Datatypes;
 using Discord;
 using System.Diagnostics;
+using DiscordMMO.Util;
+using DiscordMMO.Datatypes.Preferences;
 
 namespace DiscordMMO.Handlers
 {
@@ -13,6 +15,7 @@ namespace DiscordMMO.Handlers
     {
 
         public static readonly string BASE_PLAYER_PATH;
+        public static readonly string BASE_PREFERENCE_PATH;
 
         #region Save or overwrite string
         /*
@@ -27,6 +30,7 @@ namespace DiscordMMO.Handlers
         {
 
             BASE_PLAYER_PATH = Environment.GetEnvironmentVariable("DISCORDMMO_USERDATA") + @"\Users\";
+            BASE_PREFERENCE_PATH = Environment.GetEnvironmentVariable("DISCORDMMO_USERDATA") + @"\Preferences\";
 
             #region Deprecated
             /*
@@ -41,7 +45,7 @@ namespace DiscordMMO.Handlers
                 $"Database=discord_mmo_net;" +
                 $"port=3306");
                 */
-#endregion
+            #endregion
         }
 
         public static async Task<bool> CanFetchPlayer(IUser user)
@@ -53,7 +57,7 @@ namespace DiscordMMO.Handlers
         {
 
             return File.Exists(BASE_PLAYER_PATH + id + ".xml");
-      
+
         }
 
 
@@ -81,6 +85,11 @@ namespace DiscordMMO.Handlers
             {
                 Player player = SerializationHandler.GetSerializer<Player>().Deserialize(file) as Player;
                 player.PostConstructor(Program.client);
+                using (StreamReader prefs = new StreamReader(BASE_PREFERENCE_PATH + player.ID + ".xml"))
+                {
+                    player.preferences = (PreferenceDictionary)SerializationHandler.GetSerializer<PreferenceDictionary>().Deserialize(prefs);
+                }
+
                 return player;
             }
 
@@ -151,7 +160,7 @@ namespace DiscordMMO.Handlers
                 }
             }
             */
-#endregion
+            #endregion
         }
 
 
@@ -175,6 +184,14 @@ namespace DiscordMMO.Handlers
             using (FileStream file = new FileStream(BASE_PLAYER_PATH + player.ID + ".xml", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Delete | FileShare.ReadWrite, bufferSize: 1000000000, useAsync: true))
             {
                 SerializationHandler.GetSerializer<Player>().Serialize(mem, player);
+                byte[] b = mem.ToArray();
+                await file.WriteAsync(b, 0, b.Length);
+            }
+
+            using (MemoryStream mem = new MemoryStream())
+            using (FileStream file = new FileStream(BASE_PREFERENCE_PATH + player.ID + ".xml", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Delete | FileShare.ReadWrite, bufferSize: 1000000000, useAsync: true))
+            {
+                SerializationHandler.GetSerializer<PreferenceDictionary>().Serialize(mem, player.GetPreferences());
                 byte[] b = mem.ToArray();
                 await file.WriteAsync(b, 0, b.Length);
             }

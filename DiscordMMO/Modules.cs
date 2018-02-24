@@ -221,7 +221,7 @@ namespace DiscordMMO
             // Check if both a preference name and value was given
             else if (!String.IsNullOrWhiteSpace(prefName) && !String.IsNullOrWhiteSpace(value))
             {
-                Preference pref = p.GetPreferences()[prefName];
+                Preference pref = p.preferences[prefName];
 
                 // Check if the preference does not exist
                 if (pref == null)
@@ -238,7 +238,7 @@ namespace DiscordMMO
                 var toSet = Convert.ChangeType(value, t);
 
                 // Set the value of the preference
-                p.SetPreferenceWithType(prefName, toSet, t);
+                p.preferences[prefName].value = toSet;
 
                 // Notify the player that the preference was changed
                 await ReplyAsync($"{Context.User.Username}: Set preference {prefName} to {value}");

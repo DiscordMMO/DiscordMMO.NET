@@ -75,20 +75,8 @@ namespace DiscordMMO.Datatypes
         /// <summary>
         /// The players preferences
         /// </summary>
-        protected Dictionary<string, Preference> preferences = new Dictionary<string, Preference>();
+        public PreferenceDictionary preferences = new PreferenceDictionary();
 
-        [XmlArray]
-        public List<(string key, Preference value)> Preferences
-        {
-            get
-            {
-                return preferences.Select(x => (x.Key, x.Value)).ToList();
-            }
-            set
-            {
-                preferences = value.ToDictionary(x => x.key, x => x.value);
-            }
-        }
         [XmlElement]
         /// <summary>
         /// The X position of the player
@@ -277,10 +265,10 @@ namespace DiscordMMO.Datatypes
         protected Player()
         {
 
-            // TODO: Make preferences work with serialization
-
+            /*
             preferences["pm"] = false;
             preferences["mention"] = false;
+            */
         }
 
         public Player(IUser user) : this(user, user.Username)
@@ -296,8 +284,8 @@ namespace DiscordMMO.Datatypes
             playerName = name;
             inventory = new PlayerInventory(this);
             equipment = new PlayerEquimentInventory(this);
-            preferences["pm"] = Preference.GetPreference(true);
-            preferences["mention"] = Preference.GetPreference(true);
+            preferences["pm"] = true;
+            preferences["mention"] = true;
             mana = maxMana;
         }
 
@@ -588,7 +576,7 @@ namespace DiscordMMO.Datatypes
             method.Invoke(this, new Object[] { key, value});
         }
 
-        public Dictionary<string, Preference> GetPreferences()
+        public PreferenceDictionary GetPreferences()
         {
             return preferences;
         }
