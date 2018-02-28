@@ -24,5 +24,10 @@ namespace DiscordMMO.Util
             return val < 0;
         }
 
+        public static float Range(this Random random, float minimum, float maximum)
+        {
+            return (float)random.NextDouble() * (maximum - minimum) + minimum;
+        }
+
     }
 }
