@@ -3,29 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiscordMMO.Util;
 
 namespace DiscordMMO.Datatypes.LootTables
 {
     public class LootTable : ILootTableContent
     {
 
-        protected static Random random = new Random();
 
         // Higher weight = more likely
-        public virtual HashSet<(ILootTableContent drop, int weight)> drops { get; set; } = new HashSet<(ILootTableContent, int)>();
+        public virtual HashSet<(ILootTableContent drop, float weight)> drops { get; set; } = new HashSet<(ILootTableContent, float)>();
 
-        public LootTable(params (ILootTableContent drop, int weight)[] drops)
+        public LootTable(params (ILootTableContent drop, float weight)[] drops)
         {
-            this.drops = new HashSet<(ILootTableContent drop, int weight)>(drops);
+            this.drops = new HashSet<(ILootTableContent drop, float weight)>(drops);
         }
 
         public virtual ItemStack GetDrop()
         {
             // Stolen from https://stackoverflow.com/questions/56692/random-weighted-choice
 
-            int totalWeight = drops.Sum(d => d.weight);
+            float totalWeight = drops.Sum(d => d.weight);
 
-            float r = random.Next(0, totalWeight);
+            float r;
+
+            lock (NumberUtil.randomLock)
+            {
+                r = NumberUtil.random.Range(0, totalWeight);
+            }
 
             ILootTableContent drop = null;
 
