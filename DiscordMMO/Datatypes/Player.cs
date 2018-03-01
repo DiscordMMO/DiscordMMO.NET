@@ -90,6 +90,9 @@ namespace DiscordMMO.Datatypes
         public int y = 0;
 
         [XmlIgnore]
+        /// <summary>
+        /// A wrapper for <c>new Point(x, y)</c>
+        /// </summary>
         public Point position
         {
             get
@@ -104,6 +107,9 @@ namespace DiscordMMO.Datatypes
         }
 
         [XmlIgnore]
+        /// <summary>
+        /// The area that the player is currently in
+        /// </summary>
         public Area currentArea
         {
             get
@@ -143,6 +149,9 @@ namespace DiscordMMO.Datatypes
             }
         }
 
+        /// <summary>
+        /// Can the player start an action?
+        /// </summary>
         public bool IsIdle
         {
             get
@@ -152,9 +161,15 @@ namespace DiscordMMO.Datatypes
         }
 
         [XmlElement]
+        /// <summary>
+        /// The dialgouge that the player is in
+        /// </summary>
         public Dialogue currentDialogue;
 
         [XmlIgnore]
+        /// <summary>
+        /// The last time the player did something (The last time PingActivity() was called)
+        /// </summary>
         public DateTime lastActive = DateTime.Now;
 
 #endregion
@@ -162,22 +177,49 @@ namespace DiscordMMO.Datatypes
         #region IDamageable
 
         [XmlIgnore]
+        /// <summary>
+        /// The event that is raised before an attack hits the player
+        /// </summary>
         public OnBeforeAttacked BeforeAttackedEvent { get; set; }
+
         [XmlIgnore]
+        /// <summary>
+        /// The event that is raised before the player attacks something
+        /// </summary>
         public OnBeforeAttacking BeforeAttackingEvent { get; set; }
 
         [XmlIgnore]
-        public OnAfterAttacked AfterAttackedEvent { get; set; }
-        [XmlIgnore]
+        /// <summary>
+        /// The event that is raised after the player attacks something
+        /// </summary>
         public OnAfterAttacking AfterAttackingEvent { get; set; }
 
+        [XmlIgnore]
+        /// <summary>
+        /// The event that is raised after the player is attacked
+        /// </summary>
+        public OnAfterAttacked AfterAttackedEvent { get; set; }
+
+        /// <summary>
+        /// The maximum health of the player<br/>
+        /// This should be a SOFT cap
+        /// </summary>
         public int maxHealth => 30;
 
-        // You can't do { get; set; } = maxHealth
-        public int health { get; set; } = 30;
+        
+        /// <summary>
+        /// The current health of the player
+        /// </summary>
+        public int health { get; set; } = 30; // You can't do { get; set; } = maxHealth
 
+        /// <summary>
+        /// The defence of the player
+        /// </summary>
         public int defence => 0;
 
+        /// <summary>
+        /// The base attack damage of the player
+        /// </summary>
         public int attackDamage
         {
             get
@@ -190,7 +232,10 @@ namespace DiscordMMO.Datatypes
             }
         }
 
-
+        /// <summary>
+        /// The accuracy of the player in percentage<br>
+        /// If the target's defence is 0, this is just the chance in percentage to not hit 0
+        /// </summary>
         public int accuracy
         {
             get
@@ -203,7 +248,9 @@ namespace DiscordMMO.Datatypes
             }
         }
 
-
+        /// <summary>
+        /// The amount of ticks between each attack
+        /// </summary>
         public int attackRate 
         {
             get
@@ -216,15 +263,27 @@ namespace DiscordMMO.Datatypes
             }
         }
         
+        /// <summary>
+        /// The amount of ticks until the next attack occurs
+        /// </summary>
         public int ticksUntilNextAttack { get; set; }
 
         [XmlIgnore]
+        /// <summary>
+        /// The internal name of the player
+        /// </summary>
         public string name => playerName;
 
         [XmlIgnore]
+        /// <summary>
+        /// The display name of the player
+        /// </summary>
         public string displayName => playerName;
 
         [XmlIgnore]
+        /// <summary>
+        /// What the player will drop when they die
+        /// </summary>
         public List<ItemStack> drops => inventory.items.Concat(equipment.items).ToList();
 
         public bool CanAttack(ref OnAttackEventArgs args)
@@ -244,13 +303,23 @@ namespace DiscordMMO.Datatypes
         /// The chance that the player loses ammo when attacking
         /// </summary>
         public float ammoLossChance = 50;
-
+        
         [XmlElement]
+        /// <summary>
+        /// The maximum amount of mana that the player can have<br/>
+        /// This should be a SOFT cap
+        /// </summary>
         public int maxMana = 100;
 
         [XmlElement]
+        /// <summary>
+        /// The current amount of mana that the player has
+        /// </summary>
         public int mana;
 
+        /// <summary>
+        /// When doing something that consumes mana, it will use <c>manaCost*manaUsageModifier</c> mana
+        /// </summary>
         public float manaUsageModifier = 1;
 
         /// <summary>
@@ -324,6 +393,9 @@ namespace DiscordMMO.Datatypes
 
         #region Actions
 
+        /// <summary>
+        /// This should be called when a tick occurs
+        /// </summary>
         public virtual async Task Tick()
         {
             // Remove the player instance if the player has been inactive for more than Server.IDLE_TIME seconds
@@ -344,9 +416,9 @@ namespace DiscordMMO.Datatypes
         /// Makes the player idle
         /// </summary>
         /// <param name="announce">Whether it should be announced to the player that they started this action</param>
-        /// <param name="force">Whether the action only should be started if the player is idle (It will always be started if <c>true</c>)</param>
         public virtual void Idle(bool announce)
         {
+            // Forcibly set the players action to an idle action
             SetAction(new ActionIdle(this), announce, true);
         }
 
@@ -362,6 +434,7 @@ namespace DiscordMMO.Datatypes
             // If the action should be forced, always set the action
             if (force)
             {
+                // Change the current action to the new action
                 currentAction = action;
                 return true;
             }

@@ -21,12 +21,13 @@ namespace DiscordMMO.Datatypes.LootTables
 
         public virtual ItemStack GetDrop()
         {
-            // Stolen from https://stackoverflow.com/questions/56692/random-weighted-choice
+            // Partially stolen from https://stackoverflow.com/questions/56692/random-weighted-choice
 
             float totalWeight = drops.Sum(d => d.weight);
 
             float r;
 
+            // Wait for the rng to be available
             lock (NumberUtil.randomLock)
             {
                 r = NumberUtil.random.Range(0, totalWeight);

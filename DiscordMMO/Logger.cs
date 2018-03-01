@@ -22,15 +22,18 @@ namespace DiscordMMO
             // Set log color
             switch (severity)
             {
+                // Errors
                 case LogSeverity.Critical:
                 case LogSeverity.Error:
                     Console.ForegroundColor = ConsoleColor.Red;
                     break;
+                // Info
                 case LogSeverity.Debug:
                 case LogSeverity.Info:
                 case LogSeverity.Verbose:
                     Console.ForegroundColor = defaultForegroundColor;
                     break;
+                // Warnings
                 case LogSeverity.Warning:
                     Console.ForegroundColor = ConsoleColor.DarkYellow;
                     break;
@@ -43,6 +46,8 @@ namespace DiscordMMO
             
 
             Console.WriteLine(msg);
+
+            // Reset the color
             Console.ForegroundColor = defaultForegroundColor;
 
         }
