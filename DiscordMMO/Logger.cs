@@ -29,11 +29,15 @@ namespace DiscordMMO
                 case LogSeverity.Debug:
                 case LogSeverity.Info:
                 case LogSeverity.Verbose:
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.ForegroundColor = defaultForegroundColor;
                     break;
                 case LogSeverity.Warning:
                     Console.ForegroundColor = ConsoleColor.DarkYellow;
                     break;
+                default:
+                    Log($"Something went wrong while trying to log a message: Invalid message severity: {severity}", LogSeverity.Error);
+                    Log($"Message attempted to log: {msg}", LogSeverity.Error);
+                    return;
             }
 
             
