@@ -131,6 +131,7 @@
     <Compile Include="AreaLoaders\TownLoader.cs" />
     <Compile Include="AreaLoaders\WildernessLoader.cs" />
     <Compile Include="Consts\UserConsts.cs" />
+    <Compile Include="ContentParsers\ContentParser.cs" />
     <Compile Include="Datatypes\Actions\Action.cs" />
     <Compile Include="Datatypes\Actions\ActionChopWood.cs" />
     <Compile Include="Datatypes\Actions\ActionFighting.cs" />
