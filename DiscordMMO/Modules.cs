@@ -319,7 +319,7 @@ namespace DiscordMMO
         }
 
         [Command("equip"), Summary("Equip an item")]
-        public async Task EquipItemCommand(int itemToEqiupIndex)
+        public async Task EquipItemCommand(int itemToEquipIndex)
         {
             // Check if the player has a user
             var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
@@ -332,7 +332,7 @@ namespace DiscordMMO
 
             Player p = PlayerHandler.GetPlayer(Context.User);
 
-            if (!Enumerable.Range(1, p.inventory.size).Contains(itemToEqiupIndex))
+            if (!Enumerable.Range(1, p.inventory.size).Contains(itemToEquipIndex))
             {
                 await ReplyAsync($"{p.playerName}: That slot does not exist");
                 return;
@@ -340,7 +340,7 @@ namespace DiscordMMO
 
             // Get the item to equip
             // The -1 is to have slots 1-28, rather than 0-27
-            ItemStack itemToEquip = p.inventory[itemToEqiupIndex - 1];
+            ItemStack itemToEquip = p.inventory[itemToEquipIndex - 1];
 
             // Check if there is an item in the given slot
             if (itemToEquip == null || itemToEquip.IsEmpty)
