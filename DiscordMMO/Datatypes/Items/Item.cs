@@ -1,12 +1,13 @@
 ﻿using System;
 using DiscordMMO.Handlers;
 using System.Xml.Serialization;
+using DiscordMMO.ContentParsers;
 
 namespace DiscordMMO.Datatypes.Items
 {
     [XmlRoot]
     [HasOwnSerializer]
-    public abstract class Item
+    public abstract class Item : IContentParseable
     {
 
 
