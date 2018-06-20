@@ -24,6 +24,8 @@ namespace DiscordMMO
 
         public IServiceProvider services { get; private set; }
 
+        public static volatile bool ready = false;
+
         static void Main(string[] args) => new Program().Start().GetAwaiter().GetResult();
 
         static Program()
@@ -74,6 +76,8 @@ namespace DiscordMMO
             // Start the bot itself
             await client.LoginAsync(TokenType.Bot, token);
             await client.StartAsync();
+
+            ready = true;
 
             await Task.Delay(-1);
 
