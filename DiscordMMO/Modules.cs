@@ -21,6 +21,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DiscordMMO.Datatypes.LootTables;
+using static DiscordMMO.Modules;
 using Action = DiscordMMO.Datatypes.Actions.Action;
 using Direction = DiscordMMO.Util.Direction;
 
@@ -44,6 +45,12 @@ namespace DiscordMMO
                                              "Preferences:\n" +
                                              "[Preference name]: [value]\n";
 
+        /// <summary>
+        /// THIS SHOULD ONLY BE SET TO TRUE IF UNIT TESTING IS HAPPENING
+        /// </summary>
+        public static bool unitTesting = false;
+
+
         static Modules()
         {
             ConfigHelper.SetConfigPath("botconfig.cfg");
@@ -62,14 +69,30 @@ namespace DiscordMMO
     {
         protected async override Task<IUserMessage> ReplyAsync(string message, bool isTTS = false, Embed embed = null, RequestOptions options = null)
         {
-            Message msg = await MessageHandler.SendMessageAsync(Context.Channel, message, isTTS, embed, options);
-            return msg.message as IUserMessage;
+            if (!unitTesting)
+            {
+                Message msg = await MessageHandler.SendMessageAsync(Context.Channel, message, isTTS, embed, options);
+                return msg.message as IUserMessage;
+            }
+            else
+            {
+                Console.WriteLine(message);
+                return null;
+            }
         }
 
         protected async Task<IUserMessage> ReplyAsync<T>(string message, bool isTTS = false, Embed embed = null, RequestOptions options = null) where T : Message, new()
         {
-            Message msg = await MessageHandler.SendMessageAsync<T>(Context.Channel, message, isTTS, embed, options);
-            return msg.message as IUserMessage;
+            if (!unitTesting)
+            {
+                Message msg = await MessageHandler.SendMessageAsync<T>(Context.Channel, message, isTTS, embed, options);
+                return msg.message as IUserMessage;
+            }
+            else
+            {
+                Console.WriteLine(message);
+                return null;
+            }
         }
 
     }
@@ -91,7 +114,7 @@ namespace DiscordMMO
             if ((await PlayerHandler.AttemptLogin(Context.User as SocketUser)).success)
             {
                 // Notify the player that they already have player
-                await ReplyAsync($"{Context.User.Username}: {Modules.ALREADY_REGISTERED_MSG}");
+                await ReplyAsync($"{Context.User.Username}: {ALREADY_REGISTERED_MSG}");
                 return;
             }
             else
@@ -105,7 +128,7 @@ namespace DiscordMMO
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
                 // Notify the player that they have been registered
-                await ReplyAsync($"{Context.User.Username}: {String.Format(Modules.REGISTERED_FORMAT, name)}");
+                await ReplyAsync($"{Context.User.Username}: {String.Format(REGISTERED_FORMAT, name)}");
             }
 
         }
@@ -162,7 +185,7 @@ namespace DiscordMMO
             if (!p.IsIdle)
             {
                 // Notify the player if they are already doing something
-                await ReplyAsync(Context.User.Username + ": " + String.Format(Modules.ALREADY_ACTIVE_TIME_LEFT_FORMAT, p.currentAction.finishTime - DateTime.Now));
+                await ReplyAsync(Context.User.Username + ": " + String.Format(ALREADY_ACTIVE_TIME_LEFT_FORMAT, p.currentAction.finishTime - DateTime.Now));
                 return;
             }
 
@@ -193,7 +216,7 @@ namespace DiscordMMO
             if (String.IsNullOrWhiteSpace(value) && String.IsNullOrWhiteSpace(prefName))
             {
                 // Loop through all the preferences and show their value
-                StringBuilder outp = new StringBuilder(Modules.PREF_MSG_START);
+                StringBuilder outp = new StringBuilder(PREF_MSG_START);
                 foreach (string key in p.GetPreferences().Keys)
                 {
                     Preference pref = p.GetPreferences()[key];
@@ -262,7 +285,7 @@ namespace DiscordMMO
             Player p = PlayerHandler.GetPlayer(Context.User);
 
             // Notify the player that they have been logged in
-            await ReplyAsync(Context.User.Username + ": " + Modules.LOGGED_IN_AS + p.playerName);
+            await ReplyAsync(Context.User.Username + ": " + LOGGED_IN_AS + p.playerName);
         }
 
         [Command("inventory")]
@@ -321,17 +344,37 @@ namespace DiscordMMO
         [Command("equip"), Summary("Equip an item")]
         public async Task EquipItemCommand(int itemToEquipIndex)
         {
-            // Check if the player has a user
-            var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
-            if (!attemptLogin.success)
+            Player p;
+            if (!unitTesting)
             {
-                // If the player cannot login, notify them
-                await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
-                return;
+                // Check if the player has a user
+                var attemptLogin = await PlayerHandler.AttemptLogin(Context.User as SocketUser);
+                if (!attemptLogin.success)
+                {
+                    // If the player cannot login, notify them
+                    await ReplyAsync($"{Context.User.Username}: {attemptLogin.errorReason}");
+                    return;
+                }
+
+                p = PlayerHandler.GetPlayer(Context.User);
             }
+            else
+            {
 
-            Player p = PlayerHandler.GetPlayer(Context.User);
+                IUser user = Program.client.GetUser("TheMagzuz", "5276");
 
+                // Check if the player has a user
+                var attemptLogin = await PlayerHandler.AttemptLogin(user);
+                if (!attemptLogin.success)
+                {
+                    // If the player cannot login, notify them
+                    await ReplyAsync($"Error: {attemptLogin.errorReason}");
+                    return;
+                }
+
+                p = PlayerHandler.GetPlayer(user);
+                
+            }
             if (!Enumerable.Range(1, p.inventory.size).Contains(itemToEquipIndex))
             {
                 await ReplyAsync($"{p.playerName}: That slot does not exist");
