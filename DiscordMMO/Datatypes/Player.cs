@@ -5,6 +5,7 @@ using DiscordMMO.Datatypes.Entities;
 using DiscordMMO.Datatypes.Inventories;
 using DiscordMMO.Datatypes.Items.Equipable;
 using DiscordMMO.Datatypes.Items.Equipable.Weapons;
+using DiscordMMO.Datatypes.Interactions.Dialogues;
 using DiscordMMO.Datatypes.Preferences;
 using DiscordMMO.Handlers;
 using DiscordMMO.Util;
@@ -17,7 +18,6 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using System.Drawing;
 using DiscordMMO.Helpers;
-using DiscordMMO.Datatypes.Interactions.Dialogues;
 using Action = DiscordMMO.Datatypes.Actions.Action;
 using Direction = DiscordMMO.Util.Direction;
 
@@ -398,18 +398,11 @@ namespace DiscordMMO.Datatypes
         /// </summary>
         public virtual async Task Tick()
         {
-            // Remove the player instance if the player has been inactive for more than Server.IDLE_TIME seconds
-            if (lastActive.AddSeconds(Server.IDLE_TIME) <= DateTime.Now)
-            {
-                await DatabaseHandler.SaveAsync(this);
-                var pm = await GetPrivateChannel();
-                await MessageHandler.SendMessageAsync(pm, "You have been kicked for being idle for too long");
+            await CheckIdle();
+            RegenMana();
+            UpdateLootpile();
 
-                PlayerHandler.RemovePlayerInstance(this);
-            }
-            mana = Math.Min(mana + manaRegen, maxMana);
-            lootPile.Update();
-            await currentAction.OnTick();
+            await TickCurrentAction();
         }
         
         /// <summary>
@@ -592,7 +585,7 @@ namespace DiscordMMO.Datatypes
             equipment[slot] = toEquip;
             ItemEquipable oldEquip = currentEquip.itemType as ItemEquipable;
             ItemEquipable newEquip = toEquip.itemType as ItemEquipable;
-            oldEquip?.OnUnEquip(this);
+            oldEquip?.OnUnequip(this);
             newEquip?.OnEquip(this);
             inventory.AddItem(currentEquip);
             inventory.items.RemoveAt(inventory.items.FindIndex(x => x.itemType == toEquip.itemType));
@@ -611,6 +604,49 @@ namespace DiscordMMO.Datatypes
             lootPile.RemoveAt(index);
             inventory.AddItem(toAdd);
             return (true, "");
+        }
+
+        #endregion
+
+        #region Ticking
+        /// <summary>
+        /// Check if the player has been idle for more than the idle time
+        /// </summary>
+        private async Task CheckIdle()
+        {
+            // Remove the player instance if the player has been inactive for more than Server.IDLE_TIME seconds
+            if (lastActive.AddSeconds(Server.IDLE_TIME) <= DateTime.Now)
+            {
+                await DatabaseHandler.SaveAsync(this);
+                var pm = await GetPrivateChannel();
+                await MessageHandler.SendMessageAsync(pm, "You have been kicked for being idle for too long");
+
+                PlayerHandler.RemovePlayerInstance(this);
+            }
+        }
+
+        private void RegenMana()
+        {
+            mana = Math.Min(mana + manaRegen, maxMana);
+        }
+
+        private void UpdateLootpile()
+        {
+            lootPile.Update();
+        }
+
+        private void TickEquipped()
+        {
+            foreach (ItemEquipable item in equipment.items.Select(x => x.itemType as ItemEquipable))
+            {
+                if (item == null) continue;
+                item.WhileEquipped(this);
+            }
+        }
+
+        private async Task TickCurrentAction()
+        {
+            await currentAction.OnTick();
         }
 
         #endregion

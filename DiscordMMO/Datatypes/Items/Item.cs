@@ -10,6 +10,7 @@ namespace DiscordMMO.Datatypes.Items
     public abstract class Item : IContentParseable
     {
 
+        // TODO: Add more items
 
         /// <summary>
         /// This is used as an id for the item

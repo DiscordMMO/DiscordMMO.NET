@@ -176,6 +176,7 @@
     <Compile Include="Datatypes\Items\Equipable\Weapons\Magic\ItemTestStaff.cs" />
     <Compile Include="Datatypes\Items\Equipable\Weapons\Melee\ItemTestWeapon.cs" />
     <Compile Include="Datatypes\Items\Equipable\Weapons\ItemWeapon.cs" />
+    <Compile Include="Datatypes\Items\ItemEffects\ItemEffect.cs" />
     <Compile Include="Datatypes\Items\ItemWood.cs" />
     <Compile Include="Datatypes\LootTables\ILootTableContent.cs" />
     <Compile Include="Datatypes\LootTables\LootTable.cs" />
@@ -235,6 +236,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
